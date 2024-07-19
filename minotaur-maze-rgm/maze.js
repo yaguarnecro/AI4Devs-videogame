@@ -30,22 +30,7 @@ function generateMaze(cols, rows) {
     }
     carve(0, 0);
 
-    // Ensure the exit and minotaur positions are not walls
-    maze[rows - 1][cols - 1] = 0; // Exit
-    maze[rows - 1][cols - 2] = 0; // Ensure path to exit
-    maze[rows - 2][cols - 1] = 0; // Ensure path to exit
 
-    // Ensure right and bottom borders are not completely walled off
-    for (let y = 0; y < rows; y++) {
-        if (maze[y][cols - 2] === 0) {
-            maze[y][cols - 1] = 0;
-        }
-    }
-    for (let x = 0; x < cols; x++) {
-        if (maze[rows - 2][x] === 0) {
-            maze[rows - 1][x] = 0;
-        }
-    }
 
     console.log(maze);
     return maze;
