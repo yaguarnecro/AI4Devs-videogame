@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Until Sunrise v1.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+
+<body class="bg-dark">
+    <div class="container mt-5">
+        
+        <div class="card">
+            <div class="card-body">
+                
+                <div id="start-screen" class="text-center">
+                    <h1 class="mb-4">Until sunrise v1.0</h1>
+                
+                    <form id="player-form" class="mb-4">
+                        <div class="mb-3">
+                            <input type="text" id="player-name" class="form-control" placeholder="Ingresa tu nombre" required>
+                        </div>
+                        <button id="start-button" class="btn btn-primary">Iniciar Juego</button>
+                    </form>
+
+                    <div id="results">
+                        <h2 class="mb-3">Top Scores</h2>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Puntuación</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scores-body">
+                                <!-- Los scores se insertarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="game-container" style="display: none;">
+                    <canvas id="game-canvas"></canvas>
+                    <div id="hud" class="mt-3">
+                        <span id="time" class="me-3">Tiempo: 0</span>
+                        <span id="score" class="me-3">Puntuación: 0</span>
+                        <span id="level">Nivel: 1</span>
+                    </div>
+
+                    <div id="controls">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>Controles</strong>
+                                <br> * Utiliza las teclas izquierda/derecha para mover tu personaje.
+                                <br> * Brinca con la barra espaciadora o con la tecla de arriba.
+                                <br> * Tecla X para disparar.
+                            </li>
+                            <li class="list-group-item">
+                                Derrota a los enemigos cayendo sobre de ellos o disparandoles.
+                            </li>
+                            <li class="list-group-item">
+                                Evade a todos y llega al amanecer, pero ... si te tocan...bye bye !
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/source.js"></script>
+</body>
+</html>

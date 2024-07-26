@@ -1,0 +1,23 @@
+#game-container {
+    width: 100%;
+    max-width: 800px; /* O el ancho máximo que prefieras */
+    margin: 0 auto;
+}
+
+#game-canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+#hud {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.container {
+    max-width: 800px; /* O el ancho máximo que prefieras */
+    width: 100%;
+    /* ... otros estilos ... */
+}
