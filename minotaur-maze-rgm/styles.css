@@ -23,3 +23,31 @@ body {
     margin-top: 10px;
     text-align: center;
 }
+
+#config-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #000;
+    color: #fff;
+    padding: 20px;
+    border: 2px solid #fff;
+}
+
+#config-screen label {
+    margin: 5px 0;
+}
+
+#config-screen input {
+    margin: 5px 0;
+    padding: 5px;
+    width: 50px;
+    text-align: center;
+}
+
+#config-screen button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}

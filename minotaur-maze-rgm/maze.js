@@ -1,17 +1,73 @@
 const canvas = document.getElementById('maze-canvas');
 const ctx = canvas.getContext('2d');
 const cellSize = 20;
-const rows = Math.floor(canvas.height / cellSize);
-const cols = Math.floor(canvas.width / cellSize);
+let rows, cols;
 const player = { x: 0, y: 0 };
-const exit = { x: cols - 1, y: rows - 1 };
-let maze = generateMaze(cols, rows);
-let minotaur = findRandomMiddlePathPosition(maze);
+let exit;
+let maze;
+let minotaurs = [];
 let gameOver = false;
 let minotaurSpeed = 500; // Initial speed in milliseconds
 let speedIncreaseCount = 0; // Number of speed increases
+let minotaurInterval;
+let speedIncreaseInterval;
+let minotaurSpawnInterval;
 
-document.addEventListener('keydown', movePlayer);
+document.getElementById('start-button').addEventListener('click', startGame);
+
+function startGame() {
+    // Get configuration values
+    cols = parseInt(document.getElementById('cols').value) + 1;
+    rows = parseInt(document.getElementById('rows').value) + 1;
+    const numMinotaurs = parseInt(document.getElementById('minotaurs').value);
+    const spawnInterval = parseInt(document.getElementById('spawn-interval').value) * 1000;
+
+    // Adjust canvas size based on the configuration
+    canvas.width = cols * cellSize;
+    canvas.height = rows * cellSize;
+
+    // Initialize game elements
+    exit = { x: cols - 1, y: rows - 1 };
+    maze = generateMaze(cols, rows);
+    minotaurs = [createMinotaur()];
+    gameOver = false;
+    minotaurSpeed = 500;
+    speedIncreaseCount = 0;
+
+    // Hide config screen and show game screen
+    document.getElementById('config-screen').style.display = 'none';
+    canvas.style.display = 'block';
+    document.getElementById('game-info').style.display = 'block';
+
+    // Add event listener for player movement
+    document.addEventListener('keydown', movePlayer);
+
+    // Start game intervals
+    minotaurInterval = setInterval(() => {
+        if (!gameOver) {
+            minotaurs.forEach(moveMinotaur);
+            drawMaze();
+        }
+    }, minotaurSpeed);
+
+    speedIncreaseInterval = setInterval(() => {
+        increaseMinotaurSpeed();
+        if (speedIncreaseCount >= 4) {
+            clearInterval(speedIncreaseInterval);
+        }
+    }, 30000); // 30 seconds
+
+    minotaurSpawnInterval = setInterval(() => {
+        if (!gameOver && minotaurs.length < numMinotaurs) {
+            minotaurs.push(createMinotaur());
+        }
+        if (minotaurs.length >= numMinotaurs) {
+            clearInterval(minotaurSpawnInterval);
+        }
+    }, spawnInterval);
+
+    drawMaze();
+}
 
 function generateMaze(cols, rows) {
     // Initialize maze with walls
@@ -60,6 +116,14 @@ function findRandomMiddlePathPosition(maze) {
     return pathPositions[Math.floor(Math.random() * pathPositions.length)];
 }
 
+function createMinotaur() {
+    let position;
+    do {
+        position = findRandomMiddlePathPosition(maze);
+    } while (Math.abs(position.x - player.x) < 5 && Math.abs(position.y - player.y) < 5);
+    return { ...position, direction: [0, -1] }; // Initial direction (up)
+}
+
 function drawMaze() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let y = 0; y < rows; y++) {
@@ -75,7 +139,9 @@ function drawMaze() {
     ctx.fillStyle = 'purple';
     ctx.fillRect(player.x * cellSize, player.y * cellSize, cellSize, cellSize);
     ctx.fillStyle = 'red';
-    ctx.fillRect(minotaur.x * cellSize, minotaur.y * cellSize, cellSize, cellSize);
+    minotaurs.forEach(minotaur => {
+        ctx.fillRect(minotaur.x * cellSize, minotaur.y * cellSize, cellSize, cellSize);
+    });
 }
 
 function movePlayer(event) {
@@ -90,14 +156,27 @@ function movePlayer(event) {
     if (player.x === exit.x && player.y === exit.y) {
         alert('You win!');
         gameOver = true;
+        resetGame();
     }
     drawMaze();
 }
 
-let minotaurDirection = [0, -1]; // Initial direction (up)
+function resetGame() {
+    // Reset game state
+    gameOver = true;
+    clearInterval(minotaurInterval);
+    clearInterval(speedIncreaseInterval);
+    clearInterval(minotaurSpawnInterval);
+    document.removeEventListener('keydown', movePlayer);
 
-function moveMinotaur() {
-    const [dx, dy] = minotaurDirection;
+    // Show config screen and hide game screen
+    document.getElementById('config-screen').style.display = 'flex';
+    canvas.style.display = 'none';
+    document.getElementById('game-info').style.display = 'none';
+}
+
+function moveMinotaur(minotaur) {
+    const [dx, dy] = minotaur.direction;
     const nx = minotaur.x + dx, ny = minotaur.y + dy;
 
     if (nx >= 0 && ny >= 0 && nx < cols && ny < rows && maze[ny][nx] === 0) {
@@ -113,7 +192,7 @@ function moveMinotaur() {
 
         if (possibleDirections.length > 1) {
             // Randomly choose a new direction at intersections
-            minotaurDirection = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
+            minotaur.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
         }
     } else {
         // Change direction randomly if it hits a wall, excluding the direction it came from
@@ -126,7 +205,7 @@ function moveMinotaur() {
         for (const [newDx, newDy] of directions) {
             const nx = minotaur.x + newDx, ny = minotaur.y + newDy;
             if (nx >= 0 && ny >= 0 && nx < cols && ny < rows && maze[ny][nx] === 0) {
-                minotaurDirection = [newDx, newDy];
+                minotaur.direction = [newDx, newDy];
                 minotaur.x = nx;
                 minotaur.y = ny;
                 moved = true;
@@ -134,47 +213,37 @@ function moveMinotaur() {
             }
         }
 
-        // If no other option is possible, go back to the previous position
-        if (!moved) {
-            minotaurDirection = [-dx, -dy];
-            minotaur.x += minotaurDirection[0];
-            minotaur.y += minotaurDirection[1];
+        // If no other option is possible, or with a 10% chance, go back to the previous position
+        if (!moved || Math.random() < 0.1) {
+            const bx = minotaur.x - dx, by = minotaur.y - dy;
+            if (bx >= 0 && by >= 0 && bx < cols && by < rows && maze[by][bx] === 0) {
+                minotaur.direction = [-dx, -dy];
+                minotaur.x = bx;
+                minotaur.y = by;
+            }
         }
     }
 
     if (minotaur.x === player.x && minotaur.y === player.y) {
-        alert('You lose!');
-        gameOver = true;
+        gameOverAlert();
     }
 }
 
 function increaseMinotaurSpeed() {
     if (speedIncreaseCount < 4) {
-        minotaurSpeed -= 120; // Decrease interval by 100ms
+        minotaurSpeed -= 100; // Decrease interval by 100ms
         speedIncreaseCount++;
         clearInterval(minotaurInterval);
         minotaurInterval = setInterval(() => {
             if (!gameOver) {
-                moveMinotaur();
+                minotaurs.forEach(moveMinotaur);
                 drawMaze();
             }
         }, minotaurSpeed);
     }
 }
 
-let minotaurInterval = setInterval(() => {
-    if (!gameOver) {
-        moveMinotaur();
-        drawMaze();
-    }
-}, minotaurSpeed); // Move minotaur at initial speed
-
-// Increase minotaur speed every 30 seconds, up to 4 times
-let speedIncreaseInterval = setInterval(() => {
-    increaseMinotaurSpeed();
-    if (speedIncreaseCount >= 4) {
-        clearInterval(speedIncreaseInterval);
-    }
-}, 30000); // 30 seconds
-
-drawMaze();
+function gameOverAlert() {
+    alert('You lose!');
+    resetGame();
+}
