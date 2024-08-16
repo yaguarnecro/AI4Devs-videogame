@@ -26,6 +26,8 @@ function startGame() {
         gameContainer.webkitRequestFullscreen();
     } else if (gameContainer.msRequestFullscreen) { // IE/Edge
         gameContainer.msRequestFullscreen();
+    } else if (gameContainer.webkitEnterFullscreen) { // iOS Safari
+        gameContainer.webkitEnterFullscreen();
     }
 
     // Get configuration values and ensure they're odd numbers
