@@ -11,16 +11,16 @@
         <div id="config-screen">
             <h1>Minotaur Maze Configuration</h1>
             <label for="cols">Columns:</label>
-            <input type="number" id="cols" name="cols" value="30" min="10" max="100" step="2">
+            <input type="number" id="cols" name="cols" value="30" min="10" max="100">
             <label for="rows">Rows:</label>
-            <input type="number" id="rows" name="rows" value="30" min="10" max="100" step="2">
+            <input type="number" id="rows" name="rows" value="30" min="10" max="100">
             <label for="minotaurs">Number of Minotaurs:</label>
             <input type="number" id="minotaurs" name="minotaurs" value="3" min="1" max="10">
             <label for="spawn-interval">Spawn Interval (seconds):</label>
             <input type="number" id="spawn-interval" name="spawn-interval" value="15" min="5" max="60">
             <button id="start-button" style="background-color: red; color: white;">START</button>
         </div>
-        <canvas id="maze-canvas" width="580" height="580" style="display: none;"></canvas>
+        <canvas id="maze-canvas" width="600" height="600" style="display: none;"></canvas>
         <div id="game-info" style="display: none;">
             <p>Use arrow keys to move</p>
             <p>Reach the green exit to win!</p>
@@ -28,18 +28,5 @@
         </div>
     </div>
     <script src="maze.js"></script>
-    <script>
-        document.getElementById('cols').addEventListener('change', function() {
-            if (this.value % 2 !== 0) {
-                this.value = parseInt(this.value) + 1;
-            }
-        });
-
-        document.getElementById('rows').addEventListener('change', function() {
-            if (this.value % 2 !== 0) {
-                this.value = parseInt(this.value) + 1;
-            }
-        });
-    </script>
 </body>
 </html>

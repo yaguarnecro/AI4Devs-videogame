@@ -1,6 +1,6 @@
 const canvas = document.getElementById('maze-canvas');
 const ctx = canvas.getContext('2d');
-const cellSize = 20;
+let cellSize = 20;
 let rows, cols;
 const player = { x: 0, y: 0 };
 let exit;
@@ -16,15 +16,16 @@ let minotaurSpawnInterval;
 document.getElementById('start-button').addEventListener('click', startGame);
 
 function startGame() {
-    // Get configuration values
-    cols = parseInt(document.getElementById('cols').value) + 1;
-    rows = parseInt(document.getElementById('rows').value) + 1;
+    // Get configuration values and ensure they're odd numbers
+    cols = parseInt(document.getElementById('cols').value);
+    rows = parseInt(document.getElementById('rows').value);
+    cols = cols % 2 === 0 ? cols + 1 : cols;
+    rows = rows % 2 === 0 ? rows + 1 : rows;
     const numMinotaurs = parseInt(document.getElementById('minotaurs').value);
     const spawnInterval = parseInt(document.getElementById('spawn-interval').value) * 1000;
 
-    // Adjust canvas size based on the configuration
-    canvas.width = cols * cellSize;
-    canvas.height = rows * cellSize;
+    // Adjust canvas size based on the window size
+    adjustCanvasSize();
 
     // Initialize game elements
     exit = { x: cols - 1, y: rows - 1 };
@@ -68,6 +69,24 @@ function startGame() {
 
     drawMaze();
 }
+
+function adjustCanvasSize() {
+    const maxWidth = window.innerWidth * 0.8;
+    const maxHeight = window.innerHeight * 0.8;
+    const cellWidth = Math.floor(maxWidth / cols);
+    const cellHeight = Math.floor(maxHeight / rows);
+    cellSize = Math.min(cellWidth, cellHeight);
+
+    canvas.width = cols * cellSize;
+    canvas.height = rows * cellSize;
+}
+
+window.addEventListener('resize', () => {
+    if (canvas.style.display === 'block') {
+        adjustCanvasSize();
+        drawMaze();
+    }
+});
 
 function generateMaze(cols, rows) {
     // Initialize maze with walls
