@@ -16,6 +16,18 @@ let minotaurSpawnInterval;
 document.getElementById('start-button').addEventListener('click', startGame);
 
 function startGame() {
+    // Request fullscreen mode
+    const gameContainer = document.getElementById('game-container');
+    if (gameContainer.requestFullscreen) {
+        gameContainer.requestFullscreen();
+    } else if (gameContainer.mozRequestFullScreen) { // Firefox
+        gameContainer.mozRequestFullScreen();
+    } else if (gameContainer.webkitRequestFullscreen) { // Chrome, Safari and Opera
+        gameContainer.webkitRequestFullscreen();
+    } else if (gameContainer.msRequestFullscreen) { // IE/Edge
+        gameContainer.msRequestFullscreen();
+    }
+
     // Get configuration values and ensure they're odd numbers
     cols = parseInt(document.getElementById('cols').value);
     rows = parseInt(document.getElementById('rows').value);
