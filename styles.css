@@ -59,10 +59,21 @@ footer p {
     justify-content: center;
     align-items: center;
     position: absolute;
-    left: 100%;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    margin-left: 20px;
+}
+
+#mobile-controls.vertical {
+    flex-direction: row;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#mobile-controls.vertical div {
+    flex-direction: column;
 }
 
 #mobile-controls button {

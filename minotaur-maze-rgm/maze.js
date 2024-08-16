@@ -34,6 +34,10 @@ function startGame() {
     const mobileControls = document.getElementById('mobile-controls');
     mobileControls.style.display = 'flex';
 
+    // Reset player position
+    player.x = 0;
+    player.y = 0;
+
     // Get configuration values and ensure they're odd numbers
     cols = parseInt(document.getElementById('cols').value);
     rows = parseInt(document.getElementById('rows').value);
@@ -262,6 +266,10 @@ function resetGame() {
     clearInterval(minotaurSpawnInterval);
     document.removeEventListener('keydown', movePlayer);
 
+    // Reset player position
+    player.x = 0;
+    player.y = 0;
+
     // Show config screen and hide game screen
     document.getElementById('config-screen').style.display = 'flex';
     canvas.style.display = 'none';
@@ -344,9 +352,11 @@ function gameOverAlert() {
 function checkOrientation() {
     const mobileControls = document.getElementById('mobile-controls');
     if (window.innerWidth > window.innerHeight) {
+        mobileControls.classList.remove('vertical');
         mobileControls.style.display = 'flex';
     } else {
-        mobileControls.style.display = 'none';
+        mobileControls.classList.add('vertical');
+        mobileControls.style.display = 'flex';
     }
 }
 
