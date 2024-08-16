@@ -30,6 +30,10 @@ function startGame() {
         gameContainer.webkitEnterFullscreen();
     }
 
+    // Show mobile controls
+    const mobileControls = document.getElementById('mobile-controls');
+    mobileControls.style.display = 'flex';
+
     // Get configuration values and ensure they're odd numbers
     cols = parseInt(document.getElementById('cols').value);
     rows = parseInt(document.getElementById('rows').value);
