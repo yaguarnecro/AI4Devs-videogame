@@ -38,7 +38,7 @@ function startGame() {
     // Hide config screen and show game screen
     document.getElementById('config-screen').style.display = 'none';
     canvas.style.display = 'block';
-    document.getElementById('mobile-controls').style.display = 'flex';
+    checkOrientation();
 
     // Add event listener for player movement
     document.addEventListener('keydown', movePlayer);
@@ -91,6 +91,7 @@ window.addEventListener('resize', () => {
     if (canvas.style.display === 'block') {
         adjustCanvasSize();
         drawMaze();
+        checkOrientation();
     }
 });
 
@@ -272,3 +273,14 @@ function gameOverAlert() {
     alert('You lose!');
     resetGame();
 }
+
+function checkOrientation() {
+    const mobileControls = document.getElementById('mobile-controls');
+    if (window.innerWidth > window.innerHeight) {
+        mobileControls.style.display = 'flex';
+    } else {
+        mobileControls.style.display = 'none';
+    }
+}
+
+window.addEventListener('resize', checkOrientation);
