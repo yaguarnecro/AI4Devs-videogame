@@ -44,10 +44,35 @@ function startGame() {
     document.addEventListener('keydown', movePlayer);
 
     // Add event listeners for mobile controls
-    document.getElementById('up-button').addEventListener('click', () => movePlayer({ key: 'ArrowUp' }));
-    document.getElementById('down-button').addEventListener('click', () => movePlayer({ key: 'ArrowDown' }));
-    document.getElementById('left-button').addEventListener('click', () => movePlayer({ key: 'ArrowLeft' }));
-    document.getElementById('right-button').addEventListener('click', () => movePlayer({ key: 'ArrowRight' }));
+    let intervalId;
+    const startMovement = (direction) => {
+        movePlayer({ key: direction });
+        intervalId = setInterval(() => movePlayer({ key: direction }), 100);
+    };
+
+    const stopMovement = () => {
+        clearInterval(intervalId);
+    };
+
+    document.getElementById('up-button').addEventListener('mousedown', () => startMovement('ArrowUp'));
+    document.getElementById('up-button').addEventListener('mouseup', stopMovement);
+    document.getElementById('up-button').addEventListener('touchstart', () => startMovement('ArrowUp'));
+    document.getElementById('up-button').addEventListener('touchend', stopMovement);
+
+    document.getElementById('down-button').addEventListener('mousedown', () => startMovement('ArrowDown'));
+    document.getElementById('down-button').addEventListener('mouseup', stopMovement);
+    document.getElementById('down-button').addEventListener('touchstart', () => startMovement('ArrowDown'));
+    document.getElementById('down-button').addEventListener('touchend', stopMovement);
+
+    document.getElementById('left-button').addEventListener('mousedown', () => startMovement('ArrowLeft'));
+    document.getElementById('left-button').addEventListener('mouseup', stopMovement);
+    document.getElementById('left-button').addEventListener('touchstart', () => startMovement('ArrowLeft'));
+    document.getElementById('left-button').addEventListener('touchend', stopMovement);
+
+    document.getElementById('right-button').addEventListener('mousedown', () => startMovement('ArrowRight'));
+    document.getElementById('right-button').addEventListener('mouseup', stopMovement);
+    document.getElementById('right-button').addEventListener('touchstart', () => startMovement('ArrowRight'));
+    document.getElementById('right-button').addEventListener('touchend', stopMovement);
 
     // Start game intervals
     minotaurInterval = setInterval(() => {
