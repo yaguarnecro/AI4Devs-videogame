@@ -149,6 +149,15 @@ function startGame() {
     }, spawnInterval);
 
     drawMaze();
+
+    // Add event listener for fullscreen change
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+}
+
+function handleFullscreenChange() {
+    if (!document.fullscreenElement) {
+        window.location.reload();
+    }
 }
 
 function adjustCanvasSize() {
