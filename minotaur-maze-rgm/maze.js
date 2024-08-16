@@ -38,7 +38,6 @@ function startGame() {
     // Hide config screen and show game screen
     document.getElementById('config-screen').style.display = 'none';
     canvas.style.display = 'block';
-    document.getElementById('game-info').style.display = 'block';
     document.getElementById('mobile-controls').style.display = 'flex';
 
     // Add event listener for player movement
@@ -198,7 +197,6 @@ function resetGame() {
     // Show config screen and hide game screen
     document.getElementById('config-screen').style.display = 'flex';
     canvas.style.display = 'none';
-    document.getElementById('game-info').style.display = 'none';
     document.getElementById('mobile-controls').style.display = 'none';
 }
 
