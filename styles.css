@@ -64,18 +64,6 @@ footer p {
     transform: translateY(-50%);
 }
 
-#mobile-controls.vertical {
-    flex-direction: row;
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-#mobile-controls.vertical div {
-    flex-direction: column;
-}
-
 #mobile-controls button {
     width: 50px;
     height: 50px;
@@ -93,4 +81,27 @@ footer p {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#game-container.fullscreen {
+    transform: rotate(90deg);
+    transform-origin: center center;
+    width: 100vh;
+    height: 100vw;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+#mobile-controls.fullscreen {
+    flex-direction: row;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#mobile-controls.fullscreen div {
+    flex-direction: column;
 }

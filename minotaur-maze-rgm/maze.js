@@ -30,8 +30,12 @@ function startGame() {
         gameContainer.webkitEnterFullscreen();
     }
 
-    // Show mobile controls
+    // Add fullscreen class to game container and mobile controls
+    gameContainer.classList.add('fullscreen');
     const mobileControls = document.getElementById('mobile-controls');
+    mobileControls.classList.add('fullscreen');
+
+    // Show mobile controls
     mobileControls.style.display = 'flex';
 
     // Reset player position
@@ -270,10 +274,16 @@ function resetGame() {
     player.x = 0;
     player.y = 0;
 
+    // Remove fullscreen class from game container and mobile controls
+    const gameContainer = document.getElementById('game-container');
+    gameContainer.classList.remove('fullscreen');
+    const mobileControls = document.getElementById('mobile-controls');
+    mobileControls.classList.remove('fullscreen');
+
     // Show config screen and hide game screen
     document.getElementById('config-screen').style.display = 'flex';
     canvas.style.display = 'none';
-    document.getElementById('mobile-controls').style.display = 'none';
+    mobileControls.style.display = 'none';
 }
 
 function moveMinotaur(minotaur) {
@@ -352,11 +362,9 @@ function gameOverAlert() {
 function checkOrientation() {
     const mobileControls = document.getElementById('mobile-controls');
     if (window.innerWidth > window.innerHeight) {
-        mobileControls.classList.remove('vertical');
         mobileControls.style.display = 'flex';
     } else {
-        mobileControls.classList.add('vertical');
-        mobileControls.style.display = 'flex';
+        mobileControls.style.display = 'none';
     }
 }
 
