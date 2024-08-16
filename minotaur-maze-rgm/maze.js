@@ -39,9 +39,16 @@ function startGame() {
     document.getElementById('config-screen').style.display = 'none';
     canvas.style.display = 'block';
     document.getElementById('game-info').style.display = 'block';
+    document.getElementById('mobile-controls').style.display = 'flex';
 
     // Add event listener for player movement
     document.addEventListener('keydown', movePlayer);
+
+    // Add event listeners for mobile controls
+    document.getElementById('up-button').addEventListener('click', () => movePlayer({ key: 'ArrowUp' }));
+    document.getElementById('down-button').addEventListener('click', () => movePlayer({ key: 'ArrowDown' }));
+    document.getElementById('left-button').addEventListener('click', () => movePlayer({ key: 'ArrowLeft' }));
+    document.getElementById('right-button').addEventListener('click', () => movePlayer({ key: 'ArrowRight' }));
 
     // Start game intervals
     minotaurInterval = setInterval(() => {
@@ -192,6 +199,7 @@ function resetGame() {
     document.getElementById('config-screen').style.display = 'flex';
     canvas.style.display = 'none';
     document.getElementById('game-info').style.display = 'none';
+    document.getElementById('mobile-controls').style.display = 'none';
 }
 
 function moveMinotaur(minotaur) {
