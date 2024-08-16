@@ -258,6 +258,14 @@ function movePlayer(event) {
         endGame('You win!');
         return;
     }
+    // Check for collision with minotaurs after player moves
+    for (const minotaur of minotaurs) {
+        if (minotaur.x === player.x && minotaur.y === player.y) {
+            console.log('Collision detected');
+            gameOverAlert();
+            return;
+        }
+    }
     drawMaze();
 }
 
