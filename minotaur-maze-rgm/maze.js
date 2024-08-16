@@ -54,24 +54,48 @@ function startGame() {
         clearInterval(intervalId);
     };
 
-    document.getElementById('up-button').addEventListener('mousedown', () => startMovement('ArrowUp'));
+    document.getElementById('up-button').addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startMovement('ArrowUp');
+    });
     document.getElementById('up-button').addEventListener('mouseup', stopMovement);
-    document.getElementById('up-button').addEventListener('touchstart', () => startMovement('ArrowUp'));
+    document.getElementById('up-button').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startMovement('ArrowUp');
+    });
     document.getElementById('up-button').addEventListener('touchend', stopMovement);
 
-    document.getElementById('down-button').addEventListener('mousedown', () => startMovement('ArrowDown'));
+    document.getElementById('down-button').addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startMovement('ArrowDown');
+    });
     document.getElementById('down-button').addEventListener('mouseup', stopMovement);
-    document.getElementById('down-button').addEventListener('touchstart', () => startMovement('ArrowDown'));
+    document.getElementById('down-button').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startMovement('ArrowDown');
+    });
     document.getElementById('down-button').addEventListener('touchend', stopMovement);
 
-    document.getElementById('left-button').addEventListener('mousedown', () => startMovement('ArrowLeft'));
+    document.getElementById('left-button').addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startMovement('ArrowLeft');
+    });
     document.getElementById('left-button').addEventListener('mouseup', stopMovement);
-    document.getElementById('left-button').addEventListener('touchstart', () => startMovement('ArrowLeft'));
+    document.getElementById('left-button').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startMovement('ArrowLeft');
+    });
     document.getElementById('left-button').addEventListener('touchend', stopMovement);
 
-    document.getElementById('right-button').addEventListener('mousedown', () => startMovement('ArrowRight'));
+    document.getElementById('right-button').addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startMovement('ArrowRight');
+    });
     document.getElementById('right-button').addEventListener('mouseup', stopMovement);
-    document.getElementById('right-button').addEventListener('touchstart', () => startMovement('ArrowRight'));
+    document.getElementById('right-button').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startMovement('ArrowRight');
+    });
     document.getElementById('right-button').addEventListener('touchend', stopMovement);
 
     // Start game intervals
