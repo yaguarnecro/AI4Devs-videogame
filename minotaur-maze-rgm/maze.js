@@ -255,9 +255,8 @@ function movePlayer(event) {
         case 'ArrowRight': if (x < cols - 1 && maze[y][x + 1] === 0) player.x++; break;
     }
     if (player.x === exit.x && player.y === exit.y) {
-        alert('You win!');
-        gameOver = true;
-        resetGame();
+        endGame('You win!');
+        return;
     }
     drawMaze();
 }
@@ -279,11 +278,11 @@ function resetGame() {
     gameContainer.classList.remove('fullscreen');
     const mobileControls = document.getElementById('mobile-controls');
     mobileControls.classList.remove('fullscreen');
+    mobileControls.style.display = 'none'; // Ensure mobile controls are hidden
 
     // Show config screen and hide game screen
     document.getElementById('config-screen').style.display = 'flex';
     canvas.style.display = 'none';
-    mobileControls.style.display = 'none';
 }
 
 function moveMinotaur(minotaur) {
@@ -336,6 +335,7 @@ function moveMinotaur(minotaur) {
     }
 
     if (minotaur.x === player.x && minotaur.y === player.y) {
+        console.log('Collision detected');
         gameOverAlert();
     }
 }
@@ -355,8 +355,8 @@ function increaseMinotaurSpeed() {
 }
 
 function gameOverAlert() {
-    alert('You lose!');
-    resetGame();
+    console.log('Game Over Alert triggered');
+    endGame('You lose!');
 }
 
 function checkOrientation() {
@@ -369,3 +369,12 @@ function checkOrientation() {
 }
 
 window.addEventListener('resize', checkOrientation);
+
+function endGame(message) {
+    document.getElementById('mobile-controls').style.display = 'none';
+    gameOver = true;
+    alert(message);
+    setTimeout(() => {
+        window.location.reload();
+    }, 100);
+}
