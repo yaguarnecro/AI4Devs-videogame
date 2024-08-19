@@ -7,7 +7,6 @@ body {
     background-color: #000;
     color: #fff;
     font-family: Arial, sans-serif;
-    touch-action: none; /* Add this line to disable the default touch behavior */
 }
 #game-container {
     display: flex;
@@ -15,6 +14,7 @@ body {
     align-items: center;
     height: 100vh;
     position: relative;
+    touch-action: none; /* Add this line to disable the default touch behavior */
 }
 #maze-canvas {
     border: 2px solid #fff;
@@ -119,9 +119,4 @@ body {
     color: black;
     border: none;
     border-radius: 5px;
-}
-
-#language-select,
-#instructions-button {
-    touch-action: auto;
 }
