@@ -185,3 +185,17 @@ Los puntos 18, 19 y 20 también para los "Extra".
 
 Falta implementar el concepto de "Agua" después del punto 6 actual, tras implementar las caídas.
 ```
+
+Prompts usados para el detalle de tareas e implementación (Cursor.sh)
+==================
+
+```
+Como analista programador de software, experto en desarrollo de juegos HTML + Javascript, tenemos que desgranar cada una de las tareas listadas en el documento de tareas @01_tasks_gusanos.md  usando también el documento donde se describe y define el alcance del proyecto: @00_prd_gusanos.md 
+Vamos a empezar con la primera tarea. 
+Cada tarea deberá tener un título, descripción detallada tanto funcional como técnica y un listado de algunas pruebas a realizar para dar por válida la tarea. La tarea debe ser autocontenida, es decir, debe tener toda la información para no tener que mirar el PRD u otros documentos.
+```
+
+```
+Como programador senior especialista en desarrollo de videojuegos HTML + Javascript, puedes implementar la tarea "1 Configuración inicial del proyecto" descrita en el fichero @01_tasks_gusanos.md ?
+Sigue siempre buenas prácticas de desarrollo en cualquier lenguaje de programación.
+```

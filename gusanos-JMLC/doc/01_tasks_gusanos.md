@@ -3,7 +3,7 @@
 ## Tareas Básicas:
 
 1. Configuración inicial del proyecto
-   Crear la estructura de carpetas y archivos básicos, incluyendo HTML, CSS y JavaScript principales.
+   Crear la estructura de carpetas y archivos básicos, incluyendo HTML, CSS y JavaScript principales para mostrar la pantalla de inicio con las opciones de nueva partida, ayuda y salir.
 
 2. Implementación del canvas y renderizado del mapa
    Mostrar un mapa básico en el canvas utilizando una imagen prediseñada.
@@ -47,9 +47,6 @@
 15. Creación de la pantalla de fin de partida
     Implementar la pantalla que muestra el resultado y estadísticas al finalizar el juego.
 
-16. Implementación del menú principal
-    Crear la pantalla de inicio con las opciones de nueva partida, ayuda y salir.
-
 ## Tareas Extra:
 
 17. Adición de la destrucción del terreno
@@ -64,4 +61,67 @@
 20. Implementación de pruebas unitarias básicas
     Crear pruebas para las funciones y clases principales del juego.
 
-# Detalle de tareas
+# Tarea 1: Configuración inicial del proyecto
+
+## Descripción funcional
+Crear la estructura básica del proyecto "Gusanos", incluyendo los archivos y carpetas necesarios para mostrar una pantalla de inicio con las opciones de nueva partida, ayuda y salir. Esta tarea establece la base sobre la cual se construirá el resto del juego.
+
+## Descripción técnica
+1. Crear la estructura de carpetas según el esquema definido en el documento técnico:
+   ```
+   gusanos/
+   ├── index.html
+   ├── game.html
+   ├── end.html
+   ├── assets/
+   │   ├── images/
+   │   └── maps/
+   ├── src/
+   │   ├── main.js
+   │   ├── game/
+   │   ├── physics/
+   │   ├── ui/
+   │   └── utils/
+   ├── styles/
+   │   ├── main.css
+   │   ├── index.css
+   │   ├── game.css
+   │   └── end.css
+   └── tests/
+   ```
+
+2. Crear el archivo `index.html` con la estructura básica HTML5:
+   - Incluir un título "Gusanos"
+   - Crear un contenedor para el menú principal
+   - Añadir tres botones: "Nueva partida", "Ayuda" y "Salir"
+
+3. Crear el archivo `styles/main.css` con estilos básicos comunes:
+   - Definir una fuente sans-serif para todo el juego
+   - Establecer colores base para el fondo y el texto
+
+4. Crear el archivo `styles/index.css` con estilos específicos para la pantalla de inicio:
+   - Centrar el contenido del menú
+   - Estilizar los botones con colores vibrantes y efectos de hover
+
+5. Crear el archivo `src/main.js`:
+   - Añadir un event listener para `DOMContentLoaded`
+   - Implementar funciones básicas para manejar los clics en los botones del menú
+
+6. Crear archivos vacíos `game.html` y `end.html` para su posterior implementación
+
+7. Configurar un servidor local básico (por ejemplo, usando la extensión "Live Server" de VS Code) para probar el proyecto
+
+## Pruebas de validación
+1. Verificar que la estructura de carpetas y archivos se ha creado correctamente
+2. Abrir `index.html` en un navegador y comprobar que:
+   - El título "Gusanos" se muestra correctamente
+   - Los tres botones (Nueva partida, Ayuda, Salir) están presentes y centrados
+   - Los estilos se aplican correctamente (fuente, colores, efectos de hover en botones)
+3. Hacer clic en cada botón y verificar que:
+   - "Nueva partida" muestra un mensaje de consola (la funcionalidad real se implementará más tarde)
+   - "Ayuda" muestra un mensaje de alerta con instrucciones básicas del juego
+   - "Salir" cierra la ventana o pestaña del navegador
+4. Comprobar que la página es responsive y se ve correctamente en diferentes tamaños de pantalla
+5. Validar el HTML y CSS utilizando herramientas como W3C Validator
+
+Esta tarea establece la base del proyecto y proporciona una pantalla de inicio funcional desde la cual se puede comenzar a construir el resto del juego "Gusanos".
