@@ -15,6 +15,36 @@ let speedIncreaseInterval;
 let minotaurSpawnInterval;
 
 document.getElementById('start-button').addEventListener('click', startGame);
+document.getElementById('instructions-button').addEventListener('click', () => {
+    window.location.href = 'instructions.html';
+});
+
+document.getElementById('language-select').addEventListener('change', (event) => {
+    const language = event.target.value;
+    if (language === 'es') {
+        translateToSpanish();
+    } else {
+        translateToEnglish();
+    }
+});
+
+function translateToSpanish() {
+    document.getElementById('instructions-button').textContent = 'Instrucciones';
+    document.getElementById('start-button').textContent = 'INICIAR';
+    document.querySelector('label[for="cols"]').textContent = 'Columnas:';
+    document.querySelector('label[for="rows"]').textContent = 'Filas:';
+    document.querySelector('label[for="minotaurs"]').textContent = 'Número de Minotauros:';
+    document.querySelector('label[for="spawn-interval"]').textContent = 'Intervalo de Aparición (segundos):';
+}
+
+function translateToEnglish() {
+    document.getElementById('instructions-button').textContent = 'Instructions';
+    document.getElementById('start-button').textContent = 'START';
+    document.querySelector('label[for="cols"]').textContent = 'Columns:';
+    document.querySelector('label[for="rows"]').textContent = 'Rows:';
+    document.querySelector('label[for="minotaurs"]').textContent = 'Number of Minotaurs:';
+    document.querySelector('label[for="spawn-interval"]').textContent = 'Spawn Interval (seconds):';
+}
 
 function startGame() {
     // Request fullscreen mode
@@ -405,4 +435,10 @@ function endGame(message) {
     setTimeout(() => {
         window.location.href = 'index.html';
     }, 100);
+}
+
+function setDefaultLanguage() {
+    const languageSelect = document.getElementById('language-select');
+    languageSelect.value = 'es';
+    translateToSpanish();
 }
