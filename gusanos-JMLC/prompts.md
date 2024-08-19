@@ -205,4 +205,27 @@ Sigue siempre buenas prácticas de desarrollo en cualquier lenguaje de programac
 ```
 Como analista programador de software, experto en desarrollo de juegos HTML + Javascript, seguiremos con la segunda tarea "Implementación del canvas y renderizado del mapa" del fichero @01_tasks_gusanos.md 
 Realiza primero un detalle de la tarea con:  un título, descripción detallada tanto funcional como técnica y un listado de algunas pruebas a realizar para dar por válida la tarea. La tarea debe ser autocontenida, es decir, debe tener toda la información para no tener que mirar el PRD (@00_prd_gusanos.md ) u otros documentos.
+El formato de salida del detalle de tarea será Markdown para incorporarlo al fichero @01_tasks_gusanos.md 
 ```
+
+## Tarea 3
+```
+Como analista programador de software, experto en desarrollo de juegos HTML + Javascript, seguiremos con la la tarea "3-Creación de la clase Worm y renderizado de un gusano estático" del fichero @01_tasks_gusanos.md 
+Realiza un detalle de la tarea con:  un título, descripción detallada tanto funcional como técnica y un listado de algunas pruebas a realizar para dar por válida la tarea. La tarea debe ser autocontenida, es decir, debe tener toda la información para no tener que mirar el PRD (@00_prd_gusanos.md ) u otros documentos.
+El formato de salida del detalle de tarea será Markdown para incorporarlo al fichero @01_tasks_gusanos.md 
+No implementes la solución aún, solo el detalle de la tarea.
+```
+
+```
+La posición inicial del Worm debe ser aleatoria y debe ser válida. Es decir, debe situarse encima del terreno del mapa.
+Además, ya debemos indicar el uso del framework definido en el PRD.
+```
+
+```
+Puedes implementar lo anterior?
+```
+
+```
+Por favor ten en cuenta los ficheros actuales del proyecto 
+```
+
