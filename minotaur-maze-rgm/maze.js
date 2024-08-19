@@ -35,6 +35,7 @@ function translateToSpanish() {
     document.querySelector('label[for="rows"]').textContent = 'Filas:';
     document.querySelector('label[for="minotaurs"]').textContent = 'Número de Minotauros:';
     document.querySelector('label[for="spawn-interval"]').textContent = 'Intervalo de Aparición (segundos):';
+    document.querySelector('#config-screen h1').textContent = 'Configuración del Laberinto de Minotauros';
 }
 
 function translateToEnglish() {
@@ -44,6 +45,7 @@ function translateToEnglish() {
     document.querySelector('label[for="rows"]').textContent = 'Rows:';
     document.querySelector('label[for="minotaurs"]').textContent = 'Number of Minotaurs:';
     document.querySelector('label[for="spawn-interval"]').textContent = 'Spawn Interval (seconds):';
+    document.querySelector('#config-screen h1').textContent = 'Minotaur Maze Configuration';
 }
 
 function startGame() {
