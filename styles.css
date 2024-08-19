@@ -120,3 +120,8 @@ body {
     border: none;
     border-radius: 5px;
 }
+
+#language-select,
+#instructions-button {
+    touch-action: auto;
+}
