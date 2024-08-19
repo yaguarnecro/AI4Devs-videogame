@@ -13,6 +13,7 @@ body {
     color: #fff;
     font-family: 'Press Start 2P', cursive; /* Aplica la fuente a todo el cuerpo del documento */
     text-align: center;
+    touch-action: none; /* Add this line to disable the default touch behavior */
 }
 
 #game-index ul {
@@ -74,7 +75,6 @@ footer p {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    touch-action: none; /* Add this line to disable the default touch behavior */
 }
 
 #mobile-controls div {
