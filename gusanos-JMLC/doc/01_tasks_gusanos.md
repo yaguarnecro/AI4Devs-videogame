@@ -125,3 +125,48 @@ Crear la estructura básica del proyecto "Gusanos", incluyendo los archivos y ca
 5. Validar el HTML y CSS utilizando herramientas como W3C Validator
 
 Esta tarea establece la base del proyecto y proporciona una pantalla de inicio funcional desde la cual se puede comenzar a construir el resto del juego "Gusanos".
+
+# Tarea 2: Implementación del canvas y renderizado del mapa
+
+## Descripción funcional
+Mostrar un mapa básico en el canvas utilizando una imagen prediseñada. Esta tarea se centra en la configuración del canvas en la pantalla de juego y en la carga y renderizado de una imagen de mapa en dicho canvas.
+
+## Descripción técnica
+
+1. **Crear el archivo `game.html` con la estructura básica HTML5:**
+   - Incluir un título "Gusanos - Juego"
+   - Crear un elemento `<canvas>` para el renderizado del mapa
+   - Incluir un contenedor para la barra de estado superior
+
+2. **Actualizar el archivo `styles/game.css` con estilos específicos para la pantalla de juego:**
+   - Establecer el tamaño y la posición del canvas
+   - Estilizar la barra de estado superior
+
+3. **Crear el archivo `src/game/Game.js`:**
+   - Configurar el canvas y su contexto 2D
+   - Implementar la lógica para cargar y renderizar una imagen de mapa en el canvas
+
+4. **Actualizar el archivo `src/main.js` para manejar la navegación a la pantalla de juego:**
+   - Implementar la lógica para cambiar de `index.html` a `game.html` al hacer clic en "Nueva partida"
+
+5. **Añadir una imagen de mapa prediseñada en `assets/maps/`:**
+   - Utilizar la imagen `worms_mapa_2.png` para el mapa
+
+## Pruebas de validación
+
+1. **Verificar la estructura de carpetas y archivos:**
+   - Asegurarse de que `game.html`, `styles/game.css`, `src/game/Game.js` y la imagen del mapa están en las ubicaciones correctos
+
+2. **Abrir `game.html` en un navegador y comprobar que:**
+   - El título "Gusanos - Juego" se muestra correctamente
+   - El canvas está presente y tiene el tamaño adecuado
+   - La barra de estado superior está presente y estilizada correctamente
+
+3. **Verificar el renderizado del mapa:**
+   - Comprobar que la imagen del mapa se carga y se renderiza correctamente en el canvas
+
+4. **Navegación desde `index.html` a `game.html`:**
+   - Hacer clic en "Nueva partida" en `index.html` y verificar que se navega a `game.html` y se muestra el canvas con el mapa
+
+5. **Validar el HTML y CSS utilizando herramientas como W3C Validator:**
+   - Asegurarse de que el HTML y CSS son válidos y no contienen errores
