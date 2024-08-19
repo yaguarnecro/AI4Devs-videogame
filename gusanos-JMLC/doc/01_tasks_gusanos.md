@@ -197,44 +197,18 @@ Implementar la lógica básica de la clase Worm y mostrar un gusano inmóvil en 
 3. **Actualizar el archivo `src/game/Game.js`:**
    - Importar la clase Worm y los módulos necesarios de Matter.js
    - Crear un mundo de Matter.js
-   - Implementar el método `findValidPosition()` que busca una posición aleatoria válida en el mapa para el gusano
-   - Crear una instancia de Worm en una posición válida utilizando `findValidPosition()`
+   - Implementar el método `findValidPosition()` que busca una posición aleatoria válida en el mapa para el gusano. Debe tener en cuenta las colisiones con el terreno y el agua.
+   - Crear una instancia de Worm en una posición válida utilizando `findValidPosition()` y dibujarla en el canvas
    - Añadir el método `renderWorm()` que llama al método `render()` del gusano
    - Implementar la actualización del mundo de Matter.js en el bucle de juego
 
-4. **Modificar el método `render()` en `Game.js`:**
-   - Llamar a `renderWorm()` después de renderizar el mapa
-
-5. **Actualizar el archivo `src/main.js`:**
-   - Asegurarse de que se crea una instancia de Game y se inicia el bucle de juego
 
 ## Pruebas de validación
 
-1. **Verificar la estructura de archivos y dependencias:**
-   - Comprobar que `src/game/Worm.js` existe y contiene la clase Worm
-   - Asegurarse de que `Game.js` ha sido actualizado con la lógica del gusano y Matter.js
-   - Verificar que Matter.js está correctamente incluido en el proyecto
+- Abrir `game.html` en un navegador y verificar que:
+   - Se muestra un gusano estático en el mapa
+   - El gusano tiene el tamaño y color correctos
+   - El gusano aparece en una posición válida encima del terreno
+   - Al recargar la página, el gusano aparece en diferentes posiciones válidas
+- Verificar que el gusano no atraviesa el terreno y se mantiene en una posición estable
 
-2. **Pruebas unitarias para la clase Worm:**
-   - Crear una instancia de Worm y verificar que sus propiedades se inicializan correctamente
-   - Comprobar que el método `render()` de Worm funciona como se espera (puede requerir un mock del contexto del canvas)
-
-3. **Pruebas de integración:**
-   - Verificar que Game crea correctamente una instancia de Worm en una posición válida
-   - Comprobar que el método `findValidPosition()` siempre devuelve una posición encima del terreno
-   - Asegurar que el mundo de Matter.js se actualiza correctamente en cada frame
-
-4. **Pruebas visuales:**
-   - Abrir `game.html` en un navegador y verificar que:
-     - Se muestra un gusano estático en el mapa
-     - El gusano tiene el tamaño y color correctos
-     - El gusano aparece en una posición válida encima del terreno
-     - Al recargar la página, el gusano aparece en diferentes posiciones válidas
-
-5. **Pruebas de rendimiento básicas:**
-   - Asegurarse de que la adición del gusano y la integración con Matter.js no causan problemas de rendimiento notables
-
-6. **Pruebas de colisión:**
-   - Verificar que el gusano no atraviesa el terreno y se mantiene en una posición estable
-
-Esta tarea establece la base para la representación y física de los gusanos en el juego, utilizando Matter.js para el posicionamiento y las colisiones. Permite futuras expansiones como movimiento, interacción con el terreno y mecánicas de juego más complejas.

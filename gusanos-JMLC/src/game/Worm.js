@@ -6,18 +6,20 @@ export class Worm {
         this.height = 30;
         this.color = color;
         this.health = 100;
+
         this.body = Bodies.rectangle(x, y, this.width, this.height, {
-            inertia: Infinity,
             friction: 0.5,
-            frictionAir: 0.05,
+            restitution: 0.3
         });
     }
 
     render(ctx) {
         const pos = this.body.position;
+        ctx.save();
+        ctx.translate(pos.x, pos.y);
+        ctx.rotate(this.body.angle);
         ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.rect(pos.x - this.width / 2, pos.y - this.height / 2, this.width, this.height);
-        ctx.fill();
+        ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+        ctx.restore();
     }
 }
