@@ -1,8 +1,9 @@
+import { WATER_HEIGHT } from '../utils/Constants.js';
+
 export class Map {
     constructor(scene, terrainKey, sceneWidth, sceneHeight) {
         const widthCenter = sceneWidth/2;
         const heightCenter = sceneHeight/2;
-        const waterHeight = 20;
         this.scene = scene;
         this.terrain = scene.add.image(widthCenter, heightCenter, terrainKey);
         
@@ -36,19 +37,51 @@ export class Map {
 
         maskGraphics.fillPath();
 
-        // Crear un cuerpo estático para el terreno
-        const terrainPosition = sceneHeight - waterHeight - (sceneHeight - this.terrain.height - waterHeight/2);
-        const terrainBody = scene.matter.add.image(widthCenter, (terrainPosition), terrainKey, null, { 
+        // Calcular la posición del terreno
+        this.terrainOffsetY = sceneHeight - WATER_HEIGHT - this.terrain.height;
+        this.terrain.setY(this.terrainOffsetY + this.terrain.height / 2);
+        const terrainBody = scene.matter.add.image(widthCenter, this.terrainOffsetY + this.terrain.height / 2, terrainKey, null, { 
             isStatic: true,
             label: 'terrain'
         });
 
         // Añadir un rectángulo invisible para el agua en la parte inferior
-        const waterPosition = sceneHeight - waterHeight/2;
-        const waterBody = scene.matter.add.rectangle(widthCenter, waterPosition, sceneWidth, waterHeight, { 
+        const waterPosition = sceneHeight - WATER_HEIGHT/2;
+        const waterBody = scene.matter.add.rectangle(widthCenter, waterPosition, sceneWidth, WATER_HEIGHT, { 
             isStatic: true,
             isSensor: true,
             label: 'water'
         });
+    }
+
+    isTerrainAt(x, y) {
+        // Ajustar la coordenada y para tener en cuenta el offset
+        const adjustedY = y - this.terrainOffsetY;
+        
+        // Asegurarse de que x y adjustedY estén dentro de los límites del terreno
+        if (x < 0 || x >= this.terrain.width || adjustedY < 0 || adjustedY >= this.terrain.height) {
+            return false;
+        }
+    
+        // Obtener los datos de píxeles en las coordenadas dadas
+        const pixelData = this.scene.textures.getPixel(x, adjustedY, 'terrain');
+    
+        // Si pixelData es null, significa que el píxel está fuera de la textura o es transparente
+        if (!pixelData) {
+            return false;
+        }
+    
+        // Comprobar si el píxel no es completamente transparente
+        return pixelData.alpha > 0;
+    }
+
+    // Método para obtener la posición Y de la superficie en una coordenada X dada
+    findSurfaceY(x) {
+        for (let y = 0; y < this.scene.sys.game.config.height; y++) {
+            if (this.isTerrainAt(x, y)) {
+                return y - 1; // Devolver el píxel justo encima del terreno
+            }
+        }
+        return this.scene.sys.game.config.height - WATER_HEIGHT - 1; // Si no se encuentra terreno, devolver justo encima del agua
     }
 }

@@ -248,3 +248,44 @@ El tamaño de todos los mapas será el de la imagen (1080 x 400).
 Se dará un margen de 200 píxeles de altura que representaran vacío.
 Hay que revisar que todas las medidas se adapten a este tipo de terreno.
 ```
+
+## Tarea 2
+```
+Eres un programador experto en desarrollo de juegos HTML + Javascript usando el framework Phaser.
+Necesito avanzar en las tareas para implementar el juego descrito en @00_prd_gusanos.md 
+Vamos a seguir introduciendo el gusano en el fichero Worm.js y haciendo que se renderice en forma de rectángulo (15x30 píxeles) en un punto aleatorio del mapa.
+Ten en cuenta que debe situarse encima del terreno sólido, justo antes de colisionar en él.
+Si la posición aleatoria resulta en el agua, debe encontrar otra posición que esté encima del terreno sólido.
+```
+
+```
+Puedes actualizar GAme.js para crear un gusano?
+```
+
+```
+Necesito implementar la clase Team
+```
+
+```
+Tengo el siguiente error en la consola de logs:
+
+
+Worm.js:35 Uncaught TypeError: map.isTerrainAt is not a function
+    at Worm.checkCollision (Worm.js:35:20)
+    at Worm.getRandomValidPosition (Worm.js:21:81)
+    at new Worm (Worm.js:10:30)
+    at Game.create (Game.js:38:27)
+    at SceneManager.create (phaser.js:196456:26)
+    at SceneManager.loadComplete (phaser.js:196363:14)
+    at LoaderPlugin.emit (phaser.js:200:35)
+    at LoaderPlugin.loadComplete (phaser.js:118769:14)
+    at LoaderPlugin.fileProcessComplete (phaser.js:118735:18)
+    at ImageFile.onProcessComplete (phaser.js:117534:21)
+
+```
+
+```
+Al colocar los gusanos no se tiene en cuenta que en @Map.js  se "mueve" el terreno para tener un margen arriba.
+Además, al renderizar se ve un recuadro azul del tamaño de la imagen del mapa. Esto es porque tenemos activo el debug de Phaser.
+¿Puedes revisar por qué el recuadro azul no cubre también el espacio superior considerado vacío y por qué los gusanos no parecen tener en cuenta este espacio que dejamos?
+```
