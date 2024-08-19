@@ -4,7 +4,7 @@ Miércoles 07/08/2024 : 2h para redactar casi todo el PRD del proyecto
 
 Lunes 19/08/2024 : 10:00 - 
 
-Prompts usados para la documentación de Análisis del juego
+Prompts usados para la documentación de Análisis del juego (Claude.ai)
 ==================
 ```
 Como analista de software experto en desarrollo de videojuegos HTML+JS, necesito que me ayudes a definir la documentación para un nuevo videojuego.
@@ -163,5 +163,25 @@ Puedes modificar el código existente añadiendo Matter.js?
 ```
 
 
-Prompts usados para la creación de tareas
+Prompts usados para la creación del listado de tareas (Claude.ai)
 ==================
+
+```
+Actúa como un analista de software encargado de desgranar el PRD adjunto en tareas.
+El PRD define un juego para navegador (HTML + Javascript) llamado "Gusanos".
+El desarrollo debe ser incremental, cada tarea debe generar un incremento de valor. Por ejemplo, una primera tarea podría ser generar todo el scaffolding del proyecto y que se muestre el mapa. 
+Luego añadir un gusano que se mueva. Luego otro gusano que no se mueva. Luego implementar el sistema de turnos, etc...
+
+Haz un listado de tareas con un título y una breve descripción en una frase del objetivo de la tarea.
+```
+
+```
+Modifica lo siguiente, teniendo en cuenta que tendremos tareas "Básicas" y tareas "Extra".
+Intercambia el punto 5 y 6 porque antes de saltar hay que implementar la gravedad.
+En el punto 7 hay que indicar "un gusano por equipo"
+El punto 10 y 11 se pueden unificar, puesto que si se carga el Bazooka se debe poder disparar.
+El punto 12 se puede dejar para los "Extra"
+Los puntos 18, 19 y 20 también para los "Extra".
+
+Falta implementar el concepto de "Agua" después del punto 6 actual, tras implementar las caídas.
+```
