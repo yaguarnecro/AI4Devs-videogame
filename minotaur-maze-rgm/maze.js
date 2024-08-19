@@ -1,3 +1,7 @@
+document.addEventListener('touchstart', function(event) {
+    event.preventDefault();
+}, { passive: false });
+
 const canvas = document.getElementById('maze-canvas');
 const ctx = canvas.getContext('2d');
 let cellSize = 20;
@@ -156,7 +160,7 @@ function startGame() {
 
 function handleFullscreenChange() {
     if (!document.fullscreenElement) {
-        window.location.reload();
+        resetGame();
     }
 }
 
