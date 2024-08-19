@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Minotaur Maze Instructions</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="instructions-container">
+        <h1>Cómo Jugar Minotaur Maze</h1>
+        <p>Usa las teclas de flecha o los botones en pantalla para mover tu personaje por el laberinto.</p>
+        <p>Evita los minotauros y llega a la salida verde para ganar el juego.</p>
+        <p>¡Buena suerte y diviértete!</p>
+        <button id="close-instructions-button" class="back-to-game-button">Volver al Juego</button>
+    </div>
+    <select id="language-select" style="position: absolute; top: 10px; left: 10px;">
+        <option value="es" selected>Español</option>
+        <option value="en">English</option>
+    </select>
+    <script>
+        document.getElementById('close-instructions-button').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        document.getElementById('language-select').addEventListener('change', (event) => {
+            const language = event.target.value;
+            if (language === 'es') {
+                translateToSpanish();
+            } else {
+                translateToEnglish();
+            }
+        });
+
+        function translateToSpanish() {
+            document.querySelector('h1').textContent = 'Cómo Jugar Minotaur Maze';
+            document.querySelector('p:nth-of-type(1)').textContent = 'Usa las teclas de flecha o los botones en pantalla para mover tu personaje por el laberinto.';
+            document.querySelector('p:nth-of-type(2)').textContent = 'Evita los minotauros y llega a la salida verde para ganar el juego.';
+            document.querySelector('p:nth-of-type(3)').textContent = '¡Buena suerte y diviértete!';
+            document.getElementById('close-instructions-button').textContent = 'Volver al Juego';
+        }
+
+        function translateToEnglish() {
+            document.querySelector('h1').textContent = 'How to Play Minotaur Maze';
+            document.querySelector('p:nth-of-type(1)').textContent = 'Use the arrow keys or the on-screen buttons to move your character through the maze.';
+            document.querySelector('p:nth-of-type(2)').textContent = 'Avoid the minotaurs and reach the green exit to win the game.';
+            document.querySelector('p:nth-of-type(3)').textContent = 'Good luck and have fun!';
+            document.getElementById('close-instructions-button').textContent = 'Back to Game';
+        }
+    </script>
+</body>
+</html>
