@@ -1,6 +1,3 @@
-document.addEventListener('touchstart', function(event) {
-    event.preventDefault();
-}, { passive: false });
 
 const canvas = document.getElementById('maze-canvas');
 const ctx = canvas.getContext('2d');
