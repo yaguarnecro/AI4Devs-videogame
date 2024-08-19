@@ -197,35 +197,54 @@ Cada tarea deberá tener un título, descripción detallada tanto funcional como
 
 ## Tarea 1
 ```
-Como programador senior especialista en desarrollo de videojuegos HTML + Javascript, puedes implementar la tarea "1 Configuración inicial del proyecto" descrita en el fichero @01_tasks_gusanos.md ?
-Sigue siempre buenas prácticas de desarrollo en cualquier lenguaje de programación.
-```
+Eres un programador experto en desarrollo de juegos HTML + Javascript usando el framework Phaser.
+Necesito que poco a poco vayamos implementando el juego descrito en el PRD @00_prd_gusanos.md 
+Vamos a empezar con la tarea siguiente:
 
-## Tarea 2
-```
-Como analista programador de software, experto en desarrollo de juegos HTML + Javascript, seguiremos con la segunda tarea "Implementación del canvas y renderizado del mapa" del fichero @01_tasks_gusanos.md 
-Realiza primero un detalle de la tarea con:  un título, descripción detallada tanto funcional como técnica y un listado de algunas pruebas a realizar para dar por válida la tarea. La tarea debe ser autocontenida, es decir, debe tener toda la información para no tener que mirar el PRD (@00_prd_gusanos.md ) u otros documentos.
-El formato de salida del detalle de tarea será Markdown para incorporarlo al fichero @01_tasks_gusanos.md 
-```
+Implementación del canvas y renderizado del terreno. Mostrar el terreno a partir de la imagen  prediseñada @worms_mapa_2.png 
 
-## Tarea 3
-```
-Como analista programador de software, experto en desarrollo de juegos HTML + Javascript, seguiremos con la la tarea "3-Creación de la clase Worm y renderizado de un gusano estático" del fichero @01_tasks_gusanos.md 
-Realiza un detalle de la tarea con:  un título, descripción detallada tanto funcional como técnica y un listado de algunas pruebas a realizar para dar por válida la tarea. La tarea debe ser autocontenida, es decir, debe tener toda la información para no tener que mirar el PRD (@00_prd_gusanos.md ) u otros documentos.
-El formato de salida del detalle de tarea será Markdown para incorporarlo al fichero @01_tasks_gusanos.md 
-No implementes la solución aún, solo el detalle de la tarea.
+Se debe utilizar Phaser para cargar la imagen e interpretar que los píxeles transparentes son vacío y lo demás terreno sólido. Luego se utilizará para detectar colisiones con los gusanos y proyectiles de las armas.
+
+Ten en cuenta la estructura actual del proyecto.
 ```
 
 ```
-La posición inicial del Worm debe ser aleatoria y debe ser válida. Es decir, debe situarse encima del terreno del mapa.
-Además, ya debemos indicar el uso del framework definido en el PRD.
+Al cargar la página game.html se produce este error en la consola del navegador:
+
+Map.js:21 Uncaught TypeError: Cannot read properties of undefined (reading '3')
+    at new Map (Map.js:21:35)
+    at Game.create (Game.js:13:20)
+    at initialize.create (phaser.min.js:1:954364)
+    at initialize.loadComplete (phaser.min.js:1:953753)
+    at a.emit (phaser.min.js:1:1643)
+    at initialize.loadComplete (phaser.min.js:1:531612)
+    at initialize.fileProcessComplete (phaser.min.js:1:531312)
+    at t.onProcessComplete (phaser.min.js:1:525102)
+    at data.onload (phaser.min.js:1:556046)
 ```
 
 ```
-Puedes implementar lo anterior?
+La imagen estaba en assets/maps y he corregido el código de Game.js
+El terreno sigue sin verse y se produce este error:
+
+Map.js:15 Uncaught TypeError: texture.getFrameData is not a function
+    at new Map (Map.js:15:35)
+    at Game.create (Game.js:13:20)
+    at initialize.create (phaser.min.js:1:954364)
+    at initialize.loadComplete (phaser.min.js:1:953753)
+    at a.emit (phaser.min.js:1:1643)
+    at initialize.loadComplete (phaser.min.js:1:531612)
+    at initialize.fileProcessComplete (phaser.min.js:1:531312)
+    at t.onProcessComplete (phaser.min.js:1:525102)
+    at data.onload (phaser.min.js:1:556046)
+
+
+La versión de Phaser usada es: v3.80.1
+¿Puedes comprobar que lo usado de la librería sea correcto? Utiliza la documentación de Phaser en @Phaser 3.80 
 ```
 
 ```
-Por favor ten en cuenta los ficheros actuales del proyecto 
+El tamaño de todos los mapas será el de la imagen (1080 x 400). 
+Se dará un margen de 200 píxeles de altura que representaran vacío.
+Hay que revisar que todas las medidas se adapten a este tipo de terreno.
 ```
-

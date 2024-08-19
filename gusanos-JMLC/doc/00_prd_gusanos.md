@@ -263,7 +263,8 @@ gusanos/
 ## 2. Tecnologías, herramientas y consideraciones generales
 - HTML5 Canvas para el renderizado
 - JavaScript para la lógica del juego
-- Matter.js: Una biblioteca de física 2D que podría ser útil para la simulación
+- Phaser: Una biblioteca para el desarrollo de juegos
+- Imágenes PNG para el terreno
 - Optimización y rendimiento:
   * Estrategias para mantener un buen rendimiento en navegadores
 - Enfoque de pruebas:

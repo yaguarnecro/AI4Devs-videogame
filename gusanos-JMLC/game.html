@@ -6,13 +6,16 @@
     <title>Gusanos - Juego</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/game.css">
-    <script src="assets/lib/matter.min.js"></script>
+    <script src="assets/lib/phaser.js"></script>
 </head>
 <body>
     <div id="status-bar">
-        <!-- Barra de estado superior -->
+        <span id="current-turn">Turno: Jugador 1</span>
+        <span id="time-left">Tiempo: 60s</span>
+        <span id="worms-left">Gusanos: 3 vs 3</span>
+        <button id="help-button">Ayuda</button>
     </div>
-    <canvas id="game-canvas"></canvas>
+    <div id="game-container"></div>
     <script type="module" src="src/game/Game.js"></script>
 </body>
 </html>
