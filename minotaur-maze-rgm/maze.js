@@ -58,7 +58,7 @@ function startGame() {
     exit = { x: cols - 1, y: rows - 1 };
     maze = generateMaze(cols, rows);
     minotaurs = [createMinotaur()];
-    gameOver = false;
+    gameOver = false; // Reset gameOver flag
     minotaurSpeed = 500;
     speedIncreaseCount = 0;
 
@@ -157,7 +157,7 @@ function startGame() {
 
 function handleFullscreenChange() {
     if (!document.fullscreenElement) {
-        resetGame();
+        window.location.reload();
     }
 }
 
@@ -390,9 +390,19 @@ window.addEventListener('resize', checkOrientation);
 
 function endGame(message) {
     document.getElementById('mobile-controls').style.display = 'none';
-    gameOver = true;
+    gameOver = true; // Ensure gameOver is set to true
     alert(message);
+
+    // Clear all intervals
+    clearInterval(minotaurInterval);
+    clearInterval(speedIncreaseInterval);
+    clearInterval(minotaurSpawnInterval);
+
+    // Remove event listeners
+    document.removeEventListener('keydown', movePlayer);
+    document.removeEventListener('fullscreenchange', handleFullscreenChange);
+
     setTimeout(() => {
-        window.location.reload();
+        window.location.href = 'index.html';
     }, 100);
 }

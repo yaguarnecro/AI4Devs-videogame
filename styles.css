@@ -1,107 +1,122 @@
-/* Importa la fuente 'Press Start 2P' de Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* Prevent scrolling */
-}
-
 body {
-    background-color: #000;
-    color: #fff;
-    font-family: 'Press Start 2P', cursive; /* Aplica la fuente a todo el cuerpo del documento */
-    text-align: center;
-    touch-action: none; /* Add this line to disable the default touch behavior */
-}
-
-#game-index ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-#game-index li {
-    margin: 20px 0;
-}
-
-#game-index a {
-    color: #00ff00; /* Verde brillante, común en pantallas retro */
-    text-decoration: none;
-    font-size: 20px;
-}
-
-#game-index a:hover {
-    color: #ff0000;
-}
-
-/* Add styles for the footer */
-footer {
-    text-align: center;
-    padding: 20px 0;
-}
-
-footer p {
-    color: #777; /* Color for the copyright text */
-}
-
-#game-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-
-#mobile-controls {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-#mobile-controls button {
-    width: 50px;
-    height: 50px;
-    margin: 5px;
-    font-size: 24px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#mobile-controls div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#game-container.fullscreen {
-    transform: rotate(90deg);
-    transform-origin: center center;
-    width: 100vh;
-    height: 100vw;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(90deg);
-}
-
-#mobile-controls.fullscreen {
-    flex-direction: row;
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-#mobile-controls.fullscreen div {
-    flex-direction: column;
-}
+    ...
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #000;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        touch-action: none; /* Add this line to disable the default touch behavior */
+    }
+    #game-container {
+    #game-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        position: relative;
+    }
+    #maze-canvas {
+    #maze-canvas {
+        border: 2px solid #fff;
+    }
+    #config-screen {
+    #config-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #000;
+        color: #fff;
+        padding: 20px;
+        border: 2px solid #fff;
+    }
+    #config-screen label {
+    #config-screen label {
+        margin: 5px 0;
+    }
+    #config-screen input {
+    #config-screen input {
+        margin: 5px 0;
+        padding: 5px;
+        width: 50px;
+        text-align: center;
+    }
+    #config-screen button {
+    #config-screen button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    #mobile-controls {
+    #mobile-controls {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    ...
+    }
+    ...
+    #mobile-controls button {
+        width: 50px;
+        height: 50px;
+        margin: 5px;
+        font-size: 24px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    }
+    #mobile-controls div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    }
+    
+    #instructions-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+    
+    #instructions-content {
+        background-color: #000;
+        color: #fff;
+        padding: 20px;
+        border: 2px solid #fff;
+        text-align: center;
+    }
+    
+    #instructions-content button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    #instructions-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
