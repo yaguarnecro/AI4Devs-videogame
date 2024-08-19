@@ -14,7 +14,7 @@ body {
     align-items: center;
     height: 100vh;
     position: relative;
-    touch-action: none; /* Add this line to disable the default touch behavior */
+    touch-action: none; /* Move touch-action: none here */
 }
 #maze-canvas {
     border: 2px solid #fff;
@@ -119,4 +119,9 @@ body {
     color: black;
     border: none;
     border-radius: 5px;
+}
+
+#language-select,
+#instructions-button {
+    touch-action: auto; /* Ensure touch-action is auto for these elements */
 }
