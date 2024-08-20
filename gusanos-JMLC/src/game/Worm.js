@@ -63,7 +63,7 @@ export default class Worm {
     }
 
     isInWater(y) {
-        return y + this.height > this.scene.sys.game.config.height - WATER_HEIGHT;
+        return y + this.height >= this.scene.sys.game.config.height - WATER_HEIGHT - 1;
     }
 
     moveLeft() {
@@ -76,6 +76,9 @@ export default class Worm {
             this.spriteWalking.setFlipX(false);
             if (!this.spriteWalking.anims.isPlaying) {
                 this.spriteWalking.play('worm_walk');
+            }
+            if (this.isInWater(this.position.y)) {
+                this.die();
             }
         }
     }
@@ -90,6 +93,9 @@ export default class Worm {
             this.spriteWalking.setFlipX(true);
             if (!this.spriteWalking.anims.isPlaying) {
                 this.spriteWalking.play('worm_walk');
+            }
+            if (this.isInWater(this.position.y)) {
+                this.die();
             }
         }
     }
@@ -114,7 +120,7 @@ export default class Worm {
             }
 
             if (this.isInWater(this.position.y)) {
-                this.health = 0;
+                this.die();
             }
         }
     }
@@ -168,6 +174,8 @@ export default class Worm {
     }
 
     die() {
+        this.health = 0;
+
         console.log(`El gusano ${this.name} ha sido eliminado`);
         this.nameText.destroy();
         this.healthText.destroy();
