@@ -290,6 +290,133 @@ Además, al renderizar se ve un recuadro azul del tamaño de la imagen del mapa.
 ¿Puedes revisar por qué el recuadro azul no cubre también el espacio superior considerado vacío y por qué los gusanos no parecen tener en cuenta este espacio que dejamos?
 ```
 
+## Tarea 3: Movimiento horizontal de los gusanos (tercer intento)
+```
+Eres un programador experto en desarrollo de juegos HTML + Javascript usando el framework Phaser con Matter.JS.
+Estamos desarrollando el juego "Gusanos" descrito en el PRD @00_prd_gusanos.md 
+Utiliza el @Codebase actual para añadir movimiento horizontal al Worm. 
+El movimiento se hará utilizando las teclas de dirección "derecha" e "izquierda". También tenemos que añadir el movimiento de salto con la tecla de dirección "arriba".
+El gusano debe moverse a una velocidad de 5 píxeles por pulsación o segundo de pulsación. 
+El gusano debe parar si se encuentra con una pared o un terreno demasiado inclinado en su dirección de movimiento.
+Nunca puede atravesar el terreno, pero si puede caer, en cuyo caso se desplazará verticalmente hasta encontrar terreno sólido o agua.
+Si encuentra agua, se hundirá y perderá toda su vida.
+```
+
+```
+El movimiento lateral debe tener en cuenta que si el terreno desciende ante cualquier inclinación, el gusano debe descender. 
+Si el terreno asciende con una inclinación que no se considere una pared, el gusano debe ascender también. Ahora mismo el gusano se mueve solo lateralmente sin subir ni bajar pendientes.
+```
+
+### Animación del gusano (no se ha conseguido)
+```
+He añadido lógica para cargar un sprite de imagenes @worms_and_weapons.png  en @Game.js  y usarlo en @Worm.js  para pintar el gusano en vez de un rectángulo. ¿Puedes revisarlo? No se visualiza nada, solo un recuadro gracias al flag debug de la configuración de PHaser.
+```
+
+```
+Que hace estas líneas? Qué puede estar causando que no se muestre el gusano?
+```
+
+```
+He cambiado el sprite y ahora ya se dibuja el primer frame pero la animación al caminar no funciona por el siguiente error:
+TypeError: Cannot read properties of undefined (reading 'duration')
+    at Animation.getFirstTick (phaser.js:3474:46)
+    at AnimationState.startAnimation (phaser.js:6323:14)
+    at AnimationState.play (phaser.js:6212:21)
+    at Sprite.play (phaser.js:80253:27)
+    at Worm.moveLeft (Worm.js:78:32)
+    at Game.update (Game.js:59:22)
+    at Systems.step (phaser.js:199167:26)
+    at SceneManager.update (phaser.js:196402:21)
+    at Game.step (phaser.js:17218:20)
+    at TimeStep.step (phaser.js:18242:14)
+
+@Worm.js Revisa este fichero por favor
+```
+
+```
+Qué se puede configurar en este código donde se configura la animación?
+El sprite en concreto tiene 15 frames de 60x60. Parece que el error dice que falta definir la duración
+```
+
+```
+Lo que falla es esta línea de la librería Phaser:
+
+        state.nextTick = (state.currentFrame.duration) ? state.currentFrame.duration : state.msPerFrame;
+
+```
+
+```
+Se está produciendo el error siguiente al pulsar una tecla de dirección:
+
+phaser.js:3474 Uncaught TypeError: Cannot read properties of undefined (reading 'duration')
+    at Animation.getFirstTick (phaser.js:3474:46)
+    at AnimationState.startAnimation (phaser.js:6323:14)
+    at AnimationState.play (phaser.js:6212:21)
+    at Sprite.play (phaser.js:80253:27)
+    at Worm.moveLeft (Worm.js:67:32)
+    at Game.update (Game.js:59:22)
+    at Systems.step (phaser.js:199167:26)
+    at SceneManager.update (phaser.js:196402:21)
+    at Game.step (phaser.js:17218:20)
+    at TimeStep.step (phaser.js:18242:14)
+
+Revisa el código de @Game.js  y @Worm.js 
+```
+
+```
+El sprite tiene las imagenes una debajo de otra. No hay una al lado de otra. Puede tener algo que ver?
+```
+
+## Tarea 4: Turnos básico
+```
+Seguimos con la siguiente tarea: Implementación del sistema de turnos básico.
+Revisa el @00_prd_gusanos.md  para saber el funcionamiento de los turnos
+```
+
+```
+Usa el código de @Game.js  y @Round.js  para corregir lo siguiente:
+El texto de Turno y Tiempo se debe actualizar en la barra de estado actual de @game.html 
+```
+
+```
+Revisa el código de @Game.js  y @Round.js  para que el turno sea del equipo pero solo se pueda mover uno de sus gusanos, no todos. Además, la tecla para pasar al siguiente turno debe ser ESC, puesto que space se ha usado para saltar en la línea 85
+```
+
+```
+Revisa la solución propuesta, la gestión del gusano actual la debe llevar 
+```
+
+```
+Sale el siguiente error en la consola, Puede ser que no exista `this.cursors.esc`?
+
+phaser.js:114642 Uncaught TypeError: Cannot read properties of undefined (reading '_justDown')
+    at Object.JustDown (phaser.js:114642:13)
+    at Game.update (Game.js:95:35)
+    at Systems.step (phaser.js:199167:26)
+    at SceneManager.update (phaser.js:196402:21)
+    at Game.step (phaser.js:17218:20)
+    at TimeStep.step (phaser.js:18242:14)
+    at step (phaser.js:31346:19)
+```
+
+```
+Bien. Seguimos: Para poder identificar bien los gusanos tenemos que mostrar el nombre del gusano encima de su sprite con el color de su equipo.
+```
+
+```
+Me gustaría refactorizar @Game.js  y @Map.js  para que sea Map el responsable de definir el setBounds del mundo físico, el fondo, el agua y el cielo o techo del mundo.
+```
+
+
+```
+```
+```
+```
+```
+```
+```
+```
+
 
 
 

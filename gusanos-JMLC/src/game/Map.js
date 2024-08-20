@@ -2,25 +2,45 @@ import { WATER_HEIGHT } from '../utils/Constants.js';
 
 export class Map {
     constructor(scene, terrainKey, sceneWidth, sceneHeight) {
-        const widthCenter = sceneWidth/2;
-        const heightCenter = sceneHeight/2;
         this.scene = scene;
-        this.terrain = scene.add.image(widthCenter, heightCenter, terrainKey);
+        this.sceneWidth = sceneWidth;
+        this.sceneHeight = sceneHeight;
+        this.terrainKey = terrainKey;
+
+        this.createPhysicalWorld();
+        this.createBackground();
+        this.createTerrain();
+        this.createWater();
+        this.createCeiling();
+    }
+
+    createPhysicalWorld() {
+        this.scene.matter.world.setBounds(0, 0, this.sceneWidth, this.sceneHeight + 200);
+    }
+
+    createBackground() {
+        this.scene.add.rectangle(0, 0, this.sceneWidth, this.sceneHeight, 0x87CEEB).setOrigin(0, 0);
+    }
+
+    createTerrain() {
+        const widthCenter = this.sceneWidth / 2;
+        const heightCenter = this.sceneHeight / 2;
+        this.terrain = this.scene.add.image(widthCenter, heightCenter, this.terrainKey);
         
         // Crear una máscara de colisión basada en los píxeles no transparentes
-        const maskGraphics = scene.make.graphics({ x: 0, y: 0, add: false });
-        this.terrain.mask = new Phaser.Display.Masks.BitmapMask(scene, maskGraphics);
+        const maskGraphics = this.scene.make.graphics({ x: 0, y: 0, add: false });
+        this.terrain.mask = new Phaser.Display.Masks.BitmapMask(this.scene, maskGraphics);
 
         // Dibujar la máscara basada en los píxeles no transparentes
         maskGraphics.fillStyle(0xffffff);
         maskGraphics.beginPath();
 
         const texture = this.terrain.texture;
-        const frame = texture.get(terrainKey);
+        const frame = texture.get(this.terrainKey);
         
         if (frame) {
             const { width, height } = frame;
-            const canvasTexture = scene.textures.createCanvas(terrainKey + '_canvas', width, height);
+            const canvasTexture = this.scene.textures.createCanvas(this.terrainKey + '_canvas', width, height);
             const pixelData = canvasTexture.getPixels(0, 0, width, height);
 
             if (pixelData) {
@@ -38,20 +58,26 @@ export class Map {
         maskGraphics.fillPath();
 
         // Calcular la posición del terreno
-        this.terrainOffsetY = sceneHeight - WATER_HEIGHT - this.terrain.height;
+        this.terrainOffsetY = this.sceneHeight - WATER_HEIGHT - this.terrain.height;
         this.terrain.setY(this.terrainOffsetY + this.terrain.height / 2);
-        const terrainBody = scene.matter.add.image(widthCenter, this.terrainOffsetY + this.terrain.height / 2, terrainKey, null, { 
+        const terrainBody = this.scene.matter.add.image(widthCenter, this.terrainOffsetY + this.terrain.height / 2, this.terrainKey, null, { 
             isStatic: true,
             label: 'terrain'
         });
+    }
 
-        // Añadir un rectángulo invisible para el agua en la parte inferior
-        const waterPosition = sceneHeight - WATER_HEIGHT/2;
-        const waterBody = scene.matter.add.rectangle(widthCenter, waterPosition, sceneWidth, WATER_HEIGHT, { 
+    createWater() {
+        const waterPosition = this.sceneHeight - WATER_HEIGHT / 2;
+        this.scene.add.tileSprite(this.sceneWidth / 2, this.sceneHeight - WATER_HEIGHT / 2, this.sceneWidth, WATER_HEIGHT, 'water');
+        const waterBody = this.scene.matter.add.rectangle(this.sceneWidth / 2, waterPosition, this.sceneWidth, WATER_HEIGHT, { 
             isStatic: true,
             isSensor: true,
             label: 'water'
         });
+    }
+
+    createCeiling() {
+        this.scene.matter.add.rectangle(this.sceneWidth / 2, -10, this.sceneWidth, 20, { isStatic: true, label: 'ceiling' });
     }
 
     isTerrainAt(x, y) {

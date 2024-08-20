@@ -26,20 +26,8 @@ class Game extends Phaser.Scene {
     }
 
     create() {
-        // El mundo físico será más alto que el canvas visible
-        this.matter.world.setBounds(0, 0, 1080, 800);
-        
-        // Añadir el fondo (puedes reemplazar esto con tu propio fondo)
-        this.add.rectangle(0, 0, 1080, 600, 0x87CEEB).setOrigin(0, 0);
-        
         this.map = new Map(this, 'terrain', 1080, 600);
         
-        // Añadir agua en la parte inferior
-        this.add.tileSprite(540, 590, 1080, 20, 'water');
-
-        // Crear un rectángulo invisible para el "techo" del mundo
-        this.matter.add.rectangle(540, -10, 1080, 20, { isStatic: true });
-
         // Crear animaciones
         this.createAnimations();
 
