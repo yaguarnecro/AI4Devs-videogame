@@ -1,3 +1,4 @@
+export const DEBUG = false;
 export const WATER_HEIGHT = 20;
 export const WORM_WIDTH = 32;
 export const WORM_HEIGHT = 32;

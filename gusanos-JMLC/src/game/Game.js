@@ -2,7 +2,7 @@ import { Map } from './Map.js';
 import Worm from './Worm.js';
 import Team from './Team.js';
 import Round from './Round.js';
-import { MAX_WORMS_PER_TEAM, TEAMS } from '../utils/Constants.js';
+import { DEBUG, MAX_WORMS_PER_TEAM, TEAMS } from '../utils/Constants.js';
 
 class Game extends Phaser.Scene {
     constructor() {
@@ -139,7 +139,7 @@ const config = {
         default: 'matter',
         matter: {
             gravity: { y: 1 },
-            debug: true
+            debug: DEBUG
         }
     }
 };
