@@ -110,9 +110,20 @@ export default class Worm {
         this.nameText.setPosition(this.position.x + this.width / 2, this.position.y - 5);
     }
 
-    update(cursors) {
+    update(cursors, enterKey) {
+        if (cursors.left.isDown) {
+            this.moveLeft();
+        } else if (cursors.right.isDown) {
+            this.moveRight();
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(cursors.space)) {
+            this.jump();
+        }
         this.applyGravity();
-        this.weapon.update(cursors);
+
+        this.weapon.update(cursors, enterKey);
+
         this.render();
     }
 }

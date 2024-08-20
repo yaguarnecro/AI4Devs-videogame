@@ -12,9 +12,11 @@ class Game extends Phaser.Scene {
         this.teams = [];
         this.cursors = null;
         this.escKey = null;
-        this.round = null;
         this.tabKey = null;
+        this.enterKey = null;
+        this.round = null;
         this.updateTurnUI = this.updateTurnUI.bind(this);
+        this.handleWeaponFired = this.handleWeaponFired.bind(this);
     }
 
     preload() {
@@ -46,9 +48,11 @@ class Game extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); 
         this.tabKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB);
+        this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         
         this.round = new Round(this, this.teams);
         this.round.start();
+        this.events.on('weaponFired', this.handleWeaponFired);
     }
     
     createAnimations() {
@@ -68,17 +72,7 @@ class Game extends Phaser.Scene {
         const activeWorm = this.round.getActiveWorm();
         
         if (activeWorm) {
-            if (this.cursors.left.isDown) {
-                activeWorm.moveLeft();
-            } else if (this.cursors.right.isDown) {
-                activeWorm.moveRight();
-            }
-
-            if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
-                activeWorm.jump();
-            }
-
-            activeWorm.update(this.cursors);
+            activeWorm.update(this.cursors, this.enterKey);
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
@@ -99,6 +93,11 @@ class Game extends Phaser.Scene {
     updateTurnUI(teamName, timeLeft, activeWormName) {
         document.getElementById('current-turn').textContent = `Turno: ${teamName} - Gusano activo: ${activeWormName || 'Ninguno'}`;
         document.getElementById('time-left').textContent = `Tiempo: ${timeLeft}s`;
+    }
+
+    handleWeaponFired() {
+        // Aquí iría la lógica futura para manejar el disparo
+        this.round.endTurn();
     }
 }
 

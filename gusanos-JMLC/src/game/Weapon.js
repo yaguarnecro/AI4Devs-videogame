@@ -9,6 +9,7 @@ export default class Weapon {
         this.angle = 0;
         this.minAngle = -90;
         this.maxAngle = 90;
+        this.isFiring = false;
 
         this.createPointer();
     }
@@ -38,12 +39,27 @@ export default class Weapon {
         this.updatePointerPosition();
     }
 
-    update(cursors) {
+    fire() {
+        if (!this.isFiring) {
+            this.isFiring = true;
+            console.log("BOOM");
+            // Aquí iría la lógica del disparo en el futuro
+            this.scene.events.emit('weaponFired');
+            this.isFiring = false;
+        }
+    }
+
+    update(cursors, enterKey) {
         if (cursors.up.isDown) {
             this.increaseAngle();
         } else if (cursors.down.isDown) {
             this.decreaseAngle();
         }
+
+        if (Phaser.Input.Keyboard.JustDown(enterKey)) {
+            this.fire();
+        }
+
         this.updatePointerPosition();
     }
 }

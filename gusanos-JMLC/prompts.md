@@ -443,6 +443,35 @@ Revisa @Weapon.js  y @Worm.js  para hacer que la posición de la mirilla o punte
 Perfecto. Seguimos con el paso 2 para mover el puntero
 ```
 
+```
+De acuerdo, seguimos con el siguiente paso.
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+
 
 
 
