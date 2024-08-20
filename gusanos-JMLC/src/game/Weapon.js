@@ -10,7 +10,7 @@ export default class Weapon {
         this.minAngle = -90;
         this.maxAngle = 90;
         this.isFiring = false;
-
+        this.bulletSpeed = 10;
         this.createPointer();
     }
 
@@ -43,10 +43,60 @@ export default class Weapon {
         if (!this.isFiring) {
             this.isFiring = true;
             console.log("BOOM");
-            // Aquí iría la lógica del disparo en el futuro
+            this.calculateTrajectory();
             this.scene.events.emit('weaponFired');
             this.isFiring = false;
         }
+    }
+
+    calculateTrajectory() {
+        const startX = this.worm.position.x + (this.worm.width / 2);
+        const startY = this.worm.position.y + (this.worm.height / 2);
+        const radians = Phaser.Math.DegToRad(this.angle);
+        const direction = this.worm.direction;
+
+        let currentX = startX;
+        let currentY = startY;
+        const stepX = Math.cos(radians) * this.bulletSpeed * direction;
+        const stepY = -Math.sin(radians) * this.bulletSpeed;
+
+        while (this.isInsideWorld(currentX, currentY)) {
+            if (this.checkCollisionWithTerrain(currentX, currentY)) {
+                console.log(`Impacto en el terreno en (${currentX}, ${currentY})`);
+                return;
+            }
+
+            const hitWorm = this.checkCollisionWithWorms(currentX, currentY);
+            if (hitWorm) {
+                console.log(`Impacto en el gusano ${hitWorm.name} en (${currentX}, ${currentY})`);
+                return;
+            }
+
+            currentX += stepX;
+            currentY += stepY;
+        }
+
+        console.log(`El disparo salió del mundo en (${currentX}, ${currentY})`);
+    }
+
+    isInsideWorld(x, y) {
+        return x >= 0 && x < this.scene.sys.game.config.width &&
+               y >= 0 && y < this.scene.sys.game.config.height;
+    }
+
+    checkCollisionWithTerrain(x, y) {
+        return this.scene.map.isTerrainAt(x, y);
+    }
+
+    checkCollisionWithWorms(x, y) {
+        for (const worm of this.scene.worms) {
+            if (worm !== this.worm && // No colisionar con el gusano que dispara
+                x >= worm.position.x && x <= worm.position.x + worm.width &&
+                y >= worm.position.y && y <= worm.position.y + worm.height) {
+                return worm;
+            }
+        }
+        return null;
     }
 
     showPointer() {

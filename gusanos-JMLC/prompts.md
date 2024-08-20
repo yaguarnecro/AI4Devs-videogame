@@ -465,8 +465,12 @@ phaser.js:114642 Uncaught TypeError: Cannot read properties of undefined (readin
 ```
 Antes de seguir haremos un cambio: Ocultar el puntero de disparo para los gusanos no activos. Puedes revisar @Game.js  y @Worm.js  y @Weapon.js  para este cambio?
 ```
+
 ```
+Seguimos con el siguiente paso:
+4. Al efectuar el disparo, se calculará la trayectoria y se buscará la primera colisión contra un gusano o contra el terreno o si sale del mundo. Se imprimirá en consola donde ha impactado pero no hará nada más.
 ```
+
 ```
 ```
 ```
