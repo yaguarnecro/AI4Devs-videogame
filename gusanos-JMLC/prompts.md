@@ -424,6 +424,7 @@ Como analista especializado en desarrollo de juegos HTML + Javascript necesito m
 
 ```
 Ahora, como programador experto en HTML, Javascript y el uso de Phaser como framework, empezaremos a implementar la lógica para el arma Pistola.
+Ten en cuenta el PRD el PRD @00_prd_gusanos.md  donde se define la funcionalidad.
 Seguiremos estos pasos:
 1. Dibujar el puntero
 2. Mover el puntero en función de la dirección del gusano (Derecha o Izquierda) y el ángulo de disparo (se incrementará con la tecla Arriba y disminuirá con la tecla Abajo)
@@ -433,9 +434,13 @@ Seguiremos estos pasos:
 
 Empecemos con el paso 1, no avances más hasta que te lo indique.
 ```
+
 ```
+Revisa @Weapon.js  y @Worm.js  para hacer que la posición de la mirilla o puntero se calcule desde el centro del Gusano, no desde la parte superior del gusano.
 ```
+
 ```
+Perfecto. Seguimos con el paso 2 para mover el puntero
 ```
 
 

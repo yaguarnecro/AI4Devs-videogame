@@ -1,4 +1,4 @@
-import { WORM_WIDTH, WORM_HEIGHT, WATER_HEIGHT, WORM_SPEED, WORM_JUMP_FORCE } from '../utils/Constants.js';
+import { WORM_WIDTH, WORM_HEIGHT, WATER_HEIGHT, WORM_SPEED, WORM_JUMP_FORCE, ANGLE_CHANGE_RATE } from '../utils/Constants.js';
 import Weapon from './Weapon.js';
 
 export default class Worm {
@@ -59,7 +59,7 @@ export default class Worm {
             this.position.x = newX;
             this.position.y = newY;
             this.direction = -1;
-            // this.spriteWalking.setFlipX(true);
+            this.spriteWalking.setFlipX(false);
             // if (!this.spriteWalking.anims.isPlaying) {
             //     this.spriteWalking.play('worm_walk');
             // }
@@ -73,7 +73,7 @@ export default class Worm {
             this.position.x = newX;
             this.position.y = newY;
             this.direction = 1;
-            // this.spriteWalking.setFlipX(false);
+            this.spriteWalking.setFlipX(true);
             // if (!this.spriteWalking.anims.isPlaying) {
             //     this.spriteWalking.play('worm_walk');
             // }
@@ -110,13 +110,9 @@ export default class Worm {
         this.nameText.setPosition(this.position.x + this.width / 2, this.position.y - 5);
     }
 
-    update() {
+    update(cursors) {
         this.applyGravity();
-        // Si no está moviéndose ni saltando, detener la animación
-        // if (!this.isJumping && this.spriteWalking.anims.currentAnim && this.spriteWalking.anims.currentAnim.key === 'worm_walk') {
-            // this.spriteWalking.stop();
-        // }
-        this.weapon.update();
+        this.weapon.update(cursors);
         this.render();
     }
 }
