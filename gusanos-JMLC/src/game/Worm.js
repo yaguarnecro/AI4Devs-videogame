@@ -41,6 +41,7 @@ export default class Worm {
 
         this.render();
 
+        this.createDashedLineTexture();
         this.weapon = new Weapon(scene, this);
         this.weapon.hidePointer();
     }
@@ -179,5 +180,14 @@ export default class Worm {
         } else {
             this.healthText.setColor('#ff0000'); // Rojo
         }
+    }
+
+    createDashedLineTexture() {
+        const graphicsGen = this.scene.make.graphics({ x: 0, y: 0, add: false });
+        graphicsGen.lineStyle(1, 0xff0000, 1);
+        graphicsGen.lineBetween(0, 0, 8, 0);
+        graphicsGen.lineBetween(12, 0, 20, 0);
+        graphicsGen.generateTexture('dashed_line', 20, 1);
+        graphicsGen.destroy();
     }
 }

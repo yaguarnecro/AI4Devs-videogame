@@ -480,6 +480,30 @@ Implementa el último punto:
 Para poder evaluar que funciona, vamos a mostrar la vida de los gusanos en la UI. Encima del nombre situa un texto que muestre la vida actual con el mismo color y tamaño que el nombre.
 ```
 
+```
+Para facilitar apuntar con el gusano vamos a dibujar una línea discontinua de color rojo entre el centro del gusano (donde se tiene en cuenta para trazar el disparo) y la mirilla.
+Modifica @Worm.js  y @Weapon.js  para implementarlo.
+```
+
+```
+Se muestra este error: TypeError: this.aimLine.setTexture is not a function
+    at Weapon.updatePointerPosition (Weapon.js:43:22)
+    at Weapon.createPointer (Weapon.js:24:14)
+    at new Weapon (Weapon.js:16:14)
+    at new Worm (Worm.js:45:23)
+    at Game.js:43:30
+    at Array.forEach (<anonymous>)
+    at Game.create (Game.js:39:15)
+    at SceneManager.create (phaser.js:196456:26)
+    at SceneManager.loadComplete (phaser.js:196363:14)
+    at LoaderPlugin.emit (phaser.js:200:35)
+
+Utiliza el código actualizado de @Weapon.js  y @Worm.js 
+```
+
+```
+```
+
 
 
 

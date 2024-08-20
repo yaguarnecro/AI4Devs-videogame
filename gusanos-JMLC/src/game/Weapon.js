@@ -6,6 +6,7 @@ export default class Weapon {
         this.worm = worm;
         this.pointer = null;
         this.pointerDistance = POINTER_DISTANCE;
+        this.aimLine = null;
         this.angle = 0;
         this.minAngle = -90;
         this.maxAngle = 90;
@@ -17,6 +18,9 @@ export default class Weapon {
 
     createPointer() {
         this.pointer = this.scene.add.circle(0, 0, 5, 0xff0000);
+        this.aimLine = this.scene.add.image(0, 0, 'dashed_line');
+        this.aimLine.setOrigin(0, 0.5);
+        this.aimLine.setVisible(false);
         this.updatePointerPosition();
     }
 
@@ -24,10 +28,21 @@ export default class Weapon {
         const radians = Phaser.Math.DegToRad(this.angle);
         const direction = this.worm.direction;
         
-        const x = this.worm.position.x + (this.worm.width / 2) + (Math.cos(radians) * this.pointerDistance * direction);
-        const y = this.worm.position.y + (this.worm.height / 2) - Math.sin(radians) * this.pointerDistance;
+        const startX = this.worm.position.x + (this.worm.width / 2);
+        const startY = this.worm.position.y + (this.worm.height / 2);
+        const endX = startX + (Math.cos(radians) * this.pointerDistance * direction);
+        const endY = startY - Math.sin(radians) * this.pointerDistance;
 
-        this.pointer.setPosition(x, y);
+        this.pointer.setPosition(endX, endY);
+
+        // Actualizar la línea de apuntado
+        const distance = Phaser.Math.Distance.Between(startX, startY, endX, endY);
+        const angle = Phaser.Math.Angle.Between(startX, startY, endX, endY);
+
+        this.aimLine.setPosition(startX, startY);
+        this.aimLine.setDisplaySize(distance, 1);
+        this.aimLine.setRotation(angle);
+        this.aimLine.setVisible(true);
     }
 
     increaseAngle() {
@@ -108,10 +123,12 @@ export default class Weapon {
 
     showPointer() {
         this.pointer.setVisible(true);
+        this.aimLine.setVisible(true);
     }
 
     hidePointer() {
         this.pointer.setVisible(false);
+        this.aimLine.setVisible(false);
     }
 
     update(cursors, enterKey) {

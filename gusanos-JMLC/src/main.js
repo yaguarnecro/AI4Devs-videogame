@@ -13,8 +13,4 @@ document.addEventListener('DOMContentLoaded', () => {
             + '  - Usa la tecla ESC para pasar turno\n'
         );
     });
-
-    document.getElementById('exit').addEventListener('click', () => {
-        window.close();
-    });
 });
