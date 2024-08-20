@@ -32,6 +32,8 @@ class Game extends Phaser.Scene {
             spacing: 0
         });
         this.load.image('target', 'assets/images/target.png');
+        this.load.image('grave1', 'assets/images/sprites/worms/grave1.png');
+        this.load.image('grave2', 'assets/images/sprites/worms/grave2.png');
         this.bindHelpPopup()
     }
 
@@ -42,7 +44,7 @@ class Game extends Phaser.Scene {
 
         // Crear equipos
         TEAMS.forEach(teamConfig => {
-            const team = new Team(teamConfig.name, teamConfig.color);
+            const team = new Team(teamConfig.name, teamConfig.color, teamConfig.graveType);
             this.teams.push(team);
             for (let i = 0; i < MAX_WORMS_PER_TEAM; i++) {
                 const worm = new Worm(`${teamConfig.name} ${i + 1}`, this, team);

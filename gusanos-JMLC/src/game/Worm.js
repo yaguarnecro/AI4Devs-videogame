@@ -15,6 +15,7 @@ export default class Worm {
         this.velocityY = 0;
         // Dirección actual (1 para derecha, -1 para izquierda)
         this.direction = 1;
+        this.graveSprite = null;
         
         this.spriteWalking = this.scene.add.sprite(this.position.x, this.position.y, 'sprites_worm_walking', 0);
         this.spriteWalking.setOrigin(0.5, 1);
@@ -170,6 +171,13 @@ export default class Worm {
         console.log(`El gusano ${this.name} ha sido eliminado`);
         this.nameText.destroy();
         this.healthText.destroy();
+        this.spriteWalking.destroy();
+        this.weapon.destroy();
+        
+        this.graveSprite = this.scene.add.sprite(this.position.x + this.width / 2, this.position.y + this.height, this.team.graveType);
+        this.graveSprite.setOrigin(0.5, 1);
+        this.graveSprite.setDisplaySize(WORM_WIDTH, WORM_HEIGHT);
+
         this.scene.events.emit('wormDied', this);
     }
 

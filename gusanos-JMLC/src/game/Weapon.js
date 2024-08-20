@@ -138,4 +138,13 @@ export default class Weapon {
 
         this.updatePointerPosition();
     }
+
+    destroy() {
+        if (this.pointer) {
+            this.pointer.destroy();
+        }
+        if (this.aimLine) {
+            this.aimLine.destroy();
+        }
+    }
 }

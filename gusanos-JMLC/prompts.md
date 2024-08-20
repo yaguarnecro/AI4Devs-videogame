@@ -565,3 +565,28 @@ Hay que tener en cuenta que el sprite es vertical, con una columna y 15 filas.
 ```
 Ahora me gustaría cambiar el diseño de la mirilla y usar la imagen en ./assets/images/target.png
 ```
+
+## Fix: Hide Worm sprite when died
+```
+Vamos a implementar otra mejora:
+Cuando un Worm muere, debe desaparecer la imagen o sprite actual y aparecer la imagen ./assets/images/sprites/worms/grave1.png para el equipo Red o ./assets/images/sprites/worms/grave1.png para el equipo Blue. 
+La configuración del tipo de tumba "grave1" o "grave2" debe hacerse en la constante TEAMS de Constants.js
+```
+
+```
+Sale este error:
+Worm.js:175 Uncaught TypeError: this.weapon.destroy is not a function
+    at Worm.die (Worm.js:175:21)
+    at Worm.takeDamage (Worm.js:163:18)
+    at Weapon.calculateTrajectory (Weapon.js:87:25)
+    at Weapon.fire (Weapon.js:61:18)
+    at Weapon.update (Weapon.js:136:18)
+    at Worm.update (Worm.js:145:21)
+    at Game.update (Game.js:97:24)
+    at Systems.step (phaser.js:199167:26)
+    at SceneManager.update (phaser.js:196402:21)
+    at Game.step (phaser.js:17218:20)
+
+Que afecta a la clase @Worm.js  y @Weapon.js 
+```
+

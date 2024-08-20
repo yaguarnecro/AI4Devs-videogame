@@ -3,14 +3,8 @@ export const WATER_HEIGHT = 20;
 export const WORM_WIDTH = 25;
 export const WORM_HEIGHT = 29;
 export const TEAMS = [
-    {
-        name: 'Blue', 
-        color: '#0000ff'
-    },
-    {
-        name: 'Red', 
-        color: '#ff0000'
-    }
+    { name: 'Red', color: '#ff0000', graveType: 'grave1' },
+    { name: 'Blue', color: '#0000ff', graveType: 'grave2' }
 ];
 export const MAX_WORMS_PER_TEAM = 3;
 export const WORM_SPEED = 1;
