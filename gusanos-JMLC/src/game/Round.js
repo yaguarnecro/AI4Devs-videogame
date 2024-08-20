@@ -27,10 +27,10 @@ export default class Round {
     selectActiveWorm() {
         const currentTeam = this.getCurrentTeam();
         this.activeWorm = currentTeam.worms.find(worm => worm.health > 0);
-        this.activeWorm.activate();
         if (!this.activeWorm) {
-            // If no active worm found, move to next team
             this.nextTurn();
+        } else {
+            this.activeWorm.activate();
         }
     }
 
@@ -78,7 +78,7 @@ export default class Round {
 
     switchActiveWorm() {
         this.activeWorm.deactivate();
-        
+
         const activeTeam = this.teams[this.currentTeamIndex];
         const activeWorms = activeTeam.getAliveWorms();
         

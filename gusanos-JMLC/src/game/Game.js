@@ -17,6 +17,7 @@ class Game extends Phaser.Scene {
         this.round = null;
         this.updateTurnUI = this.updateTurnUI.bind(this);
         this.handleWeaponFired = this.handleWeaponFired.bind(this);
+        this.handleWormDied = this.handleWormDied.bind(this);
     }
 
     preload() {
@@ -53,6 +54,7 @@ class Game extends Phaser.Scene {
         this.round = new Round(this, this.teams);
         this.round.start();
         this.events.on('weaponFired', this.handleWeaponFired);
+        this.events.on('wormDied', this.handleWormDied);
     }
     
     createAnimations() {
@@ -61,9 +63,9 @@ class Game extends Phaser.Scene {
             key: 'worm_walk',
             frames: this.anims.generateFrameNumbers('worm_sprites', { 
                 start: 0,
-                end: 14 // Ajuste el índice final a 14 si hay 15 frames (0-14)
+                end: 14
             }),
-            frameRate: 10, // Ajuste la velocidad de la animación
+            frameRate: 10,
             repeat: -1
         });
     }
@@ -82,12 +84,6 @@ class Game extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.tabKey)) {
             this.round.switchActiveWorm();
         }
-
-        for (const team of this.teams) {
-            if (team.isDefeated()) {
-                console.log(`${team.name} has been defeated!`);
-            }
-        }
     }
 
     updateTurnUI(teamName, timeLeft, activeWormName) {
@@ -96,8 +92,32 @@ class Game extends Phaser.Scene {
     }
 
     handleWeaponFired() {
-        // Aquí iría la lógica futura para manejar el disparo
         this.round.endTurn();
+    }
+    handleWormDied(worm) {
+        // Elimina el gusano del juego
+        // worm.destroy();
+
+        // Verifica si el juego ha terminado
+        if (this.checkGameOver()) {
+            this.endGame();
+        } else {
+            // Si el gusano activo murió, cambia el turno
+            if (worm === this.round.getActiveWorm()) {
+                this.round.endTurn();
+            }
+        }
+    }
+
+    checkGameOver() {
+        const teamsAlive = this.teams.filter(team => !team.isDefeated());
+        return teamsAlive.length <= 1;
+    }
+
+    endGame() {
+        const winningTeam = this.teams.find(team => !team.isDefeated());
+        alert(`El equipo ${winningTeam.name} ha ganado la partida!`);
+        location.href = 'index.html';
     }
 }
 

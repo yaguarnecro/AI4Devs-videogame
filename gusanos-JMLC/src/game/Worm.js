@@ -8,9 +8,13 @@ export default class Worm {
         this.team = team;
         this.width = WORM_WIDTH;
         this.height = WORM_HEIGHT;
-        this.health = 100;
+        this.health = 100; // Vida inicial del gusano
         this.position = this.getRandomValidPosition();
         this.isActive = false;
+        this.isJumping = false;
+        this.velocityY = 0;
+        // Dirección actual (1 para derecha, -1 para izquierda)
+        this.direction = 1;
         
         this.spriteWalking = this.scene.add.sprite(this.position.x, this.position.y, 'sprites_worm_walking', 0);
         this.spriteWalking.setOrigin(0, 0);
@@ -24,12 +28,18 @@ export default class Worm {
             strokeThickness: 1
         });
         this.nameText.setOrigin(0.5, 1);
+        // Añadir el texto de la vida
+        this.healthText = this.scene.add.text(this.position.x, this.position.y - 40, `${this.health}`, {
+            fontSize: '16px',
+            fill: this.team.color,
+            stroke: this.team.color,
+            strokeThickness: 1
+        });
+        this.healthText.setOrigin(0.5, 1);
+
+        this.updateHealthDisplay();
 
         this.render();
-        this.isJumping = false;
-        this.velocityY = 0;
-        // Dirección actual (1 para derecha, -1 para izquierda)
-        this.direction = 1;
 
         this.weapon = new Weapon(scene, this);
         this.weapon.hidePointer();
@@ -110,6 +120,7 @@ export default class Worm {
     render() {
         this.spriteWalking.setPosition(this.position.x, this.position.y);
         this.nameText.setPosition(this.position.x + this.width / 2, this.position.y - 5);
+        this.healthText.setPosition(this.position.x + this.width / 2, this.position.y - 25);
     }
 
     update(cursors, enterKey) {
@@ -139,5 +150,34 @@ export default class Worm {
     deactivate() {
         this.isActive = false;
         this.weapon.hidePointer();
+    }
+
+    takeDamage(damage) {
+        this.health = Math.max(0, this.health - damage);
+        if (this.health === 0) {
+            this.die();
+        }
+        else {
+            this.updateHealthDisplay();
+        }
+    }
+
+    die() {
+        console.log(`El gusano ${this.name} ha sido eliminado`);
+        this.nameText.destroy();
+        this.healthText.destroy();
+        this.scene.events.emit('wormDied', this);
+    }
+
+    updateHealthDisplay() {
+        this.healthText.setText(`${this.health}`);
+        // Opcional: cambiar el color de la vida según su valor
+        if (this.health > 70) {
+            this.healthText.setColor('#00ff00'); // Verde
+        } else if (this.health > 30) {
+            this.healthText.setColor('#ffff00'); // Amarillo
+        } else {
+            this.healthText.setColor('#ff0000'); // Rojo
+        }
     }
 }

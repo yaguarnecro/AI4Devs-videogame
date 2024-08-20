@@ -11,6 +11,7 @@ export default class Weapon {
         this.maxAngle = 90;
         this.isFiring = false;
         this.bulletSpeed = 10;
+        this.damage = 40;
         this.createPointer();
     }
 
@@ -69,6 +70,7 @@ export default class Weapon {
             const hitWorm = this.checkCollisionWithWorms(currentX, currentY);
             if (hitWorm) {
                 console.log(`Impacto en el gusano ${hitWorm.name} en (${currentX}, ${currentY})`);
+                this.damageWorm(hitWorm);
                 return;
             }
 
@@ -77,6 +79,11 @@ export default class Weapon {
         }
 
         console.log(`El disparo salió del mundo en (${currentX}, ${currentY})`);
+    }
+
+    damageWorm(worm) {
+        worm.takeDamage(this.damage);
+        console.log(`El gusano ${worm.name} ha recibido ${this.damage} de daño. Vida restante: ${worm.health}`);
     }
 
     isInsideWorld(x, y) {

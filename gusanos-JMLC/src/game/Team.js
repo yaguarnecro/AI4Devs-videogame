@@ -32,11 +32,6 @@ export default class Team {
         return this.worms.reduce((total, worm) => total + worm.health, 0);
     }
 
-    reset() {
-        this.worms = [];
-        this.activeWormIndex = 0;
-    }
-
     getAliveWorms() {
         return this.worms.filter(worm => worm.health > 0);
     }

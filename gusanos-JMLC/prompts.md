@@ -472,41 +472,13 @@ Seguimos con el siguiente paso:
 ```
 
 ```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
-```
+Implementa el último punto:
+5. Se evaluará el impacto y se calculará su resultado. Como solo tendremos en cuenta el impacto a gusanos, se le restará la vida según la fuerza del arma.
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
+Para poder evaluar que funciona, vamos a mostrar la vida de los gusanos en la UI. Encima del nombre situa un texto que muestre la vida actual con el mismo color y tamaño que el nombre.
+```
 
 
 
