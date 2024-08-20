@@ -4,11 +4,11 @@ export const WORM_HEIGHT = 32;
 export const TEAMS = [
     {
         name: 'Blue', 
-        color: 0x0000ff
+        color: '#0000ff'
     },
     {
         name: 'Red', 
-        color: 0xff0000
+        color: '#ff0000'
     }
 ];
 export const MAX_WORMS_PER_TEAM = 2;

@@ -11,7 +11,7 @@ class Game extends Phaser.Scene {
         this.worms = [];
         this.teams = [];
         this.cursors = null;
-        this.escKey = null;  // Add this line
+        this.escKey = null;
         this.round = null;
         this.updateTurnUI = this.updateTurnUI.bind(this);
     }

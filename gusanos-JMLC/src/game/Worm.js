@@ -10,10 +10,18 @@ export default class Worm {
         this.health = 100;
         this.position = this.getRandomValidPosition();
         
-        // Reemplazar this.graphics con un sprite
         this.spriteWalking = this.scene.add.sprite(this.position.x, this.position.y, 'sprites_worm_walking', 0);
         this.spriteWalking.setOrigin(0, 0);
         this.spriteWalking.setDisplaySize(WORM_WIDTH, WORM_HEIGHT);
+
+        // Añadir el texto del nombre
+        this.nameText = this.scene.add.text(this.position.x, this.position.y - 20, this.name, {
+            fontSize: '16px',
+            fill: this.team.color,
+            stroke: this.team.color,
+            strokeThickness: 1
+        });
+        this.nameText.setOrigin(0.5, 1);
 
         this.render();
         this.isJumping = false;
@@ -89,13 +97,14 @@ export default class Worm {
             }
 
             if (this.isInWater(this.position.y)) {
-                this.health = 0; // Worm dies in water
+                this.health = 0;
             }
         }
     }
 
     render() {
         this.spriteWalking.setPosition(this.position.x, this.position.y);
+        this.nameText.setPosition(this.position.x + this.width / 2, this.position.y - 5);
     }
 
     update() {
