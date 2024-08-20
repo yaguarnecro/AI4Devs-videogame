@@ -49,6 +49,14 @@ export default class Weapon {
         }
     }
 
+    showPointer() {
+        this.pointer.setVisible(true);
+    }
+
+    hidePointer() {
+        this.pointer.setVisible(false);
+    }
+
     update(cursors, enterKey) {
         if (cursors.up.isDown) {
             this.increaseAngle();

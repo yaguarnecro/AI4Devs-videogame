@@ -446,7 +446,24 @@ Perfecto. Seguimos con el paso 2 para mover el puntero
 ```
 De acuerdo, seguimos con el siguiente paso.
 ```
+
 ```
+Parece que la tecla ENTER tampoco está mapeada porque da este error:
+
+phaser.js:114642 Uncaught TypeError: Cannot read properties of undefined (reading '_justDown')
+    at Object.JustDown (phaser.js:114642:13)
+    at Weapon.update (Weapon.js:58:35)
+    at Worm.update (Worm.js:115:21)
+    at Game.update (Game.js:83:24)
+    at Systems.step (phaser.js:199167:26)
+    at SceneManager.update (phaser.js:196402:21)
+    at Game.step (phaser.js:17218:20)
+    at TimeStep.step (phaser.js:18242:14)
+    at step (phaser.js:31346:19)
+```
+
+```
+Antes de seguir haremos un cambio: Ocultar el puntero de disparo para los gusanos no activos. Puedes revisar @Game.js  y @Worm.js  y @Weapon.js  para este cambio?
 ```
 ```
 ```

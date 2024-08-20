@@ -27,6 +27,7 @@ export default class Round {
     selectActiveWorm() {
         const currentTeam = this.getCurrentTeam();
         this.activeWorm = currentTeam.worms.find(worm => worm.health > 0);
+        this.activeWorm.activate();
         if (!this.activeWorm) {
             // If no active worm found, move to next team
             this.nextTurn();
@@ -57,6 +58,7 @@ export default class Round {
         if (this.timer) {
             this.timer.remove();
         }
+        this.activeWorm.deactivate();
         this.activeWorm = null;
         this.nextTurn();
     }
@@ -75,6 +77,8 @@ export default class Round {
     }
 
     switchActiveWorm() {
+        this.activeWorm.deactivate();
+        
         const activeTeam = this.teams[this.currentTeamIndex];
         const activeWorms = activeTeam.getAliveWorms();
         
@@ -82,6 +86,7 @@ export default class Round {
             const currentIndex = activeWorms.indexOf(this.activeWorm);
             const nextIndex = (currentIndex + 1) % activeWorms.length;
             this.activeWorm = activeWorms[nextIndex];
+            this.activeWorm.activate();
             
             this.scene.updateTurnUI(activeTeam.name, this.timeLeft, this.activeWorm.name);
         }

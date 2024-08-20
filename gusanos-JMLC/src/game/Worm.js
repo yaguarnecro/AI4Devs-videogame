@@ -10,6 +10,7 @@ export default class Worm {
         this.height = WORM_HEIGHT;
         this.health = 100;
         this.position = this.getRandomValidPosition();
+        this.isActive = false;
         
         this.spriteWalking = this.scene.add.sprite(this.position.x, this.position.y, 'sprites_worm_walking', 0);
         this.spriteWalking.setOrigin(0, 0);
@@ -31,6 +32,7 @@ export default class Worm {
         this.direction = 1;
 
         this.weapon = new Weapon(scene, this);
+        this.weapon.hidePointer();
     }
 
     getRandomValidPosition() {
@@ -111,6 +113,8 @@ export default class Worm {
     }
 
     update(cursors, enterKey) {
+        if (!this.isActive) return;
+
         if (cursors.left.isDown) {
             this.moveLeft();
         } else if (cursors.right.isDown) {
@@ -125,5 +129,15 @@ export default class Worm {
         this.weapon.update(cursors, enterKey);
 
         this.render();
+    }
+
+    activate() {
+        this.isActive = true;
+        this.weapon.showPointer();
+    }
+
+    deactivate() {
+        this.isActive = false;
+        this.weapon.hidePointer();
     }
 }
