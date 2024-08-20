@@ -1,4 +1,5 @@
 import { WORM_WIDTH, WORM_HEIGHT, WATER_HEIGHT, WORM_SPEED, WORM_JUMP_FORCE } from '../utils/Constants.js';
+import Weapon from './Weapon.js';
 
 export default class Worm {
     constructor(wormName, scene, team) {
@@ -28,6 +29,8 @@ export default class Worm {
         this.velocityY = 0;
         // Dirección actual (1 para derecha, -1 para izquierda)
         this.direction = 1;
+
+        this.weapon = new Weapon(scene, this);
     }
 
     getRandomValidPosition() {
@@ -113,6 +116,7 @@ export default class Worm {
         // if (!this.isJumping && this.spriteWalking.anims.currentAnim && this.spriteWalking.anims.currentAnim.key === 'worm_walk') {
             // this.spriteWalking.stop();
         // }
+        this.weapon.update();
         this.render();
     }
 }

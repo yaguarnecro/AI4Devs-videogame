@@ -9,10 +9,10 @@
 
 2. **Terreno destructible**: El mapa del juego es destructible, permitiendo a los jugadores modificar el terreno durante la partida. La parte inferior del mapa se considera agua y es letal para los gusanos.
 
-3. **Arsenal limitado**: En esta versión inicial, los gusanos solo tendrán acceso a un arma: la Bazooka. El diseño contemplará la posibilidad de añadir más armas en futuras actualizaciones.
+3. **Arsenal limitado**: En esta versión inicial, los gusanos solo tendrán acceso a un arma: la Pistola. El diseño contemplará la posibilidad de añadir más armas en futuras actualizaciones.
 
 4. **Física simplificada**: 
-   - La trayectoria de la Bazooka seguirá una parábola basada en la fuerza y dirección del disparo.
+   - La trayectoria de la Pistola será recta, basada en la dirección del disparo.
    - Los gusanos podrán caer si no tienen suficiente terreno debajo.
 
 5. **Sistema de salud**: Cada gusano tiene una cantidad de vida que disminuye al recibir daño. El objetivo es eliminar a todos los gusanos del equipo contrario.
@@ -51,20 +51,35 @@ El juego busca ofrecer una experiencia divertida y estratégica, adaptando la es
 - El turno termina cuando el jugador dispara, cuando se acaba el tiempo, o si el jugador decide terminar su turno manualmente.
 - Después de cada turno, el control pasa al otro jugador.
 
-## 3. Uso de la Bazooka
+## 3. Uso de las armas
 
-- La Bazooka es el arma principal y única en esta versión del juego.
-- Para usar la Bazooka, el jugador debe:
-  1. Apuntar: ajustar el ángulo de disparo.
-  2. Cargar: determinar la potencia del disparo manteniendo presionada una tecla.
-  3. Disparar: soltar la tecla para lanzar el proyectil.
-- El proyectil de la Bazooka sigue una trayectoria parabólica afectada por la gravedad.
-- Al impactar, el proyectil causa daño a los gusanos cercanos y destruye el terreno.
-- La capacidad de destruir el terreno es una característica específica de la Bazooka. Futuras armas podrían o no tener esta capacidad.
+- Características de las armas:
+  - Tipo de trayectoria: Simple (recta) o parabólica
+  - Radio de impacto: Número de píxeles para evaluar la colisión
+  - Radio de explosión: Área afectada tras la colisión
+  - Potencia: Puntos de vida que se eliminan al impactar un gusano
+  - Afecta a terreno: Una arma puede afectar a terreno o no
+
+- La Pistola es el arma principal y única en esta versión del juego.
+- Características de la Pistola:
+  - Tipo de trayectoria: Simple (recta)
+  - Radio de impacto: 10 píxeles
+  - Radio de explosión: 10 píxeles
+  - Potencia: 40 punto de vida
+  - Afecta a terreno: No
+- Para usar la Pistola, el jugador debe:
+  1. Apuntar: ajustar el ángulo de disparo usando las flechas "Arriba" y "Abajo".
+  2. Disparar: pulsar la tecla ENTER para realizar el disparo.
+- Un puntero se mostrará a cierta distancia del gusano, moviéndose arriba o abajo según las flechas y siempre en la dirección que mire el gusano.
+- La trayectoria del disparo es recta y se evalúa su impacto:
+  - Terreno: No hay efecto inmediato (en futuras versiones se destruirá el terreno)
+  - Gusano: Se reduce la vida del gusano impactado según la potencia del arma
+  - Fuera del mundo: El disparo se descarta y finaliza la acción
+- Tras resolver el disparo, el turno cambia automáticamente al siguiente jugador.
 
 ## 4. Destrucción del terreno
 
-- Los impactos de la Bazooka destruyen partes del terreno, creando cráteres.
+- Los impactos de la Pistola destruyen partes del terreno
 - La destrucción del terreno es persistente durante toda la partida.
 - Los jugadores pueden usar la destrucción del terreno estratégicamente para crear caminos o eliminar cobertura.
 - Si se destruye el terreno debajo de un gusano, este caerá inmediatamente hasta encontrar una nueva superficie sólida o alcanzar el agua.
@@ -73,7 +88,7 @@ El juego busca ofrecer una experiencia divertida y estratégica, adaptando la es
 
 - Cada gusano comienza con una cantidad predeterminada de puntos de salud.
 - Los gusanos reciben daño por:
-  - Impactos directos o cercanos de la Bazooka.
+  - Impactos directos o cercanos de la Pistola.
   - Caídas desde grandes alturas.
   - Contacto con el agua en la parte inferior del mapa.
 - El daño se resta de los puntos de salud del gusano.
@@ -104,7 +119,7 @@ Estas mecánicas trabajarán en conjunto para crear la experiencia de juego de "
    - Agua en la parte inferior con animación simple.
 
 3. **Armas y Proyectiles**
-   - Bazooka con diseño distintivo y reconocible.
+   - Pistola con diseño distintivo y reconocible.
    - Proyectiles visibles durante su trayectoria.
    - Efectos de explosión simples pero visualmente impactantes.
 
@@ -278,7 +293,7 @@ gusanos/
 - Map (manejo del terreno)
 - Worm (lógica de los gusanos)
 - Team (gestión de equipos)
-- Weapon (lógica de armas, empezando con Bazooka)
+- Weapon (lógica de armas, empezando con Pistola)
 - UI (manejo de la interfaz de usuario)
 - GameStatistics (seguimiento de estadísticas del juego)
 - Round (manejo de rondas individuales)
@@ -301,7 +316,12 @@ gusanos/
 - Destrucción del terreno
 
 ## 7. Gestión de entrada del usuario
-- Manejo de teclado
+- Manejo de teclado:
+  - Flechas izquierda/derecha: Movimiento horizontal del gusano
+  - Flechas arriba/abajo: Ajuste del ángulo de disparo
+  - ENTER: Realizar el disparo
+  - TAB: Cambiar el gusano activo
+  - ESC: Finalizar el turno
 - Interacción con la interfaz
 
 ## 8. Gestión del tiempo y turnos

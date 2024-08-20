@@ -32,8 +32,8 @@
 10. Adición del límite de tiempo por turno
     Implementar un contador de 60 segundos para cada turno.
 
-11. Creación de la clase Weapon, lógica de la Bazooka y trayectoria del proyectil
-    Implementar la mecánica de apuntar, cargar y disparar la Bazooka, incluyendo la trayectoria parabólica del proyectil.
+11. Creación de la clase Weapon, lógica de la Pistola y trayectoria del proyectil
+    Implementar la mecánica de apuntar, cargar y disparar la Pistola, incluyendo la trayectoria parabólica del proyectil.
 
 12. Implementación del sistema de salud y daño
     Añadir puntos de salud a los gusanos y la lógica de daño por impactos.

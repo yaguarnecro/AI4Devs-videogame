@@ -407,10 +407,31 @@ Bien. Seguimos: Para poder identificar bien los gusanos tenemos que mostrar el n
 Me gustaría refactorizar @Game.js  y @Map.js  para que sea Map el responsable de definir el setBounds del mundo físico, el fondo, el agua y el cielo o techo del mundo.
 ```
 
+## Tarea 5: Armas
+```
+Como analista especializado en desarrollo de juegos HTML + Javascript necesito modificar el PRD @00_prd_gusanos.md  para cambiar todo lo referente a disparo y armas en base a lo siguiente:
+- En vez de un Bazooka el primer arma que implementaremos será una Pistola, que la trayectoría es recta y por tanto más simple.
+- Todas las armas tendrán un tipo de trayectoria (simple o parábola). Un radio de impacto (número de píxeles con los que se mirará la colisión). Un radio de explosión (una vez colisione, es el número de píxeles a los que afectará). Potencia: Puntos de vida que se eliminará de un gusano si impacta en él.
+- Para controlar cualquier arma se utilizaran las flechas "Arriba" y "Abajo". 
+- Se mostrará un puntero a cierta distancia del gusano y se moverá arriba o abajo con las flechas y siempre en dirección a la que mire el gusano (derecha o izquierda)
+- Para disparar se pulsará la tecla ENTER
+- Se debe resolver la trayectoria y evaluar donde impacta, teniendo 3 posibilidades: 
+  - Terreno: No pasa nada (En un futuro se eliminará el terreno del área correspondiente al radio de explosión desde donde ha impactado)
+  - Gusano: Se le quitará la vida en función a la potencia del arma. ADemás, en un futuro se evaluará el área de explosión y se eliminará el terreno
+  - Fuera del mundo: Si sale del área del mundo, se descarta el disparo y finaliza la acción
+- Una vez resuelto el disparo, se cambia de turno automáticamente.
+```
 
 ```
-```
-```
+Ahora, como programador experto en HTML, Javascript y el uso de Phaser como framework, empezaremos a implementar la lógica para el arma Pistola.
+Seguiremos estos pasos:
+1. Dibujar el puntero
+2. Mover el puntero en función de la dirección del gusano (Derecha o Izquierda) y el ángulo de disparo (se incrementará con la tecla Arriba y disminuirá con la tecla Abajo)
+3. Al pulsar la tecla ENTER se efectuará el disparo. Se imprimirá en consola BOOM y pasará el turno. Nada más.
+4. Al efectuar el disparo, se calculará la trayectoria y se buscará la primera colisión contra un gusano o contra el terreno o si sale del mundo. Se imprimirá en consola donde ha impactado pero no hará nada más.
+5. Se evaluará el impacto y se calculará su resultado. Como solo tendremos en cuenta el impacto a gusanos, se le restará la vida según la fuerza del arma.
+
+Empecemos con el paso 1, no avances más hasta que te lo indique.
 ```
 ```
 ```
