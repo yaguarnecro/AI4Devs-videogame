@@ -1,7 +1,8 @@
 import { WORM_WIDTH, WORM_HEIGHT, WATER_HEIGHT } from '../utils/Constants.js';
 
 export default class Worm {
-    constructor(scene, team) {
+    constructor(wormName, scene, team) {
+        this.name = wormName;
         this.scene = scene;
         this.team = team;
         this.width = WORM_WIDTH;

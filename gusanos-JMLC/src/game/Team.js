@@ -1,9 +1,9 @@
 import { MAX_WORMS_PER_TEAM } from '../utils/Constants.js';
 
 export default class Team {
-    constructor(color, name) {
-        this.color = color;
+    constructor(name, color) {
         this.name = name;
+        this.color = color;
         this.worms = [];
         this.activeWormIndex = 0;
     }

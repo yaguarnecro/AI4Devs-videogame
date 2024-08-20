@@ -1,7 +1,7 @@
 import { Map } from './Map.js';
 import Worm from './Worm.js';
 import Team from './Team.js';
-import { MAX_WORMS_PER_TEAM } from '../utils/Constants.js';
+import { MAX_WORMS_PER_TEAM, TEAMS } from '../utils/Constants.js';
 
 class Game extends Phaser.Scene {
     constructor() {
@@ -32,15 +32,17 @@ class Game extends Phaser.Scene {
         this.matter.add.rectangle(540, -10, 1080, 20, { isStatic: true });
 
         // Crear equipos
-        const team1 = new Team(0xff0000, 'Red Team');
-        const team2 = new Team(0x0000ff, 'Blue Team');
-        this.teams.push(team1, team2);
+        TEAMS.forEach(teamConfig => {
+            const team = new Team(teamConfig.name, teamConfig.color);
+            this.teams.push(team);
+            for (let i = 0; i < MAX_WORMS_PER_TEAM; i++) {
+                const worm = new Worm(`${teamConfig.name} ${i + 1}`, this, team);
+                team.addWorm(worm);
+                this.worms.push(worm);
+            }
+        });
 
-        // Añadir gusanos a los equipos
-        for (let i = 0; i < MAX_WORMS_PER_TEAM; i++) {  // 3 gusanos por equipo
-            team1.addWorm(new Worm(this, team1));
-            team2.addWorm(new Worm(this, team2));
-        }
+        console.log(`Total worms created: ${this.worms.length}`);
     }
 
     update() {
