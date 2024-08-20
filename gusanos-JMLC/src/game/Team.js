@@ -36,4 +36,8 @@ export default class Team {
         this.worms = [];
         this.activeWormIndex = 0;
     }
+
+    getAliveWorms() {
+        return this.worms.filter(worm => worm.health > 0);
+    }
 }

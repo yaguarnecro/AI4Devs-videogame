@@ -73,4 +73,17 @@ export default class Round {
     getActiveWorm() {
         return this.activeWorm;
     }
+
+    switchActiveWorm() {
+        const activeTeam = this.teams[this.currentTeamIndex];
+        const activeWorms = activeTeam.getAliveWorms();
+        
+        if (activeWorms.length > 1) {
+            const currentIndex = activeWorms.indexOf(this.activeWorm);
+            const nextIndex = (currentIndex + 1) % activeWorms.length;
+            this.activeWorm = activeWorms[nextIndex];
+            
+            this.scene.updateTurnUI(activeTeam.name, this.timeLeft, this.activeWorm.name);
+        }
+    }
 }

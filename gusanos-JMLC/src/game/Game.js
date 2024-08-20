@@ -13,6 +13,7 @@ class Game extends Phaser.Scene {
         this.cursors = null;
         this.escKey = null;
         this.round = null;
+        this.tabKey = null; // Added this line
         this.updateTurnUI = this.updateTurnUI.bind(this);
     }
 
@@ -44,6 +45,7 @@ class Game extends Phaser.Scene {
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); 
+        this.tabKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB); // Added this line
         
         this.round = new Round(this, this.teams);
         this.round.start();
@@ -83,6 +85,10 @@ class Game extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
             this.round.endTurn();
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.tabKey)) {
+            this.round.switchActiveWorm();
         }
 
         for (const team of this.teams) {
