@@ -1,7 +1,7 @@
 Desarrollo del juego "Gusanos"
 ==================
 ## Proceso general
-- He usado Claude para definir el PRD que me han servido para luego pedirle generar un listado de tareas.
+- He usado Claude para definir el PRD (en `./doc/00_prd_gusanos.md`) que me han servido para luego pedirle generar un listado de tareas (en `./doc/01_tasks_gusanos.md`).
 - He usado Cursor.sh para generar el código a partir del PRD y el listado de tareas.
 - He intentado definir las tareas para practicar e ir implementando poco a poco, pero no me ha aportado mucho. He avanzado más rápido partiendo del PRD y definiendo los prompts sobre la marcha.
 
@@ -522,3 +522,39 @@ A partir del documento @00_prd_gusanos.md  y el código puedes generar unas pequ
 ```
 Puedes traducirlas al castellano?
 ```
+
+
+## Fix: Worm animation
+
+```
+En este juego de "Gusanos" estoy intentando animar el Worm. 
+Para ello se crea la animación en @Game.js  y en @Worm.js  se lanza (play()) cuando se mueve el gusano.
+Esto causa un error en la consola del navegador:
+
+phaser.js:3474 Uncaught TypeError: Cannot read properties of undefined (reading 'duration')
+    at Animation.getFirstTick (phaser.js:3474:46)
+    at AnimationState.startAnimation (phaser.js:6323:14)
+    at AnimationState.play (phaser.js:6212:21)
+    at Sprite.play (phaser.js:80253:27)
+    at Worm.moveLeft (Worm.js:77:36)
+    at Worm.update (Worm.js:131:18)
+    at Game.update (Game.js:90:24)
+    at Systems.step (phaser.js:199167:26)
+    at SceneManager.update (phaser.js:196402:21)
+    at Game.step (phaser.js:17218:20)
+
+¿Puedes revisar? Utiliza la documentación de Phaser @Phaser 3.80  por si estamos haciendo algo mal.
+```
+
+```
+Al mover el gusano, la animación se ve mal:
+El gusano se mueve pero se va desplazando de abajo hacia arriba. ¿A qué puede deberse?
+El sprite mide 26x405. Contiene 15 sprites y cada sprite es de 26x29
+```
+
+```
+Sigue haciendo un scroll hacia arriba mientras se mueve. El sprite sigue el movimiento correctamente a izquierda o derecha, pero la imagen del gusano se va desplazando de abajo a arriba indefinidamente.
+Hay que tener en cuenta que el sprite es vertical, con una columna y 15 filas.
+```
+
+**Al final era el sprite que estaba mal generado por la herramienta online**

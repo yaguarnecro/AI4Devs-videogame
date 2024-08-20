@@ -24,8 +24,12 @@ class Game extends Phaser.Scene {
         this.load.image('terrain', 'assets/maps/worms_mapa_2.png');
         // this.load.image('water', 'assets/images/water.png'); // Asegúrate de tener esta imagen
         this.load.spritesheet('sprites_worm_walking', 'assets/images/sprites/worms/wwalk.png', { 
-            frameWidth: 60, 
-            frameHeight: 60 
+            frameWidth: 25, 
+            frameHeight: 29,
+            startFrame: 0,
+            endFrame: 14,
+            margin: 0,
+            spacing: 0
         });
         this.bindHelpPopup()
     }
@@ -74,11 +78,11 @@ class Game extends Phaser.Scene {
         // Animación de movimiento
         this.anims.create({
             key: 'worm_walk',
-            frames: this.anims.generateFrameNumbers('worm_sprites', { 
+            frames: this.anims.generateFrameNumbers('sprites_worm_walking', { 
                 start: 0,
                 end: 14
             }),
-            frameRate: 10,
+            frameRate: 24,
             repeat: -1
         });
     }

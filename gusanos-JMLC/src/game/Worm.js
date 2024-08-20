@@ -17,7 +17,7 @@ export default class Worm {
         this.direction = 1;
         
         this.spriteWalking = this.scene.add.sprite(this.position.x, this.position.y, 'sprites_worm_walking', 0);
-        this.spriteWalking.setOrigin(0, 0);
+        this.spriteWalking.setOrigin(0.5, 1);
         this.spriteWalking.setDisplaySize(WORM_WIDTH, WORM_HEIGHT);
 
         // Añadir el texto del nombre
@@ -73,9 +73,9 @@ export default class Worm {
             this.position.y = newY;
             this.direction = -1;
             this.spriteWalking.setFlipX(false);
-            // if (!this.spriteWalking.anims.isPlaying) {
-            //     this.spriteWalking.play('worm_walk');
-            // }
+            if (!this.spriteWalking.anims.isPlaying) {
+                this.spriteWalking.play('worm_walk');
+            }
         }
     }
 
@@ -87,9 +87,9 @@ export default class Worm {
             this.position.y = newY;
             this.direction = 1;
             this.spriteWalking.setFlipX(true);
-            // if (!this.spriteWalking.anims.isPlaying) {
-            //     this.spriteWalking.play('worm_walk');
-            // }
+            if (!this.spriteWalking.anims.isPlaying) {
+                this.spriteWalking.play('worm_walk');
+            }
         }
     }
 
@@ -119,7 +119,7 @@ export default class Worm {
     }
 
     render() {
-        this.spriteWalking.setPosition(this.position.x, this.position.y);
+        this.spriteWalking.setPosition(this.position.x + this.width / 2, this.position.y + this.height);
         this.nameText.setPosition(this.position.x + this.width / 2, this.position.y - 5);
         this.healthText.setPosition(this.position.x + this.width / 2, this.position.y - 25);
     }
@@ -131,6 +131,9 @@ export default class Worm {
             this.moveLeft();
         } else if (cursors.right.isDown) {
             this.moveRight();
+        } else {
+            this.spriteWalking.stop();
+            this.spriteWalking.setFrame(0);
         }
 
         if (Phaser.Input.Keyboard.JustDown(cursors.space)) {
@@ -172,13 +175,12 @@ export default class Worm {
 
     updateHealthDisplay() {
         this.healthText.setText(`${this.health}`);
-        // Opcional: cambiar el color de la vida según su valor
         if (this.health > 70) {
-            this.healthText.setColor('#00ff00'); // Verde
+            this.healthText.setColor('#00ff00');
         } else if (this.health > 30) {
-            this.healthText.setColor('#ffff00'); // Amarillo
+            this.healthText.setColor('#ffff00');
         } else {
-            this.healthText.setColor('#ff0000'); // Rojo
+            this.healthText.setColor('#ff0000');
         }
     }
 
