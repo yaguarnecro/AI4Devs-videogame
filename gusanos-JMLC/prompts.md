@@ -1,8 +1,21 @@
- Tiempo de desarrollo del juego "Gusanos"
+Desarrollo del juego "Gusanos"
 ==================
-Miércoles 07/08/2024 : 2h para redactar casi todo el PRD del proyecto
+## Proceso general
+- He usado Claude para definir el PRD que me han servido para luego pedirle generar un listado de tareas.
+- He usado Cursor.sh para generar el código a partir del PRD y el listado de tareas.
+- He intentado definir las tareas para practicar e ir implementando poco a poco, pero no me ha aportado mucho. He avanzado más rápido partiendo del PRD y definiendo los prompts sobre la marcha.
 
-Lunes 19/08/2024 : 10:00 - 
+## Tiempo de desarrollo del juego "Gusanos"
+- Miércoles 07/08/2024 : 2h para redactar casi todo el PRD del proyecto
+- Lunes 19/08/2024 : 5h para empezar a programar la parte del mapa y el gusano
+- Martes 20/08/2024 : 6h para seguir programando y pulir detalles
+
+## Impresiones del uso de Cursor.sh
+- La caga bastante con el uso de librerías a pesar de registrar la documentación de la librería. Le cuesta muchísimo solucionar un error, en cualquier modelo que se use (GPT o Claude). Al final a base de iniciar nuevo chat y soluciones manuales, he podido avanzar. 
+- Hay problemas como el movimiento de los gusanos por el terreno que no se ha conseguido pulir
+- A veces el diff da problemas y parece que no coge el código actual si has hecho algún cambio manual
+- Ha ido implementando alguna cosa antes de hora
+
 
 Prompts usados para la documentación de Análisis del juego (Claude.ai)
 ==================
@@ -501,18 +514,11 @@ Se muestra este error: TypeError: this.aimLine.setTexture is not a function
 Utiliza el código actualizado de @Weapon.js  y @Worm.js 
 ```
 
+## Pedir Instrucciones del juego
 ```
+A partir del documento @00_prd_gusanos.md  y el código puedes generar unas pequeñas instrucciones de juego para documentar en el Readme.md? Deben estar en formato Markdown
 ```
 
-
-
-
-
-
-
-
-
-# Impresiones del uso de Cursor.sh
-- La caga bastante con el uso de librerías a pesar de registrar la documentación de la librería. Le cuesta muchísimo solucionar un error, en cualquier modelo que se use (GPT o Claude)
-- A veces el diff da problemas y parece que no coge el código actual si has hecho algún cambio manual
-- Ha ido implementando alguna cosa antes de hora
+```
+Puedes traducirlas al castellano?
+```
