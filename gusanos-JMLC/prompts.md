@@ -2,6 +2,7 @@ Desarrollo del juego "Gusanos"
 ==================
 ## Proceso general
 - He usado Claude para definir el PRD (en `./doc/00_prd_gusanos.md`) que me han servido para luego pedirle generar un listado de tareas (en `./doc/01_tasks_gusanos.md`).
+- He usado Claude para realizar una PoC y estudiar la viabilidad de generar un terreno a partir de una imagen de éste y situar los gusanos encima.
 - He usado Cursor.sh para generar el código a partir del PRD y el listado de tareas.
 - He intentado definir las tareas para practicar e ir implementando poco a poco, pero no me ha aportado mucho. He avanzado más rápido partiendo del PRD y definiendo los prompts sobre la marcha.
 
@@ -590,3 +591,22 @@ Worm.js:175 Uncaught TypeError: this.weapon.destroy is not a function
 Que afecta a la clase @Worm.js  y @Weapon.js 
 ```
 
+## Fix: Kill worm when touches water
+```
+Vamos a solucionar otro bug: Cuando un gusano cae a la zona de agua se puede seguir moviendo.
+Esto no debe ser así, cuando un gusano cae al agua, debe hundirse hasta la zona inferior del agua y morir allí.
+```
+
+```
+Puntos a corregir:
+- Sigue pasando que si sin saltar llega al agua, puede seguir moviéndose porque no detecta la colisión con el agua.
+- Cuando se muere por hundirse en el agua, no se le resta toda la vida.
+- Cuando se muere por hundirse en el agua, no llega hasta abajo del todo del agua
+Revisa el código actualizado de @Worm.js 
+```
+
+**AQUÍ HE TOCADO BASTANTE CÓDIGO MANUALMENTE PORQUE NO HA HABIDO FORMA DE IMPLEMENTAR BIEN LA LÓGICA DE HUNDIRSE**
+
+```
+Podemos corregir el código para que el método `createWater` cree el agua con un rectángulo de color azul en vez de usar un sprite?
+```

@@ -68,7 +68,7 @@ export class Map {
 
     createWater() {
         const waterPosition = this.sceneHeight - WATER_HEIGHT / 2;
-        this.scene.add.tileSprite(this.sceneWidth / 2, this.sceneHeight - WATER_HEIGHT / 2, this.sceneWidth, WATER_HEIGHT, 'water');
+        this.scene.add.rectangle(this.sceneWidth / 2, waterPosition, this.sceneWidth, WATER_HEIGHT, 0x0000ff, 0.5);
         const waterBody = this.scene.matter.add.rectangle(this.sceneWidth / 2, waterPosition, this.sceneWidth, WATER_HEIGHT, { 
             isStatic: true,
             isSensor: true,

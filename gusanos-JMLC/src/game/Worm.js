@@ -12,6 +12,7 @@ export default class Worm {
         this.position = this.getRandomValidPosition();
         this.isActive = false;
         this.isJumping = false;
+        this.isSinking = false;
         this.velocityY = 0;
         // Dirección actual (1 para derecha, -1 para izquierda)
         this.direction = 1;
@@ -78,7 +79,7 @@ export default class Worm {
                 this.spriteWalking.play('worm_walk');
             }
             if (this.isInWater(this.position.y)) {
-                this.die();
+                this.startSinking();
             }
         }
     }
@@ -95,7 +96,7 @@ export default class Worm {
                 this.spriteWalking.play('worm_walk');
             }
             if (this.isInWater(this.position.y)) {
-                this.die();
+                this.startSinking();
             }
         }
     }
@@ -109,7 +110,15 @@ export default class Worm {
     }
 
     applyGravity() {
-        if (this.isJumping) {
+        if (this.isSinking) {
+            this.position.y += 1;
+
+            const waterBottom = this.scene.sys.game.config.height;
+            if (this.position.y >= waterBottom) {
+                this.position.y = waterBottom;
+                this.die();
+            }
+        } else if (this.isJumping) {
             this.velocityY += 1; // Gravity effect
             this.position.y += this.velocityY;
 
@@ -134,23 +143,35 @@ export default class Worm {
     update(cursors, enterKey) {
         if (!this.isActive) return;
 
-        if (cursors.left.isDown) {
-            this.moveLeft();
-        } else if (cursors.right.isDown) {
-            this.moveRight();
-        } else {
-            this.spriteWalking.stop();
-            this.spriteWalking.setFrame(0);
-        }
+        if (!this.isSinking) {
+            if (cursors.left.isDown) {
+                this.moveLeft();
+            } else if (cursors.right.isDown) {
+                this.moveRight();
+            } else {
+                this.spriteWalking.stop();
+                this.spriteWalking.setFrame(0);
+            }
 
-        if (Phaser.Input.Keyboard.JustDown(cursors.space)) {
-            this.jump();
+            if (Phaser.Input.Keyboard.JustDown(cursors.space)) {
+                this.jump();
+            }
+
+            this.weapon.update(cursors, enterKey);
         }
         this.applyGravity();
 
-        this.weapon.update(cursors, enterKey);
-
         this.render();
+    }
+
+    startSinking() {
+        if (!this.isSinking) {
+            this.isSinking = true;
+            this.weapon.hidePointer();
+            this.spriteWalking.stop();
+            this.spriteWalking.setFrame(0);
+            this.spriteWalking.setTint(0x0000FF); // Tinte azul para indicar que está en el agua
+        }
     }
 
     activate() {
@@ -182,7 +203,7 @@ export default class Worm {
         this.spriteWalking.destroy();
         this.weapon.destroy();
         
-        this.graveSprite = this.scene.add.sprite(this.position.x + this.width / 2, this.position.y + this.height, this.team.graveType);
+        this.graveSprite = this.scene.add.sprite(this.position.x + this.width / 2, this.position.y, this.team.graveType);
         this.graveSprite.setOrigin(0.5, 1);
         this.graveSprite.setDisplaySize(WORM_WIDTH, WORM_HEIGHT);
 
