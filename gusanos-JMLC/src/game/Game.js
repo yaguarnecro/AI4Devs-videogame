@@ -9,11 +9,16 @@ class Game extends Phaser.Scene {
         this.map = null;
         this.worms = [];
         this.teams = [];
+        this.cursors = null;
     }
 
     preload() {
         this.load.image('terrain', 'assets/maps/worms_mapa_2.png');
         // this.load.image('water', 'assets/images/water.png'); // Asegúrate de tener esta imagen
+        this.load.spritesheet('sprites_worm_walking', 'assets/images/sprites/worms/wwalk.png', { 
+            frameWidth: 60, 
+            frameHeight: 60 
+        });
     }
 
     create() {
@@ -31,6 +36,9 @@ class Game extends Phaser.Scene {
         // Crear un rectángulo invisible para el "techo" del mundo
         this.matter.add.rectangle(540, -10, 1080, 20, { isStatic: true });
 
+        // Crear animaciones
+        this.createAnimations();
+
         // Crear equipos
         TEAMS.forEach(teamConfig => {
             const team = new Team(teamConfig.name, teamConfig.color);
@@ -42,12 +50,38 @@ class Game extends Phaser.Scene {
             }
         });
 
+        this.cursors = this.input.keyboard.createCursorKeys();
+
         console.log(`Total worms created: ${this.worms.length}`);
+    }
+
+
+    createAnimations() {
+        // Animación de movimiento
+        this.anims.create({
+            key: 'worm_walk',
+            frames: this.anims.generateFrameNumbers('worm_sprites', { 
+                start: 0,
+                end: 14 // Ajuste el índice final a 14 si hay 15 frames (0-14)
+            }),
+            frameRate: 10, // Ajuste la velocidad de la animación
+            repeat: -1
+        });
     }
 
     update() {
         // Actualizar los gusanos
         for (const worm of this.worms) {
+            if (this.cursors.left.isDown) {
+                worm.moveLeft();
+            } else if (this.cursors.right.isDown) {
+                worm.moveRight();
+            }
+
+            if (this.cursors.up.isDown) {
+                worm.jump();
+            }
+
             worm.update();
         }
 
