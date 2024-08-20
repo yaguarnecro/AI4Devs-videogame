@@ -17,7 +17,8 @@ export default class Weapon {
     }
 
     createPointer() {
-        this.pointer = this.scene.add.circle(0, 0, 5, 0xff0000);
+        this.pointer = this.scene.add.image(0, 0, 'target');
+        this.pointer.setOrigin(0.5);
         this.aimLine = this.scene.add.image(0, 0, 'dashed_line');
         this.aimLine.setOrigin(0, 0.5);
         this.aimLine.setVisible(false);
@@ -42,7 +43,6 @@ export default class Weapon {
         this.aimLine.setPosition(startX, startY);
         this.aimLine.setDisplaySize(distance, 1);
         this.aimLine.setRotation(angle);
-        this.aimLine.setVisible(true);
     }
 
     increaseAngle() {
@@ -58,7 +58,6 @@ export default class Weapon {
     fire() {
         if (!this.isFiring) {
             this.isFiring = true;
-            console.log("BOOM");
             this.calculateTrajectory();
             this.scene.events.emit('weaponFired');
             this.isFiring = false;
@@ -85,7 +84,7 @@ export default class Weapon {
             const hitWorm = this.checkCollisionWithWorms(currentX, currentY);
             if (hitWorm) {
                 console.log(`Impacto en el gusano ${hitWorm.name} en (${currentX}, ${currentY})`);
-                this.damageWorm(hitWorm);
+                hitWorm.takeDamage(this.damage);
                 return;
             }
 
@@ -94,11 +93,6 @@ export default class Weapon {
         }
 
         console.log(`El disparo salió del mundo en (${currentX}, ${currentY})`);
-    }
-
-    damageWorm(worm) {
-        worm.takeDamage(this.damage);
-        console.log(`El gusano ${worm.name} ha recibido ${this.damage} de daño. Vida restante: ${worm.health}`);
     }
 
     isInsideWorld(x, y) {

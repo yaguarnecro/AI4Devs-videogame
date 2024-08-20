@@ -558,3 +558,10 @@ Hay que tener en cuenta que el sprite es vertical, con una columna y 15 filas.
 ```
 
 **Al final era el sprite que estaba mal generado por la herramienta online**
+
+
+## Enhance: Change design of target
+
+```
+Ahora me gustaría cambiar el diseño de la mirilla y usar la imagen en ./assets/images/target.png
+```

@@ -31,6 +31,7 @@ class Game extends Phaser.Scene {
             margin: 0,
             spacing: 0
         });
+        this.load.image('target', 'assets/images/target.png');
         this.bindHelpPopup()
     }
 
