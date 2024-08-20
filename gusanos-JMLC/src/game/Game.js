@@ -1,7 +1,8 @@
 import { Map } from './Map.js';
 import Worm from './Worm.js';
 import Team from './Team.js';
-import { MAX_WORMS_PER_TEAM, TEAMS } from '../utils/Constants.js';
+import Round from './Round.js';
+import { MAX_WORMS_PER_TEAM, TEAMS, TURN_DURATION } from '../utils/Constants.js';
 
 class Game extends Phaser.Scene {
     constructor() {
@@ -10,6 +11,9 @@ class Game extends Phaser.Scene {
         this.worms = [];
         this.teams = [];
         this.cursors = null;
+        this.escKey = null;  // Add this line
+        this.round = null;
+        this.updateTurnUI = this.updateTurnUI.bind(this);
     }
 
     preload() {
@@ -51,11 +55,12 @@ class Game extends Phaser.Scene {
         });
 
         this.cursors = this.input.keyboard.createCursorKeys();
-
-        console.log(`Total worms created: ${this.worms.length}`);
+        this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); 
+        
+        this.round = new Round(this, this.teams);
+        this.round.start();
     }
-
-
+    
     createAnimations() {
         // Animación de movimiento
         this.anims.create({
@@ -70,27 +75,38 @@ class Game extends Phaser.Scene {
     }
 
     update() {
-        // Actualizar los gusanos
-        for (const worm of this.worms) {
+        const activeWorm = this.round.getActiveWorm();
+        
+        if (activeWorm) {
             if (this.cursors.left.isDown) {
-                worm.moveLeft();
+                activeWorm.moveLeft();
             } else if (this.cursors.right.isDown) {
-                worm.moveRight();
+                activeWorm.moveRight();
             }
 
-            if (this.cursors.up.isDown) {
-                worm.jump();
+            if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
+                activeWorm.jump();
             }
+        }
 
+        for (const worm of this.worms) {
             worm.update();
         }
 
-        // Ejemplo de cómo podrías usar los métodos de Team
+        if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
+            this.round.endTurn();
+        }
+
         for (const team of this.teams) {
             if (team.isDefeated()) {
                 console.log(`${team.name} has been defeated!`);
             }
         }
+    }
+
+    updateTurnUI(teamName, timeLeft, activeWormName) {
+        document.getElementById('current-turn').textContent = `Turno: ${teamName} - Gusano activo: ${activeWormName || 'Ninguno'}`;
+        document.getElementById('time-left').textContent = `Tiempo: ${timeLeft}s`;
     }
 }
 

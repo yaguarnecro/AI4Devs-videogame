@@ -289,3 +289,30 @@ Al colocar los gusanos no se tiene en cuenta que en @Map.js  se "mueve" el terre
 Además, al renderizar se ve un recuadro azul del tamaño de la imagen del mapa. Esto es porque tenemos activo el debug de Phaser.
 ¿Puedes revisar por qué el recuadro azul no cubre también el espacio superior considerado vacío y por qué los gusanos no parecen tener en cuenta este espacio que dejamos?
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Impresiones del uso de Cursor.sh
+- La caga bastante con el uso de librerías a pesar de registrar la documentación de la librería. Le cuesta muchísimo solucionar un error, en cualquier modelo que se use (GPT o Claude)
+- A veces el diff da problemas y parece que no coge el código actual si has hecho algún cambio manual
