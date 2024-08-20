@@ -2,7 +2,7 @@ import { Map } from './Map.js';
 import Worm from './Worm.js';
 import Team from './Team.js';
 import Round from './Round.js';
-import { MAX_WORMS_PER_TEAM, TEAMS, TURN_DURATION, POINTER_DISTANCE, ANGLE_CHANGE_RATE } from '../utils/Constants.js';
+import { MAX_WORMS_PER_TEAM, TEAMS } from '../utils/Constants.js';
 
 class Game extends Phaser.Scene {
     constructor() {
@@ -27,12 +27,12 @@ class Game extends Phaser.Scene {
             frameWidth: 60, 
             frameHeight: 60 
         });
+        this.bindHelpPopup()
     }
 
     create() {
         this.map = new Map(this, 'terrain', 1080, 600);
         
-        // Crear animaciones
         this.createAnimations();
 
         // Crear equipos
@@ -55,6 +55,19 @@ class Game extends Phaser.Scene {
         this.round.start();
         this.events.on('weaponFired', this.handleWeaponFired);
         this.events.on('wormDied', this.handleWormDied);
+    }
+
+    bindHelpPopup() {
+        document.getElementById('help-button').addEventListener('click', () => {
+            alert('Instrucciones básicas del juego:\n'
+                + '  - Usa las teclas de dirección IZQUIERDA y DERECHA para mover el gusano\n'
+                + '  - Usa las teclas de dirección ARRIBA y DEBAJO para mover la mirilla y apuntar\n'
+                + '  - Usa la tecla ESPACIO para saltar\n'
+                + '  - Usa la tecla ENTER para disparar\n'
+                + '  - Usa la tecla TAB para cambiar de gusano\n'
+                + '  - Usa la tecla ESC para pasar turno\n'
+            );
+        });
     }
     
     createAnimations() {
@@ -95,14 +108,9 @@ class Game extends Phaser.Scene {
         this.round.endTurn();
     }
     handleWormDied(worm) {
-        // Elimina el gusano del juego
-        // worm.destroy();
-
-        // Verifica si el juego ha terminado
         if (this.checkGameOver()) {
             this.endGame();
         } else {
-            // Si el gusano activo murió, cambia el turno
             if (worm === this.round.getActiveWorm()) {
                 this.round.endTurn();
             }

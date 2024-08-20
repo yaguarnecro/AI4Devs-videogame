@@ -491,3 +491,4 @@ Para poder evaluar que funciona, vamos a mostrar la vida de los gusanos en la UI
 # Impresiones del uso de Cursor.sh
 - La caga bastante con el uso de librerías a pesar de registrar la documentación de la librería. Le cuesta muchísimo solucionar un error, en cualquier modelo que se use (GPT o Claude)
 - A veces el diff da problemas y parece que no coge el código actual si has hecho algún cambio manual
+- Ha ido implementando alguna cosa antes de hora
