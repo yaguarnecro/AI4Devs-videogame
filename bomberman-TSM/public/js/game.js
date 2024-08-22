@@ -41,6 +41,9 @@ function preload() {
     this.load.spritesheet('destructibleWall', 'assets/tiles/snes_stage_1.png', { frameWidth: 16, frameHeight: 16 });
     this.load.audio('explosion', 'assets/sounds/explosion.mp3');
     this.load.audio('background', 'assets/sounds/snes_battle_music.mp3');
+    this.load.spritesheet('player_red', 'assets/sprites/snes_red.png', { frameWidth: 17, frameHeight: 26 });
+    this.load.spritesheet('player_black', 'assets/sprites/snes_black.png', { frameWidth: 17, frameHeight: 26 });
+    this.load.spritesheet('player_blue', 'assets/sprites/snes_blue.png', { frameWidth: 17, frameHeight: 26 });
 }
 
 function create() {
@@ -100,7 +103,7 @@ function create() {
 
     this.anims.create({
         key: 'down',
-        frames: this.anims.generateFrameNumbers('player', { start: 6, end: 9 }),
+        frames: this.anims.generateFrameNumbers('player', { start: 6, end: 8 }),
         frameRate: 10,
         repeat: -1
     });
@@ -159,41 +162,129 @@ function create() {
     if (!this.sound.get('background').isPlaying) {
         this.backgroundMusic.play();
     }
+
+    this.players = [player];
+
+    // Crear bots
+    const botSprites = ['player_red', 'player_black', 'player_blue'];
+
+    for (let i = 0; i < 3; i++) {
+        let botX, botY;
+        if (i === 0) {
+            botX = 216; botY = 24; // Esquina superior derecha
+        } else if (i === 1) {
+            botX = 24; botY = 24; // Esquina superior izquierda
+        } else {
+            botX = 216; botY = 216; // Esquina inferior derecha
+        }
+
+        let bot = this.physics.add.sprite(botX, botY, botSprites[i]);
+        bot.setCollideWorldBounds(true);
+        bot.body.setSize(14, 14);
+        bot.body.setOffset(1, 10);
+        this.physics.add.collider(bot, groundLayer);
+        this.physics.add.collider(bot, this.destructibleWalls);
+        this.physics.add.overlap(bot, this.fires, playerHit, null, this);
+
+        bot.isBot = true;
+        bot.direction = 'down';
+        bot.moveTimer = 0;
+        bot.bombTimer = 0;
+
+        this.players.push(bot);
+    }
+
+    // Crear animaciones para los bots
+    const botAnimationKeys = ['left', 'right', 'up', 'down'];
+    const startFrames = [3, 9, 0, 6];
+    const endFrames = [5, 11, 2, 8];
+
+    botSprites.forEach(spriteKey => {
+        botAnimationKeys.forEach((key, index) => {
+            this.anims.create({
+                key: `${spriteKey}_${key}`,
+                frames: this.anims.generateFrameNumbers(spriteKey, { start: startFrames[index], end: endFrames[index] }),
+                frameRate: 10,
+                repeat: -1
+            });
+        });
+    });
 }
 
-function update() {
+function update(time, delta) {
     const speed = 80;
 
-    // Manejo del movimiento del jugador
-    player.setVelocity(0);
+    // Manejo del movimiento del jugador humano
+    this.players[0].setVelocity(0);
 
     if (cursors.left.isDown) {
-        player.setVelocityX(-speed);
-        player.anims.play('left', true);
+        this.players[0].setVelocityX(-speed);
+        this.players[0].anims.play('left', true);
     } else if (cursors.right.isDown) {
-        player.setVelocityX(speed);
-        player.anims.play('right', true);
+        this.players[0].setVelocityX(speed);
+        this.players[0].anims.play('right', true);
     }
 
     if (cursors.up.isDown) {
-        player.setVelocityY(-speed);
-        player.anims.play('up', true);
+        this.players[0].setVelocityY(-speed);
+        this.players[0].anims.play('up', true);
     } else if (cursors.down.isDown) {
-        player.setVelocityY(speed);
-        player.anims.play('down', true);
+        this.players[0].setVelocityY(speed);
+        this.players[0].anims.play('down', true);
     }
 
-    if (player.body.velocity.x === 0 && player.body.velocity.y === 0) {
-        player.anims.stop();
+    if (this.players[0].body.velocity.x === 0 && this.players[0].body.velocity.y === 0) {
+        this.players[0].anims.stop();
     }
 
-    // Manejo de la colocación de bombas
+    // Manejo de la colocación de bombas para el jugador humano
     if (Phaser.Input.Keyboard.JustDown(bombKey) && canPlaceBomb) {
-        placeBomb();
+        placeBomb(this.players[0]);
+    }
+
+    // Actualizar bots
+    for (let i = 1; i < this.players.length; i++) {
+        updateBot(this.players[i], delta);
     }
 }
 
-function placeBomb() {
+function updateBot(bot, time) {
+    bot.moveTimer += time;
+    bot.bombTimer += time;
+
+    if (bot.moveTimer > 1000) { // Cambiar dirección cada segundo
+        bot.direction = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
+        bot.moveTimer = 0;
+    }
+
+    const speed = 80;
+    const spriteKey = bot.texture.key;
+    switch (bot.direction) {
+        case 'left':
+            bot.setVelocityX(-speed);
+            bot.anims.play(`${spriteKey}_left`, true);
+            break;
+        case 'right':
+            bot.setVelocityX(speed);
+            bot.anims.play(`${spriteKey}_right`, true);
+            break;
+        case 'up':
+            bot.setVelocityY(-speed);
+            bot.anims.play(`${spriteKey}_up`, true);
+            break;
+        case 'down':
+            bot.setVelocityY(speed);
+            bot.anims.play(`${spriteKey}_down`, true);
+            break;
+    }
+
+    if (bot.bombTimer > 3000 && Math.random() < 0.1) { // 10% de probabilidad de colocar una bomba cada 3 segundos
+        placeBomb(bot);
+        bot.bombTimer = 0;
+    }
+}
+
+function placeBomb(player) {
     const bombX = Math.floor(player.x / 16) * 16 + 8;
     const bombY = Math.floor(player.y / 16) * 16 + 8;
 
@@ -268,22 +359,43 @@ function createExplosion(scene, x, y) {
 }
 
 function playerHit(player, fire) {
-    console.log('¡El jugador ha sido golpeado!');
-    player.setTint(0xff0000);  // Colorear al jugador de rojo
-    player.anims.stop();  // Detener la animación del jugador
-    this.physics.pause();  // Pausar la física del juego
+    if (player === this.players[0]) {  // Si es el jugador humano
+        console.log('¡El jugador humano ha sido golpeado!');
+        player.setTint(0xff0000);  // Colorear al jugador de rojo
+        player.anims.stop();  // Detener la animación del jugador
+        this.physics.pause();  // Pausar la física del juego
 
-    // Detener la música de fondo
-    stopAndResetMusic(this);
+        // Detener la música de fondo
+        stopAndResetMusic(this);
 
-    // Mostrar mensaje de "Game Over"
-    let gameOverText = this.add.text(120, 120, 'Game Over', { fontSize: '32px', fill: '#fff' });
-    gameOverText.setOrigin(0.5);
+        // Mostrar mensaje de "Game Over"
+        let gameOverText = this.add.text(120, 120, 'Game Over', { fontSize: '32px', fill: '#fff' });
+        gameOverText.setOrigin(0.5);
 
-    // Reiniciar el juego después de 2 segundos
-    this.time.delayedCall(2000, () => {
-        restartGame.call(this);
-    }, [], this);
+        // Reiniciar el juego después de 2 segundos
+        this.time.delayedCall(2000, () => {
+            restartGame.call(this);
+        }, [], this);
+    } else {  // Si es un bot
+        botHit.call(this, player, fire);
+    }
+}
+
+function botHit(bot, fire) {
+    console.log('¡Un bot ha sido golpeado!');
+    bot.destroy();  // Eliminar el bot del juego
+
+    // Eliminar el bot de la lista de jugadores
+    const index = this.players.indexOf(bot);
+    if (index > -1) {
+        this.players.splice(index, 1);
+    }
+
+    // Verificar si quedan bots
+    if (this.players.length === 1) {
+        console.log('¡El jugador humano ha ganado!');
+        // Aquí puedes añadir lógica adicional para manejar la victoria del jugador
+    }
 }
 
 function stopAndResetMusic(scene) {
