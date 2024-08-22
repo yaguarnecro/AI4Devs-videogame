@@ -467,7 +467,6 @@ function stopAndResetMusic(scene) {
 
 function showRestartMenu(scene, message) {
     let menuGroup = scene.add.group();
-    let confirmDialog = scene.add.group();
 
     let background = scene.add.rectangle(0, 0, scene.sys.game.config.width, scene.sys.game.config.height, 0x000000, 0.7);
     background.setOrigin(0);
@@ -482,8 +481,7 @@ function showRestartMenu(scene, message) {
     restartButton.setInteractive({ useHandCursor: true });
     restartButton.on('pointerdown', () => {
         menuGroup.destroy();
-        confirmDialog.destroy();
-        scene.scene.restart();
+        restartGame(scene);
     });
     menuGroup.add(restartButton);
 
@@ -491,43 +489,33 @@ function showRestartMenu(scene, message) {
     exitButton.setOrigin(0.5);
     exitButton.setInteractive({ useHandCursor: true });
     exitButton.on('pointerdown', () => {
-        menuGroup.setVisible(false);
-        confirmDialog.setVisible(true);
-    });
-    menuGroup.add(exitButton);
-
-    // Crear el diálogo de confirmación
-    let confirmBg = scene.add.rectangle(scene.sys.game.config.width / 2, scene.sys.game.config.height / 2, 260, 140, 0x000000, 1);
-    confirmBg.setOrigin(0.5);
-    confirmBg.setStrokeStyle(2, 0xffffff);
-    confirmDialog.add(confirmBg);
-
-    let confirmText = scene.add.text(scene.sys.game.config.width / 2, scene.sys.game.config.height / 2 - 25, '¿Estás seguro de que\nquieres salir?', { fontSize: '16px', fill: '#fff', align: 'center', wordWrap: { width: 220 } });
-    confirmText.setOrigin(0.5);
-    confirmDialog.add(confirmText);
-
-    let yesButton = scene.add.text(scene.sys.game.config.width / 2 - 50, scene.sys.game.config.height / 2 + 25, 'Sí', { fontSize: '16px', fill: '#fff', backgroundColor: '#1a65ac', padding: { left: 10, right: 10, top: 5, bottom: 5 } });
-    yesButton.setOrigin(0.5);
-    yesButton.setInteractive({ useHandCursor: true });
-    yesButton.on('pointerdown', () => {
         scene.scene.stop();
         scene.scene.remove();
         if (scene.backgroundMusic) {
             scene.backgroundMusic.stop();
         }
-        window.location.href = '/index.html';
+        window.location.href = 'http://localhost:3000';
     });
-    confirmDialog.add(yesButton);
+    menuGroup.add(exitButton);
+}
 
-    let noButton = scene.add.text(scene.sys.game.config.width / 2 + 50, scene.sys.game.config.height / 2 + 25, 'No', { fontSize: '16px', fill: '#fff', backgroundColor: '#aa3333', padding: { left: 10, right: 10, top: 5, bottom: 5 } });
-    noButton.setOrigin(0.5);
-    noButton.setInteractive({ useHandCursor: true });
-    noButton.on('pointerdown', () => {
-        confirmDialog.setVisible(false);
-        menuGroup.setVisible(true);
-    });
-    confirmDialog.add(noButton);
+function restartGame(scene) {
+    // Detener y reiniciar la música
+    if (scene.backgroundMusic) {
+        scene.backgroundMusic.stop();
+    }
 
-    menuGroup.setVisible(true);
-    confirmDialog.setVisible(false);
+    // Destruir la escena actual
+    scene.scene.stop();
+    scene.scene.remove();
+
+    // Ocultar el menú de reinicio y la pantalla principal
+    document.getElementById('main-screen').style.display = 'none';
+    document.getElementById('game-container').style.display = 'block';
+
+    // Reiniciar el juego
+    if (game) {
+        game.destroy(true);
+    }
+    startGame();
 }

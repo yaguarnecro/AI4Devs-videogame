@@ -11,33 +11,54 @@ html {
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-image: url("/static/assets/bomberman-background.jpg");
+  background-image: url("/static/img/background_bomberman.png");
   background-size: cover;
   background-position: center;
+}
+
+.title-container {
+  padding-top: 20px;
+  text-align: center;
+}
+
+.content-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 h1 {
   font-size: 48px;
   color: #fff;
-  text-shadow: 2px 2px 4px #000;
+  text-shadow: 4px 4px 8px #000;
+  margin: 0;
 }
 
 button {
   font-size: 24px;
   padding: 15px 30px;
   margin: 10px;
-  background-color: #4caf50;
+  background-color: #ff6b6b;
   color: white;
   border: none;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
   font-family: "Press Start 2P", cursive;
+  box-shadow: 0 5px #cc5555;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #ff8787;
+  transform: translateY(2px);
+  box-shadow: 0 3px #cc5555;
+}
+
+button:active {
+  background-color: #e06060;
+  transform: translateY(5px);
+  box-shadow: none;
 }
 
 #game-container {
@@ -62,4 +83,10 @@ button:hover {
   color: #fff;
   text-align: center;
   display: none;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
