@@ -39,6 +39,8 @@ function preload() {
     this.load.spritesheet('bomb', 'assets/sprites/snes_bombs_black.png', { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('fire', 'assets/sprites/snes_flames_red.png', { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('destructibleWall', 'assets/tiles/snes_stage_1.png', { frameWidth: 16, frameHeight: 16 });
+    this.load.audio('explosion', 'assets/sounds/explosion.mp3');
+    this.load.audio('background', 'assets/sounds/snes_battle_music.mp3');
 }
 
 function create() {
@@ -151,6 +153,12 @@ function create() {
     this.physics.add.collider(bombs, this.destructibleWalls);
 
     player.setDepth(1); // Asignar una profundidad mayor al jugador
+
+    this.explosionSound = this.sound.add('explosion');
+    this.backgroundMusic = this.sound.add('background', { loop: true });
+    if (!this.sound.get('background').isPlaying) {
+        this.backgroundMusic.play();
+    }
 }
 
 function update() {
@@ -203,7 +211,7 @@ function placeBomb() {
 
         setTimeout(() => {
             bomb.destroy();
-            createExplosion(bombX, bombY);
+            createExplosion(game.scene.scenes[0], bombX, bombY);
         }, 3000);
 
         setTimeout(() => {
@@ -212,7 +220,14 @@ function placeBomb() {
     }
 }
 
-function createExplosion(x, y) {
+function createExplosion(scene, x, y) {
+    // Reproducir el sonido
+    if (scene.explosionSound) {
+        scene.explosionSound.play();
+    } else {
+        console.error('El sonido de explosión no está disponible');
+    }
+
     const directions = [
         { x: 0, y: 0 },   // Centro
         { x: -16, y: 0 }, // Izquierda
@@ -232,28 +247,21 @@ function createExplosion(x, y) {
         }
 
         // Verificar si hay un muro destructible en esta posición
-        const destructibleWall = game.scene.scenes[0].destructibleWalls.getChildren().find(wall =>
+        const destructibleWall = scene.destructibleWalls.getChildren().find(wall =>
             wall.x === fireX && wall.y === fireY
         );
 
         if (destructibleWall) {
             destructibleWall.destroy();
-            // Crear fuego en la posición del muro destructible
-            const fire = game.scene.scenes[0].fires.create(fireX, fireY, 'fire');
-            fire.setDepth(2);
-            fire.anims.play('fire', true);
-            fire.on('animationcomplete', () => {
-                fire.destroy();
-            });
-        } else {
-            // Si no hay muro destructible, crear fuego normalmente
-            const fire = game.scene.scenes[0].fires.create(fireX, fireY, 'fire');
-            fire.setDepth(2);
-            fire.anims.play('fire', true);
-            fire.on('animationcomplete', () => {
-                fire.destroy();
-            });
         }
+
+        // Crear fuego
+        const fire = scene.fires.create(fireX, fireY, 'fire');
+        fire.setDepth(2);
+        fire.anims.play('fire', true);
+        fire.on('animationcomplete', () => {
+            fire.destroy();
+        });
 
         console.log('Fuego creado en:', fireX, fireY);
     });
@@ -261,5 +269,29 @@ function createExplosion(x, y) {
 
 function playerHit(player, fire) {
     console.log('¡El jugador ha sido golpeado!');
-    // Aquí puedes añadir la lógica para cuando el jugador es golpeado por el fuego
+    player.setTint(0xff0000);  // Colorear al jugador de rojo
+    player.anims.stop();  // Detener la animación del jugador
+    this.physics.pause();  // Pausar la física del juego
+
+    // Detener la música de fondo
+    stopAndResetMusic(this);
+
+    // Mostrar mensaje de "Game Over"
+    let gameOverText = this.add.text(120, 120, 'Game Over', { fontSize: '32px', fill: '#fff' });
+    gameOverText.setOrigin(0.5);
+
+    // Reiniciar el juego después de 2 segundos
+    this.time.delayedCall(2000, () => {
+        restartGame.call(this);
+    }, [], this);
+}
+
+function stopAndResetMusic(scene) {
+    if (scene.backgroundMusic) {
+        scene.backgroundMusic.stop();
+    }
+}
+
+function restartGame() {
+    this.scene.restart();
 }
