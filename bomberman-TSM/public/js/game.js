@@ -15,7 +15,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true
+            debug: false
         },
     },
     pixelArt: true
@@ -38,6 +38,7 @@ function preload() {
     this.load.spritesheet('player', 'assets/sprites/snes_white.png', { frameWidth: 17, frameHeight: 26 });
     this.load.spritesheet('bomb', 'assets/sprites/snes_bombs_black.png', { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('fire', 'assets/sprites/snes_flames_red.png', { frameWidth: 16, frameHeight: 16 });
+    this.load.spritesheet('destructibleWall', 'assets/tiles/snes_stage_1.png', { frameWidth: 16, frameHeight: 16 });
 }
 
 function create() {
@@ -124,6 +125,32 @@ function create() {
     this.physics.add.collider(this.fires, groundLayer);
     this.physics.add.overlap(player, this.fires, playerHit, null, this);
     this.fires.setDepth(2); // Asegurarse de que todos los fuegos estén por encima de otros elementos
+
+    // Crear grupo para muros destructibles
+    this.destructibleWalls = this.physics.add.staticGroup();
+
+    // Añadir muros destructibles
+    for (let y = 1; y < 14; y++) {
+        for (let x = 1; x < 14; x++) {
+            if (x % 2 === 0 && y % 2 === 0) continue; // Saltar las posiciones de los muros fijos
+            if ((x < 3 && y < 3) || (x > 11 && y < 3) || (x < 3 && y > 11) || (x > 11 && y > 11)) continue; // Evitar las esquinas
+            if (Math.random() < 0.7) { // 70% de probabilidad de colocar un muro destructible
+                const wall = this.destructibleWalls.create(x * 16 + 8, y * 16 + 8, 'destructibleWall', 2); // Usamos el frame 2 (tercer frame)
+                wall.setOrigin(0.5);
+                wall.setDisplaySize(16, 16);
+                wall.refreshBody(); // Actualizar el cuerpo físico
+                wall.setDepth(0); // Asignar una profundidad menor a los muros destructibles
+            }
+        }
+    }
+
+    console.log(`Muros destructibles creados: ${this.destructibleWalls.countActive()}`);
+
+    // Añadir colisiones con muros destructibles
+    this.physics.add.collider(player, this.destructibleWalls);
+    this.physics.add.collider(bombs, this.destructibleWalls);
+
+    player.setDepth(1); // Asignar una profundidad mayor al jugador
 }
 
 function update() {
@@ -161,20 +188,28 @@ function update() {
 function placeBomb() {
     const bombX = Math.floor(player.x / 16) * 16 + 8;
     const bombY = Math.floor(player.y / 16) * 16 + 8;
-    const bomb = bombs.create(bombX, bombY, 'bomb');
-    bomb.anims.play('bomb');
-    bomb.body.immovable = true;
 
-    canPlaceBomb = false;
+    // Verificar si hay un muro destructible en esta posición
+    const destructibleWall = game.scene.scenes[0].destructibleWalls.getChildren().find(wall =>
+        wall.x === bombX && wall.y === bombY
+    );
 
-    setTimeout(() => {
-        bomb.destroy();
-        createExplosion(bombX, bombY);
-    }, 3000);
+    if (!destructibleWall && canPlaceBomb) {
+        const bomb = bombs.create(bombX, bombY, 'bomb');
+        bomb.anims.play('bomb');
+        bomb.body.immovable = true;
 
-    setTimeout(() => {
-        canPlaceBomb = true;
-    }, 3500);
+        canPlaceBomb = false;
+
+        setTimeout(() => {
+            bomb.destroy();
+            createExplosion(bombX, bombY);
+        }, 3000);
+
+        setTimeout(() => {
+            canPlaceBomb = true;
+        }, 3500);
+    }
 }
 
 function createExplosion(x, y) {
@@ -187,13 +222,40 @@ function createExplosion(x, y) {
     ];
 
     directions.forEach(dir => {
-        const fire = game.scene.scenes[0].fires.create(x + dir.x, y + dir.y, 'fire');
-        fire.setDepth(2);
-        fire.anims.play('fire', true);
-        fire.on('animationcomplete', () => {
-            fire.destroy();
-        });
-        console.log('Fuego creado en:', x + dir.x, y + dir.y);
+        let fireX = x + dir.x;
+        let fireY = y + dir.y;
+
+        // Verificar si hay un muro indestructible en esta posición
+        const tile = groundLayer.getTileAtWorldXY(fireX, fireY);
+        if (tile && tile.index === 1) {
+            return; // Si hay un muro indestructible, no crear fuego en esta dirección
+        }
+
+        // Verificar si hay un muro destructible en esta posición
+        const destructibleWall = game.scene.scenes[0].destructibleWalls.getChildren().find(wall =>
+            wall.x === fireX && wall.y === fireY
+        );
+
+        if (destructibleWall) {
+            destructibleWall.destroy();
+            // Crear fuego en la posición del muro destructible
+            const fire = game.scene.scenes[0].fires.create(fireX, fireY, 'fire');
+            fire.setDepth(2);
+            fire.anims.play('fire', true);
+            fire.on('animationcomplete', () => {
+                fire.destroy();
+            });
+        } else {
+            // Si no hay muro destructible, crear fuego normalmente
+            const fire = game.scene.scenes[0].fires.create(fireX, fireY, 'fire');
+            fire.setDepth(2);
+            fire.anims.play('fire', true);
+            fire.on('animationcomplete', () => {
+                fire.destroy();
+            });
+        }
+
+        console.log('Fuego creado en:', fireX, fireY);
     });
 }
 
