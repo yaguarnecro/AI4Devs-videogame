@@ -1,27 +1,61 @@
-var config = {
-    type: Phaser.AUTO,
-    width: 240,
-    height: 240,
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
-    },
-    backgroundColor: "#000000",
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
-    },
-    physics: {
-        default: 'arcade',
-        arcade: {
-            debug: false
-        },
-    },
-    pixelArt: true
-};
+let game = null;
 
-const game = new Phaser.Game(config);
+function startGame() {
+    if (game) {
+        game.destroy(true);
+    }
+
+    const config = {
+        type: Phaser.AUTO,
+        width: 240,
+        height: 240,
+        zoom: 3,
+        scale: {
+            mode: Phaser.Scale.FIT,
+            autoCenter: Phaser.Scale.CENTER_BOTH,
+            parent: 'game-container',
+        },
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 0 }
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        },
+        pixelArt: true
+    };
+
+    game = new Phaser.Game(config);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const mainScreen = document.getElementById('main-screen');
+    const gameContainer = document.getElementById('game-container');
+    const instructionsScreen = document.getElementById('instructions');
+    const startButton = document.getElementById('start-button');
+    const instructionsButton = document.getElementById('instructions-button');
+    const backButton = document.getElementById('back-button');
+
+    startButton.addEventListener('click', () => {
+        mainScreen.style.display = 'none';
+        gameContainer.style.display = 'block';
+        startGame();
+    });
+
+    instructionsButton.addEventListener('click', () => {
+        mainScreen.style.display = 'none';
+        instructionsScreen.style.display = 'block';
+    });
+
+    backButton.addEventListener('click', () => {
+        instructionsScreen.style.display = 'none';
+        mainScreen.style.display = 'flex';
+    });
+});
 
 let map;
 let tileset;
@@ -55,11 +89,6 @@ function create() {
 
     // Crear la capa del suelo y los muros
     groundLayer = map.createLayer(0, tileset, 0, 0);
-
-    // Ajustar la cámara
-    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-    this.cameras.main.setZoom(1);
-    this.cameras.main.centerOn(map.widthInPixels / 2, map.heightInPixels / 2);
 
     // Configurar colisiones
     groundLayer.setCollisionByProperty({ collides: true });
@@ -212,6 +241,11 @@ function create() {
 }
 
 function update(time, delta) {
+    // Si el juego ha terminado, no actualizar nada
+    if (this.gameOver) {
+        return;
+    }
+
     const speed = 80;
 
     // Manejo del movimiento del jugador humano
@@ -368,14 +402,31 @@ function playerHit(player, fire) {
         // Detener la música de fondo
         stopAndResetMusic(this);
 
-        // Mostrar mensaje de "Game Over"
-        let gameOverText = this.add.text(120, 120, 'Game Over', { fontSize: '32px', fill: '#fff' });
-        gameOverText.setOrigin(0.5);
+        // Detener todas las animaciones y movimientos de los bots
+        for (let i = 1; i < this.players.length; i++) {
+            this.players[i].anims.stop();
+            this.players[i].setVelocity(0, 0);
+        }
 
-        // Reiniciar el juego después de 2 segundos
-        this.time.delayedCall(2000, () => {
-            restartGame.call(this);
-        }, [], this);
+        // Detener todas las bombas y explosiones
+        if (this.bombs && this.bombs.children && this.bombs.children.entries) {
+            this.bombs.children.entries.forEach(bomb => {
+                if (bomb.anims) bomb.anims.stop();
+            });
+        }
+        if (this.fires && this.fires.children && this.fires.children.entries) {
+            this.fires.children.entries.forEach(fire => {
+                if (fire.anims) fire.anims.stop();
+            });
+        }
+
+        // Mostrar mensaje de "Game Over" y menú de reinicio
+        showRestartMenu(this, 'Game Over');
+
+        // Desactivar la entrada del teclado
+        this.input.keyboard.enabled = false;
+
+        this.gameOver = true;
     } else {  // Si es un bot
         botHit.call(this, player, fire);
     }
@@ -391,11 +442,21 @@ function botHit(bot, fire) {
         this.players.splice(index, 1);
     }
 
-    // Verificar si quedan bots
-    if (this.players.length === 1) {
-        console.log('¡El jugador humano ha ganado!');
-        // Aquí puedes añadir lógica adicional para manejar la victoria del jugador
+    // Verificar si el jugador humano ha ganado
+    if (this.players.length === 1 && this.players[0] === this.players[0]) {
+        playerWin.call(this);
     }
+}
+
+function playerWin() {
+    console.log('¡El jugador humano ha ganado!');
+    this.physics.pause();  // Pausar la física del juego
+
+    // Detener la música de fondo
+    stopAndResetMusic(this);
+
+    // Mostrar mensaje de "Victoria" y menú de reinicio
+    showRestartMenu(this, '¡Victoria!');
 }
 
 function stopAndResetMusic(scene) {
@@ -404,6 +465,69 @@ function stopAndResetMusic(scene) {
     }
 }
 
-function restartGame() {
-    this.scene.restart();
+function showRestartMenu(scene, message) {
+    let menuGroup = scene.add.group();
+    let confirmDialog = scene.add.group();
+
+    let background = scene.add.rectangle(0, 0, scene.sys.game.config.width, scene.sys.game.config.height, 0x000000, 0.7);
+    background.setOrigin(0);
+    menuGroup.add(background);
+
+    let messageText = scene.add.text(scene.sys.game.config.width / 2, 60, message, { fontSize: '24px', fill: '#fff' });
+    messageText.setOrigin(0.5);
+    menuGroup.add(messageText);
+
+    let restartButton = scene.add.text(scene.sys.game.config.width / 2, 110, 'Reiniciar', { fontSize: '18px', fill: '#fff', backgroundColor: '#1a65ac', padding: { left: 10, right: 10, top: 5, bottom: 5 } });
+    restartButton.setOrigin(0.5);
+    restartButton.setInteractive({ useHandCursor: true });
+    restartButton.on('pointerdown', () => {
+        menuGroup.destroy();
+        confirmDialog.destroy();
+        scene.scene.restart();
+    });
+    menuGroup.add(restartButton);
+
+    let exitButton = scene.add.text(scene.sys.game.config.width / 2, 150, 'Salir', { fontSize: '18px', fill: '#fff', backgroundColor: '#aa3333', padding: { left: 10, right: 10, top: 5, bottom: 5 } });
+    exitButton.setOrigin(0.5);
+    exitButton.setInteractive({ useHandCursor: true });
+    exitButton.on('pointerdown', () => {
+        menuGroup.setVisible(false);
+        confirmDialog.setVisible(true);
+    });
+    menuGroup.add(exitButton);
+
+    // Crear el diálogo de confirmación
+    let confirmBg = scene.add.rectangle(scene.sys.game.config.width / 2, scene.sys.game.config.height / 2, 260, 140, 0x000000, 1);
+    confirmBg.setOrigin(0.5);
+    confirmBg.setStrokeStyle(2, 0xffffff);
+    confirmDialog.add(confirmBg);
+
+    let confirmText = scene.add.text(scene.sys.game.config.width / 2, scene.sys.game.config.height / 2 - 25, '¿Estás seguro de que\nquieres salir?', { fontSize: '16px', fill: '#fff', align: 'center', wordWrap: { width: 220 } });
+    confirmText.setOrigin(0.5);
+    confirmDialog.add(confirmText);
+
+    let yesButton = scene.add.text(scene.sys.game.config.width / 2 - 50, scene.sys.game.config.height / 2 + 25, 'Sí', { fontSize: '16px', fill: '#fff', backgroundColor: '#1a65ac', padding: { left: 10, right: 10, top: 5, bottom: 5 } });
+    yesButton.setOrigin(0.5);
+    yesButton.setInteractive({ useHandCursor: true });
+    yesButton.on('pointerdown', () => {
+        scene.scene.stop();
+        scene.scene.remove();
+        if (scene.backgroundMusic) {
+            scene.backgroundMusic.stop();
+        }
+        window.location.href = '/index.html';
+    });
+    confirmDialog.add(yesButton);
+
+    let noButton = scene.add.text(scene.sys.game.config.width / 2 + 50, scene.sys.game.config.height / 2 + 25, 'No', { fontSize: '16px', fill: '#fff', backgroundColor: '#aa3333', padding: { left: 10, right: 10, top: 5, bottom: 5 } });
+    noButton.setOrigin(0.5);
+    noButton.setInteractive({ useHandCursor: true });
+    noButton.on('pointerdown', () => {
+        confirmDialog.setVisible(false);
+        menuGroup.setVisible(true);
+    });
+    confirmDialog.add(noButton);
+
+    menuGroup.setVisible(true);
+    confirmDialog.setVisible(false);
 }
