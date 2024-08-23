@@ -54,39 +54,88 @@
 > "Please style the cards in the memory game using CSS. Each card should have a gradient background with soft colors, rounded corners, and a flip animation. When the card is flipped, it should display a verb (either in its infinitive form or its past/participle form). If two cards are flipped and matched, they should remain visible; otherwise, they should flip back after 1 second.
 
 > Use this list of irregular verbs to populate the content of the memory game cards. Each card should either show the infinitive, past simple, or past participle form of a verb. Here is the list of verbs to use:
-1. be – was/were – been
-2. become – became – become
-3. begin – began – begun
-4. break – broke – broken
-5. bring – brought – brought
-6. buy – bought – bought
-7. choose – chose – chosen
-8. come – came – come
-9. do – did – done
-10. drink – drank – drunk
-11. eat – ate – eaten
-12. find – found – found
-13. fly – flew – flown
-14. forget – forgot – forgotten
-15. give – gave – given
-16. go – went – gone
-17. have – had – had
-18. hear – heard – heard
-19. know – knew – known
-20. leave – left – left
-21. lose – lost – lost
-22. make – made – made
-23. meet – met – met
-24. read – read – read
-25. run – ran – run
-26. see – saw – seen
-27. speak – spoke – spoken
-28. take – took – taken
-29. tell – told – told
-30. think – thought – thought
-31. throw – threw – thrown
-32. win – won – won
-33. write – wrote – written
+be – was/were – been
+beat – beat – beaten
+become – became – become
+begin – began – begun
+bite – bit – bitten
+blow – blew – blown
+break – broke – broken
+bring – brought – brought
+build – built – built
+buy – bought – bought
+catch – caught – caught
+choose – chose – chosen
+come – came – come
+cost – cost – cost
+cut – cut – cut
+do – did – done
+draw – drew – drawn
+drink – drank – drunk
+drive – drove – driven
+eat – ate – eaten
+fall – fell – fallen
+feel – felt – felt
+fight – fought – fought
+find – found – found
+fly – flew – flown
+forget – forgot – forgotten
+get – got – got
+give – gave – given
+go – went – gone
+grow – grew – grown
+hang – hung – hung
+have – had – had
+hear – heard – heard
+hide – hid – hidden
+hit – hit – hit
+hold – held – held
+hurt – hurt – hurt
+keep – kept – kept
+know – knew – known
+leave – left – left
+lend – lent – lent
+let – let – let
+lie – lay – lain
+light – lit – lit
+lose – lost – lost
+make – made – made
+mean – meant – meant
+meet – met – met
+pay – paid – paid
+put – put – put
+read – read – read
+ride – rode – ridden
+ring – rang – rung
+rise – rose – risen
+run – ran – run
+say – said – said
+see – saw – seen
+sell – sold – sold
+send – sent – sent
+shine – shone – shone
+shoot – shot – shot
+show – showed – shown
+shut – shut – shut
+sing – sang – sung
+sit – sat – sat
+sleep – slept – slept
+speak – spoke – spoken
+spend – spent – spent
+stand – stood – stood
+steal – stole – stolen
+swim – swam – swum
+take – took – taken
+teach – taught – taught
+tear – tore – torn
+tell – told – told
+think – thought – thought
+throw – threw – thrown
+understand – understood – understood
+wake – woke – woken
+wear – wore – worn
+win – won – won
+write – wrote – written
 
 > The game will randomly distribute these forms across the cards. The player must match the correct infinitive, past simple, and past participle forms to win.
 
