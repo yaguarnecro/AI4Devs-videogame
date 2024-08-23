@@ -148,3 +148,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('medium-button').addEventListener('click', () => setDifficulty('medium'));
     document.getElementById('hard-button').addEventListener('click', () => setDifficulty('hard'));
 });
+
+document.querySelectorAll('#difficulty-buttons button').forEach(button => {
+  button.addEventListener('click', function() {
+    document.querySelectorAll('#difficulty-buttons button').forEach(btn => btn.classList.remove('selected'));
+    this.classList.add('selected');
+  });
+});
