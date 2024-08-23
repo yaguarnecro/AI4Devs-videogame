@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Juego de Go</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="controls">
+      <button id="startButton">Empezar</button>
+      <button id="configButton">Configurar</button>
+      <button id="rulesButton">Reglas</button>
+      <button id="passButton" disabled>Pasar</button>
+      <button id="endButton" disabled>Finalizar</button>
+    </div>
+    <div id="level"></div>
+    <div id="board"></div>
+    <div id="score"></div>
+
+    <div id="overlay"></div>
+    <div id="rulesPopup">
+      <h2>Reglas de Go</h2>
+      <p>
+        El Go se juega sobre un tablero de líneas que forman una cuadrícula,
+        donde dos jugadores se alternan colocando piedras de color negro o
+        blanco. El objetivo es controlar el mayor territorio posible rodeando
+        áreas del tablero con tus piedras.
+      </p>
+      <ul>
+        <li>
+          Las piedras colocadas en el tablero no pueden moverse, pero pueden ser
+          capturadas si son rodeadas completamente.
+        </li>
+        <li>
+          No se permite suicidarse es decir, colocar una piedra en una posición
+          sin libertades a menos que capture una piedra enemiga.
+        </li>
+        <li>
+          La regla de Ko impide que la partida vuelva a una posición anterior de
+          forma repetitiva.
+        </li>
+        <li>
+          La partida termina cuando ambos jugadores pasan consecutivamente,
+          momento en el cual se cuenta el territorio controlado por cada
+          jugador.
+        </li>
+      </ul>
+      <button id="closeRulesButton">Cerrar</button>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
