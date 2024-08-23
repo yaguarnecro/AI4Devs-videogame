@@ -6,94 +6,90 @@ const timeLeft = 60; // Ajusta según sea necesario
 let totalTriplets = 3; // Ajusta según sea necesario
 
 const verbs = [
-    ['be', 'was/were', 'been'],
-    ['beat', 'beat', 'beaten'],
-    ['become', 'became', 'become'],
-    ['begin', 'began', 'begun'],
-    ['bite', 'bit', 'bitten'],
-    ['blow', 'blew', 'blown'],
-    ['break', 'broke', 'broken'],
-    ['bring', 'brought', 'brought'],
-    ['build', 'built', 'built'],
-    ['buy', 'bought', 'bought'],
-    ['catch', 'caught', 'caught'],
-    ['choose', 'chose', 'chosen'],
-    ['come', 'came', 'come'],
-    ['cost', 'cost', 'cost'],
-    ['cut', 'cut', 'cut'],
-    ['do', 'did', 'done'],
-    ['draw', 'drew', 'drawn'],
-    ['drink', 'drank', 'drunk'],
-    ['drive', 'drove', 'driven'],
-    ['eat', 'ate', 'eaten'],
-    ['fall', 'fell', 'fallen'],
-    ['feel', 'felt', 'felt'],
-    ['fight', 'fought', 'fought'],
-    ['find', 'found', 'found'],
-    ['fly', 'flew', 'flown'],
-    ['forget', 'forgot', 'forgotten'],
-    ['get', 'got', 'got'],
-    ['give', 'gave', 'given'],
-    ['go', 'went', 'gone'],
-    ['grow', 'grew', 'grown'],
-    ['hang', 'hung', 'hung'],
-    ['have', 'had', 'had'],
-    ['hear', 'heard', 'heard'],
-    ['hide', 'hid', 'hidden'],
-    ['hit', 'hit', 'hit'],
-    ['hold', 'held', 'held'],
-    ['hurt', 'hurt', 'hurt'],
-    ['keep', 'kept', 'kept'],
-    ['know', 'knew', 'known'],
-    ['leave', 'left', 'left'],
-    ['lend', 'lent', 'lent'],
-    ['let', 'let', 'let'],
-    ['lie', 'lay', 'lain'],
-    ['light', 'lit', 'lit'],
-    ['lose', 'lost', 'lost'],
-    ['make', 'made', 'made'],
-    ['mean', 'meant', 'meant'],
-    ['meet', 'met', 'met'],
-    ['pay', 'paid', 'paid'],
-    ['put', 'put', 'put'],
-    ['read', 'read', 'read'],
-    ['ride', 'rode', 'ridden'],
-    ['ring', 'rang', 'rung'],
-    ['rise', 'rose', 'risen'],
-    ['run', 'ran', 'run'],
-    ['say', 'said', 'said'],
-    ['see', 'saw', 'seen'],
-    ['sell', 'sold', 'sold'],
-    ['send', 'sent', 'sent'],
-    ['shine', 'shone', 'shone'],
-    ['shoot', 'shot', 'shot'],
-    ['show', 'showed', 'shown'],
-    ['shut', 'shut', 'shut'],
-    ['sing', 'sang', 'sung'],
-    ['sit', 'sat', 'sat'],
-    ['sleep', 'slept', 'slept'],
-    ['speak', 'spoke', 'spoken'],
-    ['spend', 'spent', 'spent'],
-    ['stand', 'stood', 'stood'],
-    ['steal', 'stole', 'stolen'],
-    ['swim', 'swam', 'swum'],
-    ['take', 'took', 'taken'],
-    ['teach', 'taught', 'taught'],
-    ['tear', 'tore', 'torn'],
-    ['tell', 'told', 'told'],
-    ['think', 'thought', 'thought'],
-    ['throw', 'threw', 'thrown'],
-    ['understand', 'understood', 'understood'],
-    ['wake', 'woke', 'woken'],
-    ['wear', 'wore', 'worn'],
-    ['win', 'won', 'won'],
-    ['write', 'wrote', 'written']
+    ['be', 'was/were', 'been', 'fa-user'],
+    ['beat', 'beat', 'beaten', 'fa-drum'],
+    ['become', 'became', 'become', 'fa-magic'],
+    ['begin', 'began', 'begun', 'fa-play'],
+    ['bite', 'bit', 'bitten', 'fa-tooth'],
+    ['blow', 'blew', 'blown', 'fa-wind'],
+    ['break', 'broke', 'broken', 'fa-hammer'],
+    ['bring', 'brought', 'brought', 'fa-gift'],
+    ['build', 'built', 'built', 'fa-building'],
+    ['buy', 'bought', 'bought', 'fa-shopping-cart'],
+    ['catch', 'caught', 'caught', 'fa-hand-holding'],
+    ['choose', 'chose', 'chosen', 'fa-check'],
+    ['come', 'came', 'come', 'fa-arrow-right'],
+    ['cost', 'cost', 'cost', 'fa-dollar-sign'],
+    ['cut', 'cut', 'cut', 'fa-cut'],
+    ['do', 'did', 'done', 'fa-check-circle'],
+    ['draw', 'drew', 'drawn', 'fa-pencil-alt'],
+    ['drink', 'drank', 'drunk', 'fa-glass-martini'],
+    ['drive', 'drove', 'driven', 'fa-car'],
+    ['eat', 'ate', 'eaten', 'fa-utensils'],
+    ['fall', 'fell', 'fallen', 'fa-fall'],
+    ['feel', 'felt', 'felt', 'fa-heart'],
+    ['fight', 'fought', 'fought', 'fa-fist-raised'],
+    ['find', 'found', 'found', 'fa-search'],
+    ['fly', 'flew', 'flown', 'fa-plane'],
+    ['forget', 'forgot', 'forgotten', 'fa-brain'],
+    ['forgive', 'forgave', 'forgiven', 'fa-handshake'],
+    ['freeze', 'froze', 'frozen', 'fa-snowflake'],
+    ['get', 'got', 'gotten', 'fa-gift'],
+    ['give', 'gave', 'given', 'fa-hand-holding-heart'],
+    ['go', 'went', 'gone', 'fa-walking'],
+    ['grow', 'grew', 'grown', 'fa-seedling'],
+    ['have', 'had', 'had', 'fa-hand-holding'],
+    ['hear', 'heard', 'heard', 'fa-ear'],
+    ['hide', 'hid', 'hidden', 'fa-eye-slash'],
+    ['hit', 'hit', 'hit', 'fa-hand-rock'],
+    ['hold', 'held', 'held', 'fa-hand-holding'],
+    ['hurt', 'hurt', 'hurt', 'fa-band-aid'],
+    ['keep', 'kept', 'kept', 'fa-lock'],
+    ['know', 'knew', 'known', 'fa-brain'],
+    ['leave', 'left', 'left', 'fa-sign-out-alt'],
+    ['lend', 'lent', 'lent', 'fa-hand-holding-usd'],
+    ['let', 'let', 'let', 'fa-door-open'],
+    ['lose', 'lost', 'lost', 'fa-times-circle'],
+    ['make', 'made', 'made', 'fa-hammer'],
+    ['mean', 'meant', 'meant', 'fa-comment-dots'],
+    ['meet', 'met', 'met', 'fa-handshake'],
+    ['pay', 'paid', 'paid', 'fa-money-bill-wave'],
+    ['put', 'put', 'put', 'fa-arrow-down'],
+    ['read', 'read', 'read', 'fa-book'],
+    ['ride', 'rode', 'ridden', 'fa-bicycle'],
+    ['ring', 'rang', 'rung', 'fa-bell'],
+    ['run', 'ran', 'run', 'fa-running'],
+    ['say', 'said', 'said', 'fa-comment'],
+    ['see', 'saw', 'seen', 'fa-eye'],
+    ['sell', 'sold', 'sold', 'fa-dollar-sign'],
+    ['send', 'sent', 'sent', 'fa-paper-plane'],
+    ['show', 'showed', 'shown', 'fa-tv'],
+    ['shut', 'shut', 'shut', 'fa-door-closed'],
+    ['sing', 'sang', 'sung', 'fa-microphone'],
+    ['sit', 'sat', 'sat', 'fa-chair'],
+    ['sleep', 'slept', 'slept', 'fa-bed'],
+    ['speak', 'spoke', 'spoken', 'fa-comment-alt'],
+    ['spend', 'spent', 'spent', 'fa-wallet'],
+    ['stand', 'stood', 'stood', 'fa-male'],
+    ['steal', 'stole', 'stolen', 'fa-mask'],
+    ['swim', 'swam', 'swum', 'fa-swimmer'],
+    ['take', 'took', 'taken', 'fa-hand-paper'],
+    ['teach', 'taught', 'taught', 'fa-chalkboard-teacher'],
+    ['tell', 'told', 'told', 'fa-comment-dots'],
+    ['think', 'thought', 'thought', 'fa-brain'],
+    ['throw', 'threw', 'thrown', 'fa-baseball-ball'],
+    ['understand', 'understood', 'understood', 'fa-brain'],
+    ['wake', 'woke', 'woken', 'fa-sun'],
+    ['wear', 'wore', 'worn', 'fa-tshirt'],
+    ['win', 'won', 'won', 'fa-trophy'],
+    ['write', 'wrote', 'written', 'fa-pen'],
 ];
 
-function createCard(content) {
+function createCard(content, icon) {
     const card = document.createElement('div');
     card.className = 'card';
     card.dataset.content = content; // Guardar el contenido en un atributo de datos
+    card.dataset.icon = icon; // Guardar el icono en un atributo de datos
 
     const cardFront = document.createElement('div');
     cardFront.className = 'card-back'; // Este es el lado frontal con la imagen
@@ -101,7 +97,7 @@ function createCard(content) {
 
     const cardBack = document.createElement('div');
     cardBack.className = 'card-content'; // Este es el lado trasero con el texto
-    cardBack.innerText = content; // Mostrar el contenido al hacer clic
+    cardBack.innerHTML = `<i class="fas ${icon}"></i><br>${content}`; // Mostrar el icono y el contenido en líneas separadas
 
     card.appendChild(cardFront);
     card.appendChild(cardBack);
@@ -200,10 +196,15 @@ function renderCards() {
         }
     }
 
-    const contents = selectedVerbs.flat(); // Aplanar el array de verbos seleccionados
+    const contents = selectedVerbs.flatMap(verb => [
+        { content: verb[0], icon: verb[3] },
+        { content: verb[1], icon: verb[3] },
+        { content: verb[2], icon: verb[3] }
+    ]);
+
     contents.sort(() => Math.random() - 0.5); // Mezclar las cartas
-    contents.forEach(content => {
-        const card = createCard(content);
+    contents.forEach(({ content, icon }) => {
+        const card = createCard(content, icon);
         cardGrid.appendChild(card);
     });
 }
