@@ -36,7 +36,7 @@ header h1 {
 .card {
   position: relative;
   width: 100px;
-  height: 150px;
+  height: 130px;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -61,7 +61,8 @@ header h1 {
   font-size: 20px;
   color: #2f2f2f; /* Color de texto claro */
   background-color: #f0f0f0; /* Fondo claro para el lado con la palabra */
-  transform: rotateY(180deg); /* Asegúrate de que el lado con el texto esté rotado inicialmente */
+  transform: rotateY(180deg); 
+  border-radius: 10px;
 }
 
 .card .card-back {
