@@ -219,6 +219,9 @@ function setDifficulty(level) {
         case 'hard':
             totalTriplets = 9;
             break;
+        case 'professional':
+            totalTriplets = 12; // Usar 12 tripletas
+            break;
     }
     resetGame();
     renderCards(); // Asegurarse de renderizar las cartas después de cambiar la dificultad
@@ -230,6 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('easy-button').addEventListener('click', () => setDifficulty('easy'));
     document.getElementById('medium-button').addEventListener('click', () => setDifficulty('medium'));
     document.getElementById('hard-button').addEventListener('click', () => setDifficulty('hard'));
+    document.getElementById('professional-button').addEventListener('click', () => setDifficulty('professional'));
 });
 
 document.querySelectorAll('#difficulty-buttons button').forEach(button => {
