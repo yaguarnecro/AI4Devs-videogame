@@ -6,7 +6,7 @@ let playerColor = "black";
 let aiColor = "white";
 let gameStarted = false;
 let moveHistory = [];
-let level = 8;
+let level = 1;
 
 document.getElementById("startButton").addEventListener("click", startGame);
 document
