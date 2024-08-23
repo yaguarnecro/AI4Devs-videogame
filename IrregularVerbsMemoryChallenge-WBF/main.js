@@ -141,7 +141,7 @@ function resetGame() {
     document.getElementById('timer').textContent = timeLeft;
     document.querySelectorAll('.card').forEach(card => {
         card.classList.remove('flipped');
-        card.querySelector('.card-content').innerText = card.dataset.content; // Mostrar el texto
+        card.querySelector('.card-content').innerHTML = `<i class="fas ${card.dataset.icon}"></i><br>${card.dataset.content}`; // Restaurar el icono y el texto
         card.querySelector('.card-back').style.backgroundImage = 'url("card.png")'; // Restaurar la imagen de fondo
         card.addEventListener('click', flipCard);
     });
@@ -170,7 +170,7 @@ function checkForMatch() {
         setTimeout(() => {
             flippedCards.forEach(card => {
                 card.classList.remove('flipped');
-                card.querySelector('.card-content').innerText = card.dataset.content; // Mostrar el texto
+                card.querySelector('.card-content').innerHTML = `<i class="fas ${card.dataset.icon}"></i><br>${card.dataset.content}`; // Restaurar el icono y el texto
                 card.querySelector('.card-back').style.backgroundImage = 'url("card.png")'; // Restaurar la imagen de fondo
             });
             flippedCards = [];
