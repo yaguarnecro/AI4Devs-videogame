@@ -6,7 +6,7 @@ let playerColor = "black";
 let aiColor = "white";
 let gameStarted = false;
 let moveHistory = [];
-let level = 1;
+let level = 8;
 
 document.getElementById("startButton").addEventListener("click", startGame);
 document
@@ -109,7 +109,7 @@ function isLegalMove(x, y, color) {
   // Coloca temporalmente la piedra en el tablero
   tempBoard[y][x] = { color: color };
 
-  if (!hasLiberties(x, y, tempBoard, color) && !willCapture(x, y, color)) {
+  if (!hasLibertiesTmp(x, y, tempBoard, color) && !willCapture(x, y, color)) {
     return false; // Suicidio
   }
 
@@ -120,7 +120,7 @@ function isLegalMove(x, y, color) {
   return true;
 }
 
-function hasLiberties(x, y, tempBoard, color) {
+function hasLibertiesTmp(x, y, tempBoard, color) {
   const visited = new Set();
 
   function explore(cx, cy) {
@@ -176,7 +176,7 @@ function willCapture(x, y, color) {
     if (board[ny] && board[ny][nx] === opponentColor) {
       const tempBoard = copyBoard(board);
       tempBoard[y][x] = color;
-      return !hasLiberties(nx, ny, tempBoard, opponentColor);
+      return !hasLibertiesTmp(nx, ny, tempBoard, opponentColor);
     }
     return false;
   });
@@ -207,7 +207,7 @@ function captureGroups(x, y, color) {
     const nx = x + dx;
     const ny = y + dy;
     if (board[ny] && board[ny][nx]?.color === color && !board[ny][nx]?.captured) {
-      if (!hasLiberties(nx, ny, board, color)) {
+      if (!hasLibertiesTmp(nx, ny, board, color)) {
         capturedStones += removeGroup(nx, ny, color);
       }
     }
@@ -259,43 +259,194 @@ function passTurn() {
 }
 
 function aiMove() {
-  const emptyCells = [];
-  for (let y = 0; y < boardSize; y++) {
-    for (let x = 0; x < boardSize; x++) {
-      if (!board[y][x] && isLegalMove(x, y, aiColor)) {
-        emptyCells.push({ x, y });
-      }
-    }
-  }
-
-  if (emptyCells.length > 0) {
-    let move;
-    if (level === 1) {
-      move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    } else {
-      move = findBestMove(emptyCells);
-    }
-    makeMove(move.x, move.y, aiColor);
-    currentPlayer = playerColor;
-    renderBoard();
+  let bestMove = findBestMove(aiColor);
+  if (bestMove) {
+      makeMove(bestMove.x, bestMove.y, aiColor);
+      currentPlayer = playerColor;
+      renderBoard();
+  } else {
+      console.log("IA pasa su turno");
   }
 }
 
-function findBestMove(moves) {
-  let bestMove = moves[0];
-  let maxCaptures = -1;
+function findBestMove(color) {
+  let bestScore = -Infinity;
+  let bestMove = null;
 
-  moves.forEach((move) => {
-    const tempBoard = copyBoard(board);
-    tempBoard[move.y][move.x] = { color: aiColor };
-    const captures = captureGroups(move.x, move.y, playerColor).length;
-    if (captures > maxCaptures) {
-      maxCaptures = captures;
-      bestMove = move;
-    }
-  });
+  for (let x = 0; x < boardSize; x++) {
+      for (let y = 0; y < boardSize; y++) {
+          let score = evaluateMove(x, y, color);
 
+          if (score > bestScore) {
+              bestScore = score;
+              bestMove = { x, y };
+          }
+      }
+  }
   return bestMove;
+}
+
+function evaluateMove(x, y, color) {
+  let score = 0;
+
+  if (!isLegalMove(x, y, color)) return -Infinity;
+
+  // Niveles 1-3: Evaluar capturas y libertades básicas
+  if (level >= 1) {
+      // Captura directa
+      if (wouldCapture(x, y, color)) {
+          score += 100;
+      }
+      // Libertades del movimiento
+      score += countLiberties(x, y, color) * 10;
+  }
+
+  // Niveles 4-6: Evaluar expansión de territorio
+  if (level >= 4) {
+      if (expandsTerritory(x, y, color)) {
+          score += 50;
+      }
+  }
+
+  // Niveles 7-10: Evaluar seguridad y tácticas avanzadas
+  if (level >= 7) {
+      // Penalizar si deja la piedra en riesgo de ser capturada
+      if (wouldBeCaptured(x, y, color)) {
+          score -= 100;
+      }
+      
+      // Evaluar amenazas futuras (simulación)
+      // score -= simulateFutureMoves(x, y, color);
+  }
+
+  return score;
+}
+
+function simulateFutureMoves(x, y, color) {
+  let opponent = (color === 'black') ? 'white' : 'black';
+
+  board[y][x] = { color: color };
+  let opponentBestMove = findBestMove(opponent);
+  board[y][x] = null;
+
+  return evaluateMove(opponentBestMove.x, opponentBestMove.y, opponent);
+}
+
+function wouldCapture(x, y, color) {
+  const opponent = (color === 'black') ? 'white' : 'black';
+  board[y][x] = { color: color };
+  let captured = false;
+
+  // Verificar las piedras adyacentes del oponente para capturarlas
+  const neighbors = getNeighbors(x, y);
+  for (let [nx, ny] of neighbors) {
+      if (board[ny][nx]?.color === opponent && !hasLiberties(nx, ny, opponent)) {
+          captured = true;
+          break;
+      }
+  }
+
+  board[y][x] = null;
+  return captured;
+}
+
+function countLiberties(x, y, color) {
+  const visited = new Set();
+  return calculateLiberties(x, y, color, visited);
+}
+
+function calculateLiberties(x, y, color, visited) {
+  if (visited.has(`${x},${y}`)) return 0;
+  visited.add(`${x},${y}`);
+
+  let liberties = 0;
+  const neighbors = getNeighbors(x, y);
+
+  for (let [nx, ny] of neighbors) {
+      if (board[ny][nx] === null) {
+          liberties++;
+      } else if (board[ny][nx]?.color === color) {
+          liberties += calculateLiberties(nx, ny, color, visited);
+      }
+  }
+
+  return liberties;
+}
+
+function expandsTerritory(x, y, color) {
+  board[y][x] = { color: color };
+  let expanded = false;
+
+  const neighbors = getNeighbors(x, y);
+  for (let [nx, ny] of neighbors) {
+      if (board[ny][nx] === null && isTerritory(nx, ny, color)) {
+          expanded = true;
+          break;
+      }
+  }
+
+  board[y][x] = null;
+  return expanded;
+}
+
+function isTerritory(x, y, color) {
+  // Función auxiliar para determinar si un punto es territorio del color dado
+  const visited = new Set();
+  return exploreTerritory(x, y, color, visited);
+}
+
+function exploreTerritory(x, y, color, visited) {
+  if (visited.has(`${x},${y}`)) return true;
+  visited.add(`${x},${y}`);
+
+  const neighbors = getNeighbors(x, y);
+  for (let [nx, ny] of neighbors) {
+      if (board[ny][nx] === null) {
+          if (!exploreTerritory(nx, ny, color, visited)) {
+              return false;
+          }
+      } else if (board[ny][nx]?.color !== color) {
+          return false;
+      }
+  }
+
+  return true;
+}
+
+function wouldBeCaptured(x, y, color) {
+  board[y][x] = { color: color };
+  const opponent = (color === 'black') ? 'white' : 'black';
+  let captured = false;
+
+  if (!hasLiberties(x, y, color)) {
+      captured = true;
+  } else {
+      const neighbors = getNeighbors(x, y);
+      for (let [nx, ny] of neighbors) {
+          if (board[ny][nx]?.color === color && !hasLiberties(nx, ny, color)) {
+              captured = true;
+              break;
+          }
+      }
+  }
+
+  board[y][x] = null;
+  return captured;
+}
+
+function getNeighbors(x, y) {
+  const neighbors = [];
+  const limit = boardSize - 1;
+  if (x > 0) neighbors.push([x - 1, y]); // Arriba
+  if (x < limit) neighbors.push([x + 1, y]); // Abajo
+  if (y > 0) neighbors.push([x, y - 1]); // Izquierda
+  if (y < limit) neighbors.push([x, y + 1]); // Derecha
+  return neighbors;
+}
+
+function hasLiberties(x, y, color) {
+  const visited = new Set();
+  return calculateLiberties(x, y, color, visited) > 0;
 }
 
 function endGame() {
@@ -317,7 +468,7 @@ function endGame() {
     }
   } else if (score.winner === "Blanco") {
     if (level > 1) {
-      level--;
+      console.info("Perdiste, sigues en el mismo nivel")
     }
   }
 }

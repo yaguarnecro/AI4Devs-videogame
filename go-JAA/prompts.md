@@ -61,3 +61,6 @@ Necesito que validez la última version, que la analices y dime si cubre todas l
 
 ### Prompt10
 Hay una funcionalidad que tambien está parcial y necesita mejoras, "El color de las piedras muertas";  esto no se cumple, podría ser por un bug, las piedras siguen teniendo el mismo color o el color de las piedras muertas siguen igual. Esto se podría mejorar?
+
+### Prompt11
+De acuerdo con la conclusión que diste sobre la IA, se necesitan mejoras adicionales en la IA para hacerlo más avanzado, podría ser necesario integrar una biblioteca de IA o un motor de juego de Go, lo cual no está implementado en la versión actual. Me gustaría seguir con esta mejora y proceder con la integración de un motor de IA más avanzado o realizar cualquier ajuste menor necesario en la interfaz o lógica del juego. Qué sugieres, cómo comenzamos?
