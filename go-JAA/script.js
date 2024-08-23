@@ -8,17 +8,13 @@ let gameStarted = false;
 let moveHistory = [];
 let level = 1;
 
-document
-  .getElementById("startButton")
-  .addEventListener("click", startGame);
+document.getElementById("startButton").addEventListener("click", startGame);
 document
   .getElementById("configButton")
   .addEventListener("click", configureGame);
 document.getElementById("passButton").addEventListener("click", passTurn);
 document.getElementById("endButton").addEventListener("click", endGame);
-document
-  .getElementById("rulesButton")
-  .addEventListener("click", showRules);
+document.getElementById("rulesButton").addEventListener("click", showRules);
 document
   .getElementById("closeRulesButton")
   .addEventListener("click", closeRules);
@@ -78,6 +74,7 @@ function renderBoard() {
           capturedMark.className = "captured";
           capturedMark.textContent = "X";
           cell.appendChild(capturedMark);
+          markDeadStone(x, y);
         }
       }
 
@@ -93,6 +90,8 @@ function onCellClick(event) {
   const x = parseInt(event.target.dataset.x);
   const y = parseInt(event.target.dataset.y);
 
+  if (!(y || x)) return;
+
   if (!board[y][x] && currentPlayer === playerColor) {
     if (isLegalMove(x, y, playerColor)) {
       makeMove(x, y, playerColor);
@@ -104,22 +103,24 @@ function onCellClick(event) {
 
 function isLegalMove(x, y, color) {
   // Asegurarse de que la celda esté vacía
-  if (board[y][x]) return false;
+  const tempBoard = copyBoard(board);
+  if (tempBoard[y][x]) return false;
 
   // Coloca temporalmente la piedra en el tablero
-  board[y][x] = { color: color };
+  tempBoard[y][x] = { color: color };
 
-  // Verifica si la piedra tiene libertades
-  const liberties = hasLiberties(x, y, color);
+  if (!hasLiberties(x, y, tempBoard, color) && !willCapture(x, y, color)) {
+    return false; // Suicidio
+  }
 
-  // Revierte el movimiento si no es legal
-  board[y][x] = null;
+  if (isKo(x, y, color)) {
+    return false; // Regla de Ko
+  }
 
-  // Devuelve verdadero si tiene libertades, captura un grupo enemigo, y no viola la regla del ko
-  return liberties || (willCapture(x, y, color) && !isKo(x, y, color));
+  return true;
 }
 
-function hasLiberties(x, y, color) {
+function hasLiberties(x, y, tempBoard, color) {
   const visited = new Set();
 
   function explore(cx, cy) {
@@ -128,11 +129,11 @@ function hasLiberties(x, y, color) {
     visited.add(key);
 
     // Si hay una celda vacía adyacente, la piedra tiene libertades
-    if (board[cy] && board[cy][cx] === null) {
+    if (tempBoard[cy] && tempBoard[cy][cx] === null) {
       return true;
     }
     // Si hay una piedra del mismo color adyacente, seguir explorando
-    else if (board[cy] && board[cy][cx]?.color === color) {
+    else if (tempBoard[cy] && tempBoard[cy][cx]?.color === color) {
       return (
         explore(cx + 1, cy) ||
         explore(cx - 1, cy) ||
@@ -162,50 +163,79 @@ function isKo(x, y, color) {
 
 function willCapture(x, y, color) {
   const opponentColor = color === "black" ? "white" : "black";
-  return captureGroups(x, y, opponentColor).length > 0;
+  const directions = [
+    [0, 1],
+    [1, 0],
+    [0, -1],
+    [-1, 0],
+  ];
+
+  return directions.some(([dx, dy]) => {
+    const nx = x + dx;
+    const ny = y + dy;
+    if (board[ny] && board[ny][nx] === opponentColor) {
+      const tempBoard = copyBoard(board);
+      tempBoard[y][x] = color;
+      return !hasLiberties(nx, ny, tempBoard, opponentColor);
+    }
+    return false;
+  });
 }
 
 function makeMove(x, y, color) {
   board[y][x] = { color: color };
   const opponentColor = color === "black" ? "white" : "black";
   const captured = captureGroups(x, y, opponentColor);
-  if (captured.length > 0) {
-    captured.forEach(([cx, cy]) => {
-      board[cy][cx].captured = true;
-    });
+  if (captured > 0) {
+    console.log(captured);
   }
   moveHistory.push({ x, y, color, boardStr: JSON.stringify(board) });
   renderBoard();
 }
 
 function captureGroups(x, y, color) {
-  const captured = [];
+  const directions = [
+    [0, 1],
+    [1, 0],
+    [0, -1],
+    [-1, 0],
+  ];
+
+  let capturedStones = 0;
+
+  directions.forEach(([dx, dy]) => {
+    const nx = x + dx;
+    const ny = y + dy;
+    if (board[ny] && board[ny][nx]?.color === color && !board[ny][nx]?.captured) {
+      if (!hasLiberties(nx, ny, board, color)) {
+        capturedStones += removeGroup(nx, ny, color);
+      }
+    }
+  });
+
+  return capturedStones;
+}
+
+function removeGroup(x, y, color) {
   const visited = new Set();
+  let captured = 0;
 
   function explore(cx, cy) {
     const key = `${cx},${cy}`;
     if (visited.has(key)) return;
     visited.add(key);
 
-    if (board[cy][cx] && board[cy][cx].color === color) {
-      if (!hasLiberties(cx, cy, board, color)) {
-        captured.push([cx, cy]);
-        explore(cx + 1, cy);
-        explore(cx - 1, cy);
-        explore(cx, cy + 1);
-        explore(cx, cy - 1);
-      }
+    if (board[cy] && board[cy][cx]?.color === color && !board[cy][cx]?.captured) {
+      board[cy][cx].captured = true;
+      captured++;
+      explore(cx + 1, cy);
+      explore(cx - 1, cy);
+      explore(cx, cy + 1);
+      explore(cx, cy - 1);
     }
   }
 
   explore(x, y);
-
-  if (captured.length > 0) {
-    captured.forEach(([cx, cy]) => {
-      board[cy][cx].captured = true;
-    });
-  }
-
   return captured;
 }
 
@@ -298,9 +328,9 @@ function calculateScore() {
 
   for (let y = 0; y < boardSize; y++) {
     for (let x = 0; x < boardSize; x++) {
-      if (board[y][x]?.color === "black") {
+      if (board[y][x]?.color === "black" && !board[y][x]?.captured) {
         blackScore++;
-      } else if (board[y][x]?.color === "white") {
+      } else if (board[y][x]?.color === "white" && !board[y][x]?.captured) {
         whiteScore++;
       } else if (board[y][x] === null) {
         const territoryOwner = determineTerritory(x, y);
@@ -329,10 +359,14 @@ function determineTerritory(x, y) {
       explore(cx - 1, cy);
       explore(cx, cy + 1);
       explore(cx, cy - 1);
-    } else if (board[cy] && board[cy][cx]?.color === "black") {
+    } else if (board[cy] && board[cy][cx]?.color === "black" && !board[y][x]?.captured) {
       isWhiteTerritory = false;
-    } else if (board[cy] && board[cy][cx]?.color === "white") {
+    } else if (board[cy] && board[cy][cx]?.color === "white" && !board[y][x]?.captured) {
       isBlackTerritory = false;
+    } else if (board[cy] && board[cy][cx]?.color === "white" && board[y][x]?.captured) {
+      isBlackTerritory = true;
+    } else if (board[cy] && board[cy][cx]?.color === "black" && board[y][x]?.captured) {
+      isWhiteTerritory = true;      
     }
   }
 
@@ -343,9 +377,7 @@ function determineTerritory(x, y) {
 }
 
 function copyBoard(board) {
-  return board.map((row) =>
-    row.map((cell) => (cell ? { ...cell } : null))
-  );
+  return board.map((row) => row.map((cell) => (cell ? { ...cell } : null)));
 }
 
 function showRules() {
@@ -356,4 +388,11 @@ function showRules() {
 function closeRules() {
   document.getElementById("rulesPopup").style.display = "none";
   document.getElementById("overlay").style.display = "none";
+}
+
+function markDeadStone(x, y) {
+  const stone = document.querySelector(`.stone[data-x="${x}"][data-y="${y}"]`);
+  if (stone) {
+    stone.classList.add("dead");
+  }
 }

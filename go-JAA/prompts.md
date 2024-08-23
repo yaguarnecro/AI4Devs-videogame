@@ -52,3 +52,12 @@ Parece que hay un error en el método `function isLegalMove(x, y, color)`, ahora
 
 ### Prompt7
 Parece que has eliminado la llamada a !isKo(x, y, color) ?? Podrías restablecerla ?
+
+### Prompt8
+Crea la description de este juego, el concepto y un resumen técnico en formato Pull request.
+
+### Prompt9
+Necesito que validez la última version, que la analices y dime si cubre todas las funcionalidades que se han definido
+
+### Prompt10
+Hay una funcionalidad que tambien está parcial y necesita mejoras, "El color de las piedras muertas";  esto no se cumple, podría ser por un bug, las piedras siguen teniendo el mismo color o el color de las piedras muertas siguen igual. Esto se podría mejorar?
