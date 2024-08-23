@@ -1,0 +1,74 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+}
+
+.game-container {
+    position: relative;
+}
+
+canvas {
+    border: 2px solid #0ff;
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 20px #0ff;
+}
+
+.game-title {
+    font-size: 3em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgb(255, 42, 0);
+}
+
+.scoreboard {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 1.2em;
+}
+
+.controls {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+.restart-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: rgb(255, 0, 255);
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.restart-btn:hover {
+    background-color: #00cccc;
+    box-shadow: 0 0 10px rgb(21, 0, 255);
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: #fff;
+    animation: twinkle 2s infinite;
+}
