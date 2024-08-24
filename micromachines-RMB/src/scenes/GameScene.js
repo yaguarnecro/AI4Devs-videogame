@@ -22,22 +22,14 @@ class GameScene extends Phaser.Scene {
         // Crear el circuito
         this.track = this.add.image(0, 0, 'track').setOrigin(0, 0);
 
-        // Crear el coche dentro de un contenedor
-        this.carContainer = this.add.container(this.cameras.main.width / 2, this.cameras.main.height / 2);
-
-        // Dibujar el borde amarillo
-        const border = this.add.graphics();
-        border.lineStyle(2, 0xffff00, 1); // Borde amarillo
-        border.strokeRect(-25, -12.5, 50, 25); // Ajustar el tamaño del borde al tamaño del coche
-        this.carContainer.add(border);
-        
-        this.car = this.matter.add.sprite(-10, 0, 'car');
+        // Crear el coche
+        this.car = this.matter.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, 'car');
         this.car.setDisplaySize(50, 50);
         this.car.setFrictionAir(0.05);
         this.car.setFixedRotation();
-        this.car.setStatic(true); // El coche estará inicialmente parado
-        this.carContainer.add(this.car);
-        this.car.angle = 90; // Girar solo la imagen del coche 90 grados a la derecha
+        this.car.angle = 0; // Girar solo la imagen del coche 90 grados a la derecha
+        this.car.setTexture('car');
+        //this.car.setAngle(90); // Girar el sprite 90 grados a la derecha
 
         // Configurar las teclas de control
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -61,20 +53,41 @@ class GameScene extends Phaser.Scene {
         // Configurar la meta
         this.finishLine = new Phaser.Geom.Rectangle(400, 300, 50, 10); // Ejemplo de posición de la meta
 
-        // Añadir texto para mostrar la información del contenedor del coche
-        this.carContainerInfoText = this.add.text(this.cameras.main.width - 10, 10, '', {
-            fontSize: '16px',
-            fill: '#fff'
-        }).setOrigin(1, 0);
-
         // Añadir texto para mostrar la información del coche
-        this.carInfoText = this.add.text(this.cameras.main.width - 10, 400, '', {
+        this.carInfoText = this.add.text(this.cameras.main.width - 10, 10, '', {
             fontSize: '16px',
             fill: '#fff'
         }).setOrigin(1, 0);
 
-        // Inicializar el vector de velocidad
-        this.carVelocity = new Phaser.Math.Vector2(0, 0);
+        // Crear los bordes del circuito
+        this.createTrackBounds();
+    }
+
+    createTrackBounds() {
+        // Crear bordes invisibles alrededor del circuito
+        const bounds = [
+            this.matter.add.rectangle(400, 0, 800, 50, { isStatic: true }), // Borde superior
+            this.matter.add.rectangle(400, 600, 800, 50, { isStatic: true }), // Borde inferior
+            this.matter.add.rectangle(0, 300, 50, 600, { isStatic: true }), // Borde izquierdo
+            this.matter.add.rectangle(800, 300, 50, 600, { isStatic: true }), // Borde derecho
+            this.matter.add.rectangle(400, 300, 50, 600, { isStatic: true }) // Borde derecho
+        ];
+
+        // Añadir colisiones entre el coche y los bordes
+        this.matter.world.on('collisionstart', (event) => {
+            console.log(event.pairs);
+            event.pairs.forEach(pair => {
+                if (pair.bodyA === this.car.body || pair.bodyB === this.car.body) {
+                    this.handleCollision();
+                }
+            });
+        });
+    }
+
+    handleCollision() {
+        // Rebotar el coche al colisionar con los bordes
+        const velocity = this.car.body.velocity;
+        this.car.setVelocity(-velocity.x, -velocity.y);
     }
 
     updateCountdown(seconds) {
@@ -100,9 +113,9 @@ class GameScene extends Phaser.Scene {
     handlePointerDown(pointer) {
         // Manejar controles táctiles
         if (pointer.x < this.cameras.main.width / 2) {
-            this.carContainer.rotation -= 0.1;
+            this.car.setAngularVelocity(-0.1);
         } else {
-            this.carContainer.rotation += 0.1;
+            this.car.setAngularVelocity(0.1);
         }
     }
 
@@ -129,60 +142,43 @@ class GameScene extends Phaser.Scene {
 
     updateCarControls() {
         // Controlar el coche con el teclado
-        const maxSpeed = 0.08;
-        const maxReverseSpeed = -0.06;
+        const maxSpeed = 0.008;
+        const maxReverseSpeed = -0.006;
         const turnSpeed = 0.1;
         const deceleration = 0.91; // Factor de desaceleración
 
         if (this.cursors.up.isDown) {
             const force = new Phaser.Math.Vector2();
-            force.setToPolar(this.carContainer.rotation, maxSpeed);
-            this.carVelocity.add(force);
+            force.setToPolar(this.car.rotation, maxSpeed);
+            this.car.applyForce(force);
             this.isAccelerating = true;
         } else if (this.cursors.down.isDown) {
             const force = new Phaser.Math.Vector2();
-            force.setToPolar(this.carContainer.rotation, maxReverseSpeed);
-            this.carVelocity.add(force);
+            force.setToPolar(this.car.rotation, maxReverseSpeed);
+            this.car.applyForce(force);
             this.isAccelerating = true;
         } else if (this.isAccelerating) {
             // Aplicar desaceleración gradual
-            this.carVelocity.scale(deceleration);
+            const velocity = this.car.body.velocity;
+            this.car.setVelocity(velocity.x * deceleration, velocity.y * deceleration);
 
             // Detener la desaceleración cuando la velocidad es muy baja
-            if (this.carVelocity.length() < 0.001) {
-                this.carVelocity.set(0, 0);
+            if (Phaser.Math.Distance.Between(0, 0, velocity.x, velocity.y) < 0.001) {
+                this.car.setVelocity(0, 0);
                 this.isAccelerating = false;
             }
         }
 
         if (this.cursors.left.isDown) {
-            this.carContainer.rotation -= turnSpeed;
-            const force = new Phaser.Math.Vector2();
-            force.setToPolar(this.carContainer.rotation, maxSpeed);
-            this.carVelocity.add(force);
+            this.car.setAngularVelocity(-turnSpeed);
         } else if (this.cursors.right.isDown) {
-            this.carContainer.rotation += turnSpeed;
-            const force = new Phaser.Math.Vector2();
-            force.setToPolar(this.carContainer.rotation, maxSpeed);
-            this.carVelocity.add(force);
+            this.car.setAngularVelocity(turnSpeed);
+        } else {
+            this.car.setAngularVelocity(0);
         }
-
-        // Actualizar la posición del contenedor del coche
-        this.carContainer.x += this.carVelocity.x;
-        this.carContainer.y += this.carVelocity.y;
-
     }
 
     updateCarInfo() {
-        const containerangle = Phaser.Math.RadToDeg(this.carContainer.rotation).toFixed(2);
-        const containerrotation = this.carContainer.rotation.toFixed(2);
-        const containervelocity = this.car.body.velocity;
-        const containerspeed = Math.sqrt(containervelocity.x * containervelocity.x + containervelocity.y * containervelocity.y).toFixed(2);
-        const containerposX = this.carContainer.x.toFixed(2);
-        const containerposY = this.carContainer.y.toFixed(2);
-
-        this.carContainerInfoText.setText(`Ángulo: ${containerangle}°\nRotación: ${containerrotation} rad\nVelocidad: ${containervelocity}\nSpeed: ${containerspeed}\nPosición X: ${containerposX}\nPosición Y: ${containerposY}`);
-
         const angle = Phaser.Math.RadToDeg(this.car.rotation).toFixed(2);
         const rotation = this.car.rotation.toFixed(2);
         const velocity = this.car.body.velocity;
@@ -199,7 +195,7 @@ class GameScene extends Phaser.Scene {
         this.miniMap.lineStyle(2, 0xffffff, 1);
         this.miniMap.strokeRect(10, 10, 200, 200);
         this.miniMap.fillStyle(0xff0000, 1);
-        this.miniMap.fillRect(10 + (this.carContainer.x / this.track.width) * 200, 10 + (this.carContainer.y / this.track.height) * 200, 5, 5);
+        this.miniMap.fillRect(10 + (this.car.x / this.track.width) * 200, 10 + (this.car.y / this.track.height) * 200, 5, 5);
     }
 
     handleLapCompletion() {
