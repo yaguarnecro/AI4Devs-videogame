@@ -78,6 +78,7 @@ function preload() {
     this.load.spritesheet('player_red', 'assets/sprites/snes_red.png', { frameWidth: 17, frameHeight: 26 });
     this.load.spritesheet('player_black', 'assets/sprites/snes_black.png', { frameWidth: 17, frameHeight: 26 });
     this.load.spritesheet('player_blue', 'assets/sprites/snes_blue.png', { frameWidth: 17, frameHeight: 26 });
+    this.load.spritesheet('items', 'assets/sprites/snes_items.png', { frameWidth: 16, frameHeight: 16 });
 }
 
 function create() {
@@ -178,7 +179,6 @@ function create() {
         }
     }
 
-    console.log(`Muros destructibles creados: ${this.destructibleWalls.countActive()}`);
 
     // Añadir colisiones con muros destructibles
     this.physics.add.collider(player, this.destructibleWalls);
@@ -238,6 +238,12 @@ function create() {
             });
         });
     });
+
+    this.items = this.physics.add.group();
+    this.physics.add.overlap(this.players, this.items, function (player, item) {
+        applyItemEffect(player, item.getData('type'));
+        item.destroy(); // Elimina el item del juego
+    }, null, this);
 }
 
 function update(time, delta) {
@@ -378,6 +384,12 @@ function createExplosion(scene, x, y) {
 
         if (destructibleWall) {
             destructibleWall.destroy();
+            // Decidir al azar si se crea un item
+            if (Math.random() < 0.5) { // 50% de probabilidad de generar un item
+                const itemIndex = Math.floor(Math.random() * 12); // Asumiendo que hay 12 items diferentes
+                const item = scene.items.create(destructibleWall.x, destructibleWall.y, 'items', itemIndex);
+                item.setData('type', itemIndex);
+            }
         }
 
         // Crear fuego
@@ -518,4 +530,30 @@ function restartGame(scene) {
         game.destroy(true);
     }
     startGame();
+}
+
+function applyItemEffect(player, itemType) {
+    switch (itemType) {
+        case 0: // Aumento de velocidad
+            player.speed += 20;
+            break;
+        case 1: // Capacidad extra de bombas
+            player.maxBombs += 1;
+            break;
+        case 2: // Mayor alcance de explosión
+            player.bombRange += 1;
+            break;
+        case 3: // Invulnerabilidad temporal
+            player.invulnerable = true;
+            setTimeout(() => {
+                player.invulnerable = false;
+            }, 5000); // 5 segundos de invulnerabilidad
+            break;
+        case 4: // Empujar bombas
+            player.canPushBombs = true;
+            break;
+        case 5: // Detonador remoto
+            player.hasRemoteDetonator = true;
+            break;
+    }
 }
