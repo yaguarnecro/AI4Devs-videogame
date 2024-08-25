@@ -27,6 +27,11 @@ class GameScene extends Phaser.Scene {
         this.load.image('mask', 'assets/tracks/track1_mask.jpg');
         // Cargar la imagen del minimapa
         this.load.image('minimap', 'assets/tracks/track1_minimap.png');
+        // Cargar las imágenes de los botones
+        this.load.image('buttonUp', 'assets/buttons/up.png');
+        this.load.image('buttonDown', 'assets/buttons/down.png');
+        this.load.image('buttonLeft', 'assets/buttons/left.png');
+        this.load.image('buttonRight', 'assets/buttons/right.png');
     }
 
     create() {
@@ -57,10 +62,6 @@ class GameScene extends Phaser.Scene {
 
         // Configurar las teclas de control
         this.cursors = this.input.keyboard.createCursorKeys();
-
-        // Configurar controles táctiles
-        this.input.on('pointerdown', this.handlePointerDown, this);
-        this.input.on('pointerup', this.handlePointerUp, this);
 
         // Instrucciones
         this.instruccionesText = this.add.text(this.cameras.main.width / 2 - 100, this.cameras.main.height / 2 - 200, 'Juega con ◄ ► ▲ ▼', {
@@ -119,6 +120,56 @@ class GameScene extends Phaser.Scene {
             fill: '#fff'
         }).setOrigin(0, 0);
         this.lapTimesText.setScrollFactor(0);
+
+        // Crear botones táctiles
+        if (this.sys.game.device.input.touch) {
+            this.createTouchControls();
+        }
+    }
+
+    createTouchControls() {
+        // Crear botones táctiles
+        const buttonSize = 64;
+        const buttonSpacing = 20;
+        const screenWidth = this.cameras.main.width;
+        const screenHeight = this.cameras.main.height;
+
+        // Botón de girar izquierda
+        const buttonLeft = this.add.image(buttonSpacing + 60, screenHeight - buttonSize - buttonSpacing, 'buttonLeft')
+            .setInteractive()
+            .setScrollFactor(0)
+            .setDisplaySize(buttonSize, buttonSize);
+
+        // Botón de girar izquierda (segundo)
+        const buttonRight = this.add.image(buttonSpacing + buttonSize + buttonSpacing + 60, screenHeight - buttonSize - buttonSpacing, 'buttonRight')
+            .setInteractive()
+            .setScrollFactor(0)
+            .setDisplaySize(buttonSize, buttonSize);
+
+        // Botón de acelerar
+        const buttonUp = this.add.image(screenWidth - buttonSize - buttonSpacing, screenHeight - buttonSize * 2 - buttonSpacing * 2, 'buttonUp')
+            .setInteractive()
+            .setScrollFactor(0)
+            .setDisplaySize(buttonSize, buttonSize);
+
+        // Botón de frenar
+        const buttonDown = this.add.image(screenWidth - buttonSize - buttonSpacing, screenHeight - buttonSize - buttonSpacing, 'buttonDown')
+            .setInteractive()
+            .setScrollFactor(0)
+            .setDisplaySize(buttonSize, buttonSize);
+
+        // Configurar eventos de los botones
+        buttonUp.on('pointerdown', () => this.cursors.up.isDown = true);
+        buttonUp.on('pointerup', () => this.cursors.up.isDown = false);
+
+        buttonDown.on('pointerdown', () => this.cursors.down.isDown = true);
+        buttonDown.on('pointerup', () => this.cursors.down.isDown = false);
+
+        buttonLeft.on('pointerdown', () => this.cursors.left.isDown = true);
+        buttonLeft.on('pointerup', () => this.cursors.left.isDown = false);
+
+        buttonRight.on('pointerdown', () => this.cursors.right.isDown = true);
+        buttonRight.on('pointerup', () => this.cursors.right.isDown = false);
     }
 
     createTrackBoundsFromMask() {
@@ -136,6 +187,7 @@ class GameScene extends Phaser.Scene {
 
         // Crear bordes invisibles alrededor de las áreas negras de la imagen de máscara
         const rects = [];
+
         for (let y = 0; y < mask.height; y++) {
             for (let x = 0; x < mask.width; x++) {
                 const index = (y * mask.width + x) * 4;
@@ -216,20 +268,6 @@ class GameScene extends Phaser.Scene {
         this.startTime = this.time.now;
         this.car.setStatic(false); // Permitir que el coche se mueva
         this.car.setVelocity(0, 0);
-        this.car.setAngularVelocity(0);
-    }
-
-    handlePointerDown(pointer) {
-        // Manejar controles táctiles
-        if (pointer.x < this.cameras.main.width / 2) {
-            this.car.setAngularVelocity(-0.1);
-        } else {
-            this.car.setAngularVelocity(0.1);
-        }
-    }
-
-    handlePointerUp(pointer) {
-        // Detener el giro del coche
         this.car.setAngularVelocity(0);
     }
 
