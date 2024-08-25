@@ -19,10 +19,8 @@ class BootScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // Pasar a la siguiente escena al tocar cualquier tecla o la pantalla
-        // this.input.keyboard.on('keydown', () => this.scene.start('NameScene'));
-        // this.input.on('pointerdown', () => this.scene.start('NameScene'));
-        this.input.keyboard.on('keydown', () => this.scene.start('GameScene'));
-        this.input.on('pointerdown', () => this.scene.start('GameScene'));
+        this.input.keyboard.on('keydown', () => this.scene.start('ModeScene'));
+        this.input.on('pointerdown', () => this.scene.start('ModeScene'));
     }
 }
 

@@ -5,15 +5,16 @@ class RecordsScene extends Phaser.Scene {
 
     create() {
         // Mostrar los records almacenados en localStorage
-        const records = JSON.parse(localStorage.getItem('records')) || {};
+        const bestLapTimes = JSON.parse(localStorage.getItem('bestLapTimes')) || [];
+        const bestRaceTimes = JSON.parse(localStorage.getItem('bestRaceTimes')) || [];
 
         let y = 100;
-        for (const track in records) {
-            this.add.text(50, y, `Circuito: ${track}`, { fontSize: '24px', fill: '#fff' });
+        for (let i = 0; i < bestLapTimes.length; i++) {
+            // this.add.text(50, y, `Circuito: ${i}`, { fontSize: '24px', fill: '#fff' });
+            // y += 30;
+            this.add.text(50, y, `Top 10 vueltas: ${bestLapTimes[i].map(time => (time / 1000).toFixed(2) + 's').join(', ')}`, { fontSize: '18px', fill: '#fff' });
             y += 30;
-            this.add.text(50, y, `Mejores vueltas: ${records[track].bestLaps.join(', ')}`, { fontSize: '20px', fill: '#fff' });
-            y += 30;
-            this.add.text(50, y, `Mejores carreras: ${records[track].bestRaces.join(', ')}`, { fontSize: '20px', fill: '#fff' });
+            this.add.text(50, y, `Top 10 carreras: ${bestRaceTimes[i].map(time => (time / 1000).toFixed(2) + 's').join(', ')}`, { fontSize: '18px', fill: '#fff' });
             y += 50;
         }
 

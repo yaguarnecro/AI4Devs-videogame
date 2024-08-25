@@ -26,7 +26,7 @@ class ModeScene extends Phaser.Scene {
         }).setOrigin(0.5).setInteractive();
 
         // Configurar interactividad de los botones
-        singlePlayerButton.on('pointerdown', () => this.scene.start('TrackSelectionScene'));
+        singlePlayerButton.on('pointerdown', () => this.scene.start('GameScene'));
         backButton.on('pointerdown', () => this.scene.start('NameScene'));
         recordsButton.on('pointerdown', () => this.scene.start('RecordsScene'));
     }

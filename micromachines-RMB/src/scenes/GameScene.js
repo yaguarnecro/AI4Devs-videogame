@@ -16,10 +16,8 @@ class GameScene extends Phaser.Scene {
             {sprite:'purple.png', color: 0x800080},
             {sprite:'turquoise.png', color: 0x40e0d0},
             {sprite:'black.png', color: 0x000000},
-        ];
-        
+        ];        
         this.currentCar = Math.floor(Math.random() * this.cars.length);
-
         
         // Cargar el sprite del coche
         this.load.image('car', 'assets/cars/' + this.cars[this.currentCar].sprite);
@@ -32,6 +30,9 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
+        // Establecer el color de fondo de la escena
+        this.cameras.main.setBackgroundColor('#a1b03b');
+
         // Configuración inicial
         this.laps = 3; // Número de vueltas configurado para el circuito
         this.currentLap = 0;
@@ -52,7 +53,7 @@ class GameScene extends Phaser.Scene {
         // Ajustar el área de colisión del coche
         const collisionShape = this.matter.bodies.rectangle(0, 0, 50, 25);
         this.car.setExistingBody(collisionShape);
-        this.car.setPosition(400, 250);
+        this.car.setPosition(430, 250);
 
         // Configurar las teclas de control
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -61,23 +62,32 @@ class GameScene extends Phaser.Scene {
         this.input.on('pointerdown', this.handlePointerDown, this);
         this.input.on('pointerup', this.handlePointerUp, this);
 
-        // Configurar la cuenta atrás
-        this.countdownText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, '5', {
-            fontSize: '64px',
-            fill: '#fff'
+        // Instrucciones
+        this.instruccionesText = this.add.text(this.cameras.main.width / 2 - 100, this.cameras.main.height / 2 - 200, 'Juega con ◄ ► ▲ ▼', {
+            fontSize: '30px',
+            fill: '#000'
         }).setOrigin(0.5);
-        this.time.delayedCall(100, this.updateCountdown, [4], this);
+        
+        // Configurar la cuenta atrás
+        this.countdownText = this.add.text(this.cameras.main.width / 2 -100 , this.cameras.main.height / 2 - 0, '5', {
+            fontSize: '64px',
+            fill: '#000'
+        }).setOrigin(0.5);
+        this.time.delayedCall(1000, this.updateCountdown, [4], this);
 
         // Configurar el mini-mapa
         this.miniMap = this.add.image(10, 10, 'minimap').setOrigin(0, 0).setDisplaySize(200, 200);
+        this.miniMap.setScrollFactor(0);
         this.miniMapGraphics = this.add.graphics();
         this.miniMapGraphics.lineStyle(2, 0xffffff, 1);
         this.miniMapGraphics.strokeRect(10, 10, 200, 200);
+        this.miniMapGraphics.setScrollFactor(0); // Asegurar que los gráficos del minimapa no se desplacen con la cámara        
 
-        // Configurar la meta
+        // Configurar la meta y el checkpoint
         this.finishLine = new Phaser.Geom.Rectangle(460, 223, 1, 100); // Definir la línea de meta
+        this.checkpointLine = new Phaser.Geom.Rectangle(700, 1106, 1, 100); // Definir la línea de meta        
 
-        // Dibujar la línea de meta
+        // Dibujar la línea de meta (checkpoint no se dibuja)
         this.finishLineGraphics = this.add.graphics();
         this.finishLineGraphics.lineStyle(3, 0xffffff, 2);
         this.finishLineGraphics.strokeRect(this.finishLine.x, this.finishLine.y, 3, this.finishLine.height);
@@ -88,16 +98,37 @@ class GameScene extends Phaser.Scene {
                 fontSize: '16px',
                 fill: '#fff'
             }).setOrigin(1, 0);
+            this.carInfoText.setScrollFactor(0);
         }
+
+        // Hacer que la cámara siga al coche
+        this.cameras.main.startFollow(this.car);
 
         // Crear los bordes del circuito a partir de la imagen de máscara
         this.createTrackBoundsFromMask();
+
+        // Crear fondo oscuro para el texto de tiempos
+        this.lapTimesBackground = this.add.graphics();
+        this.lapTimesBackground.fillStyle(0x000000, 0.5);
+        this.lapTimesBackground.fillRect(this.cameras.main.width - 260, 10, 250, 100);
+        this.lapTimesBackground.setScrollFactor(0);
+
+        // Añadir texto para mostrar los tiempos de las vueltas
+        this.lapTimesText = this.add.text(this.cameras.main.width - 250, 20, '', {
+            fontSize: '16px',
+            fill: '#fff'
+        }).setOrigin(0, 0);
+        this.lapTimesText.setScrollFactor(0);
     }
 
     createTrackBoundsFromMask() {
         // Crear un bitmap data a partir de la imagen de máscara
         const mask = this.textures.get('mask').getSourceImage();
-        const maskCanvas = this.textures.createCanvas('maskCanvas', mask.width, mask.height);
+        
+        let maskCanvas = this.textures.get('maskCanvas');
+        if (!maskCanvas || maskCanvas.key=='__MISSING') {
+            maskCanvas = this.textures.createCanvas('maskCanvas', mask.width, mask.height);
+        }
         maskCanvas.draw(0, 0, mask);
 
         // Obtener los datos de píxeles de la imagen de máscara
@@ -169,17 +200,19 @@ class GameScene extends Phaser.Scene {
     updateCountdown(seconds) {
         if (seconds > 0) {
             this.countdownText.setText(seconds);
-            this.time.delayedCall(100, this.updateCountdown, [seconds - 1], this);
+            this.time.delayedCall(1000, this.updateCountdown, [seconds - 1], this);
         } else {
             this.countdownText.setText('¡GO!');
-            this.time.delayedCall(100, () => {
+            this.time.delayedCall(1000, () => {
                 this.countdownText.setVisible(false);
+                this.instruccionesText.setVisible(false);
                 this.startRace();
             }, [], this);
         }
     }
 
     startRace() {
+        this.raceFinished = false; // M
         this.startTime = this.time.now;
         this.car.setStatic(false); // Permitir que el coche se mueva
         this.car.setVelocity(0, 0);
@@ -206,15 +239,31 @@ class GameScene extends Phaser.Scene {
             this.updateCarControls();
             this.updateMiniMap();
 
+            // Verificar si el coche ha cruzado el checkpoint
+            if (Phaser.Geom.Intersects.RectangleToRectangle(this.car.getBounds(), this.checkpointLine)) {
+                this.hasCrossedCheckpoint = true;
+            }            
+            
             // Verificar si el coche ha cruzado la meta
             if (Phaser.Geom.Intersects.RectangleToRectangle(this.car.getBounds(), this.finishLine)) {
-                if (!this.hasCrossedFinishLine) {
+                if (!this.hasCrossedFinishLine && this.hasCrossedCheckpoint) {
                     this.handleLapCompletion();
                     this.hasCrossedFinishLine = true;
                 }
             } else {
                 this.hasCrossedFinishLine = false;
             }
+
+            // Actualizar el tiempo de la vuelta actual y anteriores
+            const currentTime = this.time.now - this.startTime;
+            let lapTimesText = '';
+            this.lapTimes.forEach((time, index) => {
+                lapTimesText += `Vuelta ${index + 1}: ${(time/1000).toFixed(2)}s\n`;
+            });
+            if (!this.raceFinished) {
+                lapTimesText += `Vuelta Actual: ${(currentTime/1000).toFixed(2)}s\n`;
+            }
+            this.lapTimesText.setText(lapTimesText);
         }
 
         // Actualizar la información del coche
@@ -223,8 +272,8 @@ class GameScene extends Phaser.Scene {
 
     updateCarControls() {
         // Controlar el coche con el teclado
-        const maxSpeed = 0.001;
-        const maxReverseSpeed = -0.0005;
+        const maxSpeed = 0.002;
+        const maxReverseSpeed = -0.001;
         const turnSpeed = 0.1;
         const deceleration = 0.91; // Factor de desaceleración
 
@@ -282,16 +331,13 @@ class GameScene extends Phaser.Scene {
     }
 
     handleLapCompletion() {
+        this.hasCrossedCheckpoint = false;
         const lapTime = this.time.now - this.startTime;
         this.lapTimes.push(lapTime);
         this.currentLap++;
 
         if (this.currentLap < this.laps) {
             this.startTime = this.time.now;
-            this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, `Vuelta ${this.currentLap + 1}`, {
-                fontSize: '32px',
-                fill: '#fff'
-            }).setOrigin(0.5).setDepth(1).setScrollFactor(0).setAlpha(0.8);
         } else {
             this.endRace();
         }
@@ -303,38 +349,46 @@ class GameScene extends Phaser.Scene {
             fontSize: '64px',
             fill: '#fff'
         }).setOrigin(0.5);
+        this.raceFinished = true; // Marcar la carrera como terminada
 
-        this.time.delayedCall(3000, () => {
+
+        this.time.delayedCall(1000, () => {
             this.showRaceResults();
         }, [], this);
     }
 
     showRaceResults() {
+        // Crear fondo oscuro para los resultados
+        const resultsBackground = this.add.graphics();
+        resultsBackground.fillStyle(0x000000, 0.6);
+        resultsBackground.fillRect(this.cameras.main.width / 2 - 150, 50, 300, 300);
+        resultsBackground.setScrollFactor(0);
+
         let totalTime = 0;
         this.lapTimes.forEach((time, index) => {
             totalTime += time;
-            this.add.text(this.cameras.main.width / 2, 100 + index * 30, `Vuelta ${index + 1}: ${time.toFixed(2)}s`, {
+            this.add.text(this.cameras.main.width / 2 - 120, 30 + index * 30, `Vuelta ${index + 1}: ${(time/1000).toFixed(2)}s`, {
                 fontSize: '24px',
                 fill: '#fff'
             }).setOrigin(0.5);
         });
 
-        this.add.text(this.cameras.main.width / 2, 100 + this.lapTimes.length * 30, `Tiempo Total: ${totalTime.toFixed(2)}s`, {
+        this.add.text(this.cameras.main.width / 2 - 120, 50 + this.lapTimes.length * 30, `Total: ${(totalTime/1000).toFixed(2)}s`, {
             fontSize: '24px',
             fill: '#fff'
         }).setOrigin(0.5);
 
         this.updateRecords(totalTime);
 
-        this.input.keyboard.on('keydown', () => this.scene.start('TrackSelectionScene'));
-        this.input.on('pointerdown', () => this.scene.start('TrackSelectionScene'));
+        this.input.keyboard.on('keydown', () => this.scene.start('RecordsScene'));
+        this.input.on('pointerdown', () => this.scene.start('RecordsScene'));
     }
 
     updateRecords(totalTime) {
         // Actualizar los records si es necesario
-        const trackName = 'track'; // Nombre del circuito actual
-        const bestLapTimes = this.bestLapTimes[trackName] || [];
-        const bestRaceTimes = this.bestRaceTimes[trackName] || [];
+        const trackId = 0; // Nombre del circuito actual
+        const bestLapTimes = this.bestLapTimes[trackId] || [];
+        const bestRaceTimes = this.bestRaceTimes[trackId] || [];
 
         this.lapTimes.forEach(time => {
             if (bestLapTimes.length < 10 || time < Math.max(...bestLapTimes)) {
@@ -350,8 +404,8 @@ class GameScene extends Phaser.Scene {
             if (bestRaceTimes.length > 10) bestRaceTimes.pop();
         }
 
-        this.bestLapTimes[trackName] = bestLapTimes;
-        this.bestRaceTimes[trackName] = bestRaceTimes;
+        this.bestLapTimes[trackId] = bestLapTimes;
+        this.bestRaceTimes[trackId] = bestRaceTimes;
 
         localStorage.setItem('bestLapTimes', JSON.stringify(this.bestLapTimes));
         localStorage.setItem('bestRaceTimes', JSON.stringify(this.bestRaceTimes));
