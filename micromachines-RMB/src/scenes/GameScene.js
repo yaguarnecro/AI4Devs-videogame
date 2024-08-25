@@ -8,6 +8,10 @@ class GameScene extends Phaser.Scene {
         this.load.image('car', 'assets/cars/yellow.png');
         // Cargar el sprite del circuito (esto es un ejemplo, deberías cargar tu circuito real)
         this.load.image('track', 'assets/tracks/track1.jpg');
+        // Cargar la imagen de máscara
+        this.load.image('mask', 'assets/tracks/track1_mask.jpg');
+        // Cargar la imagen del minimapa
+        this.load.image('minimap', 'assets/tracks/track1_minimap.png');
     }
 
     create() {
@@ -23,13 +27,15 @@ class GameScene extends Phaser.Scene {
         this.track = this.add.image(0, 0, 'track').setOrigin(0, 0);
 
         // Crear el coche
-        this.car = this.matter.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, 'car');
+        this.car = this.matter.add.sprite(400, 250, 'car'); // Posición inicial ajustada
         this.car.setDisplaySize(50, 50);
         this.car.setFrictionAir(0.05);
         this.car.setFixedRotation();
-        this.car.angle = 0; // Girar solo la imagen del coche 90 grados a la derecha
-        this.car.setTexture('car');
-        //this.car.setAngle(90); // Girar el sprite 90 grados a la derecha
+
+        // Ajustar el área de colisión del coche
+        const collisionShape = this.matter.bodies.rectangle(0, 0, 50, 25);
+        this.car.setExistingBody(collisionShape);
+        this.car.setPosition(400, 250);
 
         // Configurar las teclas de control
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -46,12 +52,18 @@ class GameScene extends Phaser.Scene {
         this.time.delayedCall(100, this.updateCountdown, [4], this);
 
         // Configurar el mini-mapa
-        this.miniMap = this.add.graphics();
-        this.miniMap.lineStyle(2, 0xffffff, 1);
-        this.miniMap.strokeRect(10, 10, 200, 200);
+        this.miniMap = this.add.image(10, 10, 'minimap').setOrigin(0, 0).setDisplaySize(200, 200);
+        this.miniMapGraphics = this.add.graphics();
+        this.miniMapGraphics.lineStyle(2, 0xffffff, 1);
+        this.miniMapGraphics.strokeRect(10, 10, 200, 200);
 
         // Configurar la meta
-        this.finishLine = new Phaser.Geom.Rectangle(400, 300, 50, 10); // Ejemplo de posición de la meta
+        this.finishLine = new Phaser.Geom.Rectangle(460, 223, 1, 100); // Definir la línea de meta
+
+        // Dibujar la línea de meta
+        this.finishLineGraphics = this.add.graphics();
+        this.finishLineGraphics.lineStyle(3, 0xffffff, 2);
+        this.finishLineGraphics.strokeRect(this.finishLine.x, this.finishLine.y, 3, this.finishLine.height);
 
         // Añadir texto para mostrar la información del coche
         this.carInfoText = this.add.text(this.cameras.main.width - 10, 10, '', {
@@ -59,23 +71,68 @@ class GameScene extends Phaser.Scene {
             fill: '#fff'
         }).setOrigin(1, 0);
 
-        // Crear los bordes del circuito
-        this.createTrackBounds();
+        // Crear los bordes del circuito a partir de la imagen de máscara
+        this.createTrackBoundsFromMask();
     }
 
-    createTrackBounds() {
-        // Crear bordes invisibles alrededor del circuito
-        const bounds = [
-            this.matter.add.rectangle(400, 0, 800, 50, { isStatic: true }), // Borde superior
-            this.matter.add.rectangle(400, 600, 800, 50, { isStatic: true }), // Borde inferior
-            this.matter.add.rectangle(0, 300, 50, 600, { isStatic: true }), // Borde izquierdo
-            this.matter.add.rectangle(800, 300, 50, 600, { isStatic: true }), // Borde derecho
-            this.matter.add.rectangle(400, 300, 50, 600, { isStatic: true }) // Borde derecho
-        ];
+    createTrackBoundsFromMask() {
+        // Crear un bitmap data a partir de la imagen de máscara
+        const mask = this.textures.get('mask').getSourceImage();
+        const maskCanvas = this.textures.createCanvas('maskCanvas', mask.width, mask.height);
+        maskCanvas.draw(0, 0, mask);
+
+        // Obtener los datos de píxeles de la imagen de máscara
+        const maskData = maskCanvas.getContext().getImageData(0, 0, mask.width, mask.height).data;
+
+        // Crear bordes invisibles alrededor de las áreas negras de la imagen de máscara
+        const rects = [];
+        for (let y = 0; y < mask.height; y++) {
+            for (let x = 0; x < mask.width; x++) {
+                const index = (y * mask.width + x) * 4;
+                const alpha = maskData[index]; // Obtener el valor alfa del píxel
+
+                if (alpha !== 255) { // Si el píxel es negro (área de colisión)
+                    let width = 1;
+                    let height = 1;
+
+                    // Expandir el rectángulo horizontalmente
+                    while (x + width < mask.width && maskData[((y * mask.width) + (x + width)) * 4] !== 255) {
+                        width++;
+                    }
+
+                    // Expandir el rectángulo verticalmente
+                    let expand = true;
+                    while (expand && y + height < mask.height) {
+                        for (let i = 0; i < width; i++) {
+                            if (maskData[(((y + height) * mask.width) + (x + i)) * 4] != 0) {
+                                expand = false;
+                                break;
+                            }
+                        }
+                        if (expand) {
+                            height++;
+                        }
+                    }
+
+                    // Marcar los píxeles como procesados
+                    for (let i = 0; i < height; i++) {
+                        for (let j = 0; j < width; j++) {
+                            maskData[(((y + i) * mask.width) + (x + j)) * 4] = 255;
+                        }
+                    }
+
+                    rects.push({ x, y, width, height });
+                }
+            }
+        }
+
+        // Crear los rectángulos en Matter.js
+        rects.forEach(rect => {
+            this.matter.add.rectangle(rect.x + rect.width / 2, rect.y + rect.height / 2, rect.width, rect.height, { isStatic: true });
+        });
 
         // Añadir colisiones entre el coche y los bordes
         this.matter.world.on('collisionstart', (event) => {
-            console.log(event.pairs);
             event.pairs.forEach(pair => {
                 if (pair.bodyA === this.car.body || pair.bodyB === this.car.body) {
                     this.handleCollision();
@@ -87,7 +144,7 @@ class GameScene extends Phaser.Scene {
     handleCollision() {
         // Rebotar el coche al colisionar con los bordes
         const velocity = this.car.body.velocity;
-        this.car.setVelocity(-velocity.x, -velocity.y);
+        this.car.setVelocity(-velocity.x/2, -velocity.y/2);
     }
 
     updateCountdown(seconds) {
@@ -131,8 +188,13 @@ class GameScene extends Phaser.Scene {
             this.updateMiniMap();
 
             // Verificar si el coche ha cruzado la meta
-            if (Phaser.Geom.Rectangle.ContainsPoint(this.finishLine, this.car.getCenter())) {
-                //this.handleLapCompletion();
+            if (Phaser.Geom.Intersects.RectangleToRectangle(this.car.getBounds(), this.finishLine)) {
+                if (!this.hasCrossedFinishLine) {
+                    this.handleLapCompletion();
+                    this.hasCrossedFinishLine = true;
+                }
+            } else {
+                this.hasCrossedFinishLine = false;
             }
         }
 
@@ -142,8 +204,8 @@ class GameScene extends Phaser.Scene {
 
     updateCarControls() {
         // Controlar el coche con el teclado
-        const maxSpeed = 0.008;
-        const maxReverseSpeed = -0.006;
+        const maxSpeed = 0.001;
+        const maxReverseSpeed = -0.0005;
         const turnSpeed = 0.1;
         const deceleration = 0.91; // Factor de desaceleración
 
@@ -191,11 +253,11 @@ class GameScene extends Phaser.Scene {
 
     updateMiniMap() {
         // Actualizar la posición del coche en el mini-mapa
-        this.miniMap.clear();
-        this.miniMap.lineStyle(2, 0xffffff, 1);
-        this.miniMap.strokeRect(10, 10, 200, 200);
-        this.miniMap.fillStyle(0xff0000, 1);
-        this.miniMap.fillRect(10 + (this.car.x / this.track.width) * 200, 10 + (this.car.y / this.track.height) * 200, 5, 5);
+        this.miniMapGraphics.clear();
+        this.miniMapGraphics.lineStyle(2, 0xffffff, 1);
+        this.miniMapGraphics.strokeRect(10, 10, 200, 200);
+        this.miniMapGraphics.fillStyle(0xff0000, 1);
+        this.miniMapGraphics.fillRect(10 + (this.car.x / this.track.width) * 200, 10 + (this.car.y / this.track.height) * 200, 3, 3); // Punto más grande
     }
 
     handleLapCompletion() {
