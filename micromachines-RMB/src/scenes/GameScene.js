@@ -1,11 +1,28 @@
 class GameScene extends Phaser.Scene {
     constructor() {
-        super({ key: 'GameScene', physics: { default: 'matter', matter: { debug: true, gravity: { y: 0 } } } });
+        super({ key: 'GameScene', physics: { default: 'matter', matter: { debug: false, gravity: { y: 0 } } } });
     }
 
     preload() {
+        // Definir los coches disponibles
+        this.cars = [
+            {sprite:'yellow.png', color: 0xffd900},
+            {sprite:'red.png', color: 0xff0000},
+            {sprite:'blue.png', color: 0x0000ff},
+            {sprite:'green.png', color: 0x00ff00},
+            {sprite:'orange.png', color: 0xffa500},
+            {sprite:'grey.png', color: 0x808080},
+            {sprite:'pink.png', color: 0xffc0cb},
+            {sprite:'purple.png', color: 0x800080},
+            {sprite:'turquoise.png', color: 0x40e0d0},
+            {sprite:'black.png', color: 0x000000},
+        ];
+        
+        this.currentCar = Math.floor(Math.random() * this.cars.length);
+
+        
         // Cargar el sprite del coche
-        this.load.image('car', 'assets/cars/yellow.png');
+        this.load.image('car', 'assets/cars/' + this.cars[this.currentCar].sprite);
         // Cargar el sprite del circuito (esto es un ejemplo, deberías cargar tu circuito real)
         this.load.image('track', 'assets/tracks/track1.jpg');
         // Cargar la imagen de máscara
@@ -66,10 +83,12 @@ class GameScene extends Phaser.Scene {
         this.finishLineGraphics.strokeRect(this.finishLine.x, this.finishLine.y, 3, this.finishLine.height);
 
         // Añadir texto para mostrar la información del coche
-        this.carInfoText = this.add.text(this.cameras.main.width - 10, 10, '', {
-            fontSize: '16px',
-            fill: '#fff'
-        }).setOrigin(1, 0);
+        if (this.sys.game.config.physics.matter.debug) {
+            this.carInfoText = this.add.text(this.cameras.main.width - 10, 10, '', {
+                fontSize: '16px',
+                fill: '#fff'
+            }).setOrigin(1, 0);
+        }
 
         // Crear los bordes del circuito a partir de la imagen de máscara
         this.createTrackBoundsFromMask();
@@ -241,14 +260,16 @@ class GameScene extends Phaser.Scene {
     }
 
     updateCarInfo() {
-        const angle = Phaser.Math.RadToDeg(this.car.rotation).toFixed(2);
-        const rotation = this.car.rotation.toFixed(2);
-        const velocity = this.car.body.velocity;
-        const speed = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y).toFixed(2);
-        const posX = this.car.x.toFixed(2);
-        const posY = this.car.y.toFixed(2);
+        if (this.sys.game.config.physics.matter.debug) {
+            const angle = Phaser.Math.RadToDeg(this.car.rotation).toFixed(2);
+            const rotation = this.car.rotation.toFixed(2);
+            const velocity = this.car.body.velocity;
+            const speed = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y).toFixed(2);
+            const posX = this.car.x.toFixed(2);
+            const posY = this.car.y.toFixed(2);
 
-        this.carInfoText.setText(`Ángulo: ${angle}°\nRotación: ${rotation} rad\nVelocidad: ${velocity}\nSpeed: ${speed}\nPosición X: ${posX}\nPosición Y: ${posY}`);
+            this.carInfoText.setText(`Ángulo: ${angle}°\nRotación: ${rotation} rad\nVelocidad: ${velocity}\nSpeed: ${speed}\nPosición X: ${posX}\nPosición Y: ${posY}`);
+        }
     }
 
     updateMiniMap() {
@@ -256,7 +277,7 @@ class GameScene extends Phaser.Scene {
         this.miniMapGraphics.clear();
         this.miniMapGraphics.lineStyle(2, 0xffffff, 1);
         this.miniMapGraphics.strokeRect(10, 10, 200, 200);
-        this.miniMapGraphics.fillStyle(0xff0000, 1);
+        this.miniMapGraphics.fillStyle(this.cars[this.currentCar].color, 1);
         this.miniMapGraphics.fillRect(10 + (this.car.x / this.track.width) * 200, 10 + (this.car.y / this.track.height) * 200, 3, 3); // Punto más grande
     }
 
