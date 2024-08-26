@@ -11,10 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "howler": "^2.2.4",
     "matter-js": "^0.20.0",
-    "phaser": "^3.80.1",
-    "socket.io": "^4.7.5"
+    "phaser": "^3.80.1"
   },
   "devDependencies": {
     "cypress": "^13.13.3",
