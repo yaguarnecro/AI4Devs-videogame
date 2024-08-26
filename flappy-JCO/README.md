@@ -2,6 +2,8 @@
 
 This is a web-based implementation of the classic Flappy Bird game, created using HTML, CSS, and JavaScript.
 
+![Flappy Bird Game](res/flappy-bird-game.png)
+
 ## Game Description
 
 In this game, you control a bird flying through a tunnel filled with obstacles. The goal is to navigate the bird through the gaps between trees while collecting modifiers to increase your score.
