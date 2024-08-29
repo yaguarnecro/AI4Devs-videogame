@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Pong</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1 class="game-title">Space Pong</h1>
+    <div class="game-container">
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+        <div class="scoreboard">
+            <div id="leftLives">Left: 10</div>
+            <div id="rightLives">Right: 10</div>
+        </div>
+    </div>
+    <div class="controls">
+        <p>Left player: W (up), S (down) | Right player: ↑ (up), ↓ (down)</p>
+    </div>
+    <button class="restart-btn" onclick="resetGame()">Restart Game</button>
+    <script src="game.js"></script>
+    <script>
+        // Add stars to the background
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animationDelay = `${Math.random() * 2}s`;
+            document.body.appendChild(star);
+        }
+    </script>
+</body>
+</html>
