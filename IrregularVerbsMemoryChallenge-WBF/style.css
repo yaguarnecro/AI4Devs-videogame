@@ -1,0 +1,146 @@
+body {
+  font-family: 'Arial', sans-serif; /* Fuente más moderna */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #1a1a2e; /* Fondo oscuro azulado casi negro */
+  color: #e0e0e0; /* Color de texto claro */
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: 2.5em; /* Tamaño de fuente más grande para el título */
+  font-weight: bold; /* Peso de fuente más grueso para el título */
+}
+
+#game-instructions {
+  font-size: 1.2em; /* Tamaño de fuente más grande para las instrucciones */
+  font-weight: 500; /* Peso de fuente medio para las instrucciones */
+}
+
+#card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  justify-items: center;
+  width: 80%; /* Ajusta el ancho del contenedor de las cartas */
+}
+
+.card {
+  position: relative;
+  width: 100px;
+  height: 130px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card .card-content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #2f2f2f; /* Color de texto claro */
+  background-color: #f0f0f0; /* Fondo claro para el lado con la palabra */
+  transform: rotateY(180deg); 
+  border-radius: 10px;
+  text-align: center;
+}
+
+.card .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: black;
+  background-image: url('card.png'); /* Imagen de fondo para el lado trasero */
+  background-size: cover;
+  background-position: center;
+}
+
+.card-content i {
+    font-size: 1.5em; /* Ajusta el tamaño del icono según sea necesario */
+    margin-bottom: 8px; /* Espacio entre el icono y el texto */
+}
+
+#difficulty-buttons button {
+  background-color: #007BFF; /* Color de fondo azul */
+  color: white; /* Color de texto blanco */
+  border: none; /* Sin borde */
+  border-radius: 12px; /* Bordes redondeados */
+  padding: 10px 20px; /* Espaciado interno */
+  font-size: 1em; /* Tamaño de fuente */
+  cursor: pointer; /* Cambiar cursor al pasar sobre el botón */
+  margin: 5px; /* Espaciado entre botones */
+}
+
+#difficulty-buttons button:hover {
+  background-color: #0056b3; /* Color de fondo al pasar el ratón */
+}
+
+#difficulty-buttons button.selected {
+  background-color: #0056b3; /* Color de fondo para el botón seleccionado */
+  border: 2px solid #ffffff; /* Borde blanco para resaltar el botón seleccionado */
+}
+
+#restart-button {
+  background-color: #28a745; /* Color de fondo verde */
+  color: white; /* Color de texto blanco */
+  border: none; /* Sin borde */
+  border-radius: 12px; /* Bordes redondeados */
+  padding: 10px 20px; /* Espaciado interno */
+  font-size: 1em; /* Tamaño de fuente */
+  cursor: pointer; /* Cambiar cursor al pasar sobre el botón */
+  margin: 5px; /* Espaciado entre botones */
+}
+
+#restart-button:hover {
+  background-color: #218838; /* Color de fondo al pasar el ratón */
+}
+
+#timer {
+  font-size: 3em; /* Tamaño de fuente más grande para el contador */
+  font-weight: bold; /* Peso de fuente más grueso para el contador */
+  color: #ff0000; /* Color rojo para destacar */
+  text-align: center; /* Centrar el texto */
+  margin-top: 20px; /* Espaciado superior */
+}
+
+#countdown-timer {
+  font-size: 0.8em; /* Tamaño de fuente más pequeño */
+  font-style: italic; /* Texto en cursiva */
+  text-align: center; /* Centrar el texto */
+  margin-top: 5px; /* Espaciado superior */
+}
+
+#winMessage, #loseMessage {
+  font-size: 3em; /* Tamaño de fuente más grande para los mensajes */
+  font-weight: bold; /* Peso de fuente más grueso para los mensajes */
+  color: #ff0000; /* Color rojo para destacar */
+  text-align: center; /* Centrar el texto */
+  margin-top: 20px; /* Espaciado superior */
+}
