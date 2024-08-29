@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego del Dinosaurio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: white;
+            color: black;
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #gameArea {
+            position: relative;
+            width: 60vw;
+            height: 80vh;
+        }
+        #ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 5px;
+            background-color: black;
+        }
+        #dinosaur {
+            position: absolute;
+            bottom: 5px; /* Ajustado para tocar el suelo */
+            left: 50px;
+            width: 50px;
+            height: 50px;
+            background-color: black;
+        }
+        .obstacle {
+            position: absolute;
+            bottom: 5px; /* Ajustado para tocar el suelo */
+            width: 20px;
+            height: 20px;
+            background-color: black;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            text-align: center;
+        }
+        #maxSpeed, #faster, #goForIt, #gogogo {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            text-align: center;
+        }
+        #maxSpeed { color: red; }
+        #faster { color: blue; }
+        #goForIt { color: orange; }
+        #gogogo { color: darkred; }
+        #gameOver {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            text-align: center;
+        }
+        .instructions {
+            font-size: 12px;
+            text-align: center;
+            padding-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="gameArea">
+        <div id="ground"></div>
+        <div id="dinosaur"></div>
+        <div id="score">
+            Score: 0
+            <br>
+            <div class="instructions">
+                <p>Press Enger to start the game</p>
+                <p>Use the space bar to jump</p>
+            </div>
+        </div>
+        <div id="maxSpeed">Maximum speed reached</div>
+        <div id="faster">Just kidding, it can be faster</div>
+        <div id="goForIt">Come on, you can do it. Go for it!</div>
+        <div id="gogogo">Awesome! Keep Going!</div>
+        <div id="gameOver">Game Over</div>
+    </div>
+    <script>
+        const gameArea = document.getElementById('gameArea');
+        const dinosaur = document.getElementById('dinosaur');
+        const scoreDisplay = document.getElementById('score');
+        const maxSpeedDisplay = document.getElementById('maxSpeed');
+        const fasterDisplay = document.getElementById('faster');
+        const goForItDisplay = document.getElementById('goForIt');
+        const gogogoDisplay = document.getElementById('gogogo');
+        const gameOverDisplay = document.getElementById('gameOver');
+        let score = 0;
+        let gameSpeed = 5;
+        let isJumping = false;
+        let gameInterval;
+        let obstacleTimeout;
+        let gameStarted = false;
+        const minObstacleGap = 100; // Distancia mínima entre obstáculos
+
+        function startGame() {
+            score = 0;
+            gameSpeed = 5;
+            isJumping = false;
+            gameOverDisplay.style.display = 'none';
+            maxSpeedDisplay.style.display = 'none';
+            fasterDisplay.style.display = 'none';
+            goForItDisplay.style.display = 'none';
+            gogogoDisplay.style.display = 'none';
+            dinosaur.style.backgroundColor = 'black';
+            dinosaur.style.visibility = 'visible';
+            scoreDisplay.textContent = `Score: ${score}`;
+            dinosaur.style.bottom = '5px'; // Reiniciar posición del dinosaurio
+            clearObstacles(); // Eliminar obstáculos
+            gameInterval = setInterval(updateGame, 20);
+            obstacleTimeout = setTimeout(createObstacle, getRandomInterval());
+            gameStarted = true;
+            document.getElementById('instructions').style.display = 'none';
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            clearTimeout(obstacleTimeout);
+            gameOverDisplay.style.display = 'block';
+            gameOverDisplay.innerHTML = 'Game Over<br><div class="instructions">Press Enter to restart the game</div>';
+            gameStarted = false;
+        }
+
+        function updateGame() {
+            score++;
+            scoreDisplay.textContent = `Score: ${score}`;
+            gameSpeed += 0.01;
+            moveObstacles();
+            checkCollision();
+            if (score >= 500 && score < 1000) {
+                dinosaur.style.backgroundColor = 'red';
+                maxSpeedDisplay.style.display = 'block';
+                fasterDisplay.style.display = 'none';
+                goForItDisplay.style.display = 'none';
+                gogogoDisplay.style.display = 'none';
+            } else if (score >= 1000 && score < 1500) {
+                dinosaur.style.backgroundColor = 'blue';
+                maxSpeedDisplay.style.display = 'none';
+                fasterDisplay.style.display = 'block';
+                goForItDisplay.style.display = 'none';
+                gogogoDisplay.style.display = 'none';
+            } else if (score >= 1500 && score < 2000) {
+                dinosaur.style.backgroundColor = 'orange';
+                maxSpeedDisplay.style.display = 'none';
+                fasterDisplay.style.display = 'none';
+                goForItDisplay.style.display = 'block';
+                gogogoDisplay.style.display = 'none';
+                dinosaur.style.visibility = 'visible';
+            } else if (score >= 2000) {
+                dinosaur.style.backgroundColor = 'darkred';
+                maxSpeedDisplay.style.display = 'none';
+                fasterDisplay.style.display = 'none';
+                goForItDisplay.style.display = 'none';
+                gogogoDisplay.style.display = 'block';
+                dinosaur.style.visibility = 'visible';
+            }
+        }
+
+        function createObstacle() {
+            const obstacle = document.createElement('div');
+            obstacle.classList.add('obstacle');
+            obstacle.style.left = '100%';
+            obstacle.style.width = `${getRandomInt(20, 50)}px`; // Ancho aleatorio
+            obstacle.style.height = `${getRandomInt(20, 50)}px`; // Altura aleatoria
+            gameArea.appendChild(obstacle);
+            obstacleTimeout = setTimeout(createObstacle, getRandomInterval() + minObstacleGap); // Intervalo aleatorio con separación mínima
+        }
+
+        function moveObstacles() {
+            const obstacles = document.querySelectorAll('.obstacle');
+            obstacles.forEach(obstacle => {
+                let obstacleLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue('left'));
+                if (obstacleLeft <= 0) {
+                    obstacle.remove();
+                } else {
+                    obstacle.style.left = obstacleLeft - gameSpeed + 'px';
+                }
+            });
+        }
+
+        function checkCollision() {
+            const obstacles = document.querySelectorAll('.obstacle');
+            obstacles.forEach(obstacle => {
+                const obstacleRect = obstacle.getBoundingClientRect();
+                const dinosaurRect = dinosaur.getBoundingClientRect();
+                if (
+                    dinosaurRect.left < obstacleRect.left + obstacleRect.width &&
+                    dinosaurRect.left + dinosaurRect.width > obstacleRect.left &&
+                    dinosaurRect.top < obstacleRect.top + obstacleRect.height &&
+                    dinosaurRect.top + dinosaurRect.height > obstacleRect.top
+                ) {
+                    endGame();
+                }
+            });
+        }
+
+        function clearObstacles() {
+            const obstacles = document.querySelectorAll('.obstacle');
+            obstacles.forEach(obstacle => obstacle.remove());
+        }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getRandomInterval() {
+            return getRandomInt(500, 1500); // Intervalo aleatorio entre 1 y 3 segundos
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !isJumping && gameStarted) {
+                jump();
+            } else if (e.code === 'Enter' && !gameStarted) { // Cambiado a "Enter" para reiniciar el juego
+                startGame();
+            }
+        });
+
+        function jump() {
+            isJumping = true;
+            let jumpHeight = 0;
+            const jumpInterval = setInterval(() => {
+                if (jumpHeight >= 150) { // Salto más alto
+                    clearInterval(jumpInterval);
+                    const fallInterval = setInterval(() => {
+                        if (jumpHeight <= 0) {
+                            clearInterval(fallInterval);
+                            isJumping = false;
+                        } else {
+                            jumpHeight -= 5; // Caída más lenta
+                            dinosaur.style.bottom = jumpHeight + 5 + 'px';
+                        }
+                    }, 10); // Mantenerse más tiempo en el aire
+                } else {
+                    jumpHeight += 10; // Subida más rápida
+                    dinosaur.style.bottom = jumpHeight + 5 + 'px';
+                }
+            }, 20);
+        }
+    </script>
+</body>
+</html>
