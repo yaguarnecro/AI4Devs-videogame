@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Minotaur Maze</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body onload="setDefaultLanguage()">
+    <select id="language-select" style="position: absolute; top: 10px; left: 10px;">
+        <option value="es" selected>Español</option>
+        <option value="en">English</option>
+    </select>
+    <button id="instructions-button" style="background-color: white; position: absolute; top: 10px; left: 150px;">Instructions</button>
+    <div id="instructions-modal" style="display: none;">
+        <div id="instructions-content">
+            <h2>How to Play</h2>
+            <p>Use the arrow keys or the on-screen buttons to move your character through the maze. Avoid the minotaurs and reach the exit to win the game.</p>
+            <button id="close-instructions-button">Close</button>
+        </div>
+    </div>
+    <div id="game-container">
+        <div id="config-screen">
+            <h1>Minotaur Maze Configuration</h1>
+            <label for="cols">Columns:</label>
+            <input type="number" id="cols" name="cols" value="30" min="10" max="100">
+            <label for="rows">Rows:</label>
+            <input type="number" id="rows" name="rows" value="30" min="10" max="100">
+            <label for="minotaurs">Number of Minotaurs:</label>
+            <input type="number" id="minotaurs" name="minotaurs" value="3" min="1" max="10">
+            <label for="spawn-interval">Spawn Interval (seconds):</label>
+            <input type="number" id="spawn-interval" name="spawn-interval" value="15" min="5" max="60">
+            <button id="start-button" style="background-color: red; color: white;">START</button>
+        </div>
+        <div>
+            <canvas id="maze-canvas" width="600" height="600" style="display: none;"></canvas>
+        </div>
+        <div id="mobile-controls" style="display: none;">
+            <button id="up-button">↑</button>
+            <div>
+                <button id="left-button">←</button>
+                <button id="down-button">↓</button>
+                <button id="right-button">→</button>
+            </div>
+        </div>
+    </div>
+    <script src="maze.js"></script>
+</body>
+</html>
