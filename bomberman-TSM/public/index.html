@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' ws: wss:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; worker-src 'self' blob:;"
+    />
+    <title>Bomberman TSM</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="main-screen">
+      <div class="title-container">
+        <h1>Bomberman TSM</h1>
+      </div>
+      <div class="content-container">
+        <div class="button-container">
+          <button id="start-button">Iniciar Juego</button>
+          <button id="instructions-button">Instrucciones</button>
+        </div>
+      </div>
+    </div>
+    <div id="game-container"></div>
+    <div id="instructions" style="display: none">
+      <h2>Instrucciones</h2>
+      <p>Usa las teclas de flecha para moverte.</p>
+      <p>Presiona la barra espaciadora para colocar bombas.</p>
+      <p>Destruye bloques y derrota a tus enemigos para ganar.</p>
+      <button id="back-button">Volver</button>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <script src="/static/js/game.js"></script>
+  </body>
+</html>

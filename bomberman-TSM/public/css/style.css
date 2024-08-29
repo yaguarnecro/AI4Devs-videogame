@@ -1,0 +1,92 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Press Start 2P", cursive;
+}
+
+#main-screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-image: url("/static/assets/img/background_bomberman.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.title-container {
+  padding-top: 20px;
+  text-align: center;
+}
+
+.content-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  font-size: 48px;
+  color: #fff;
+  text-shadow: 4px 4px 8px #000;
+  margin: 0;
+}
+
+button {
+  font-size: 24px;
+  padding: 15px 30px;
+  margin: 10px;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: "Press Start 2P", cursive;
+  box-shadow: 0 5px #cc5555;
+}
+
+button:hover {
+  background-color: #ff8787;
+  transform: translateY(2px);
+  box-shadow: 0 3px #cc5555;
+}
+
+button:active {
+  background-color: #e06060;
+  transform: translateY(5px);
+  box-shadow: none;
+}
+
+#game-container {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+#instructions {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  color: #fff;
+  text-align: center;
+  display: none;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
