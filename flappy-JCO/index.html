@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird Game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #gameArea {
+            width: 800px;
+            height: 400px;
+            border: 2px solid #000;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+        #bird {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            background-image: url('res/bird.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .artifact {
+            position: absolute;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        .modifier {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        #score, #timer, #speed {
+            position: absolute;
+            font-size: 25px;
+            color: black;
+            z-index: 10;
+            text-shadow: 
+                -1px -1px 0 white,
+                1px -1px 0 white,
+                -1px 1px 0 white,
+                1px 1px 0 white;
+        }
+        #score { top: 10px; left: 10px; }
+        #timer { top: 40px; left: 10px; }
+        #speed { top: 10px; right: 10px; }
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 24px;
+            display: none;
+        }
+        .modifier.pink {
+            width: 80px;
+            height: 80px;
+            background-image: url('res/pink.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        #gameArea {
+            border: none;
+            transition: border 0.3s ease;
+        }
+        #bird {
+            transition: background-color 0.3s ease;
+        }
+        #bonusMessage {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: gold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameArea">
+        <div id="bird"></div>
+        <div id="score">Score: 0</div>
+        <div id="timer">Time: 0s</div>
+        <div id="speed">Speed: 150 px/s</div>
+        <div id="gameOver">
+            <h2>Game Over</h2>
+            <p>Final Score: <span id="finalScore"></span></p>
+            <button onclick="startGame()">Start Again (Enter)</button>
+        </div>
+        <div id="bonusMessage">BONUS</div>
+    </div>
+    
+    <script>
+        const gameArea = document.getElementById('gameArea');
+        const bird = document.getElementById('bird');
+        const scoreElement = document.getElementById('score');
+        const timerElement = document.getElementById('timer');
+        const speedElement = document.getElementById('speed');
+        const gameOverElement = document.getElementById('gameOver');
+        const finalScoreElement = document.getElementById('finalScore');
+        const bonusMessageElement = document.getElementById('bonusMessage');
+
+        let gameLoop, scoreInterval, timerInterval, score, time, speed, artifacts, modifiers, isGameOver;
+        
+        let bonusModeActive = false;
+        let bonusModeTimeout;
+
+        function activateBonusMode() {
+            bonusModeActive = true;
+            bird.style.filter = 'brightness(1.5) saturate(1.5)'; // Make the bird appear golden
+            gameArea.style.border = '5px solid gold';
+            bonusMessageElement.style.display = 'block';
+            
+            // Change text colors to gold
+            scoreElement.style.color = 'gold';
+            timerElement.style.color = 'gold';
+            speedElement.style.color = 'gold';
+            
+            clearTimeout(bonusModeTimeout);
+            bonusModeTimeout = setTimeout(() => {
+                bonusModeActive = false;
+                bird.style.filter = 'none'; // Remove the golden effect
+                gameArea.style.border = 'none';
+                bonusMessageElement.style.display = 'none';
+                
+                // Reset text colors
+                scoreElement.style.color = 'black';
+                timerElement.style.color = 'black';
+                speedElement.style.color = 'black';
+            }, 10000);
+        }
+
+        function changeBackground() {
+            const backgroundNumber = Math.floor(Math.random() * 6) + 1;
+            gameArea.style.backgroundImage = `url('res/background-${backgroundNumber}.png')`;
+            gameArea.style.backgroundSize = 'cover';
+            gameArea.style.backgroundPosition = 'center';
+        }
+        
+        function startGame() {
+            // Reset game state
+            score = 0;
+            time = 0;
+            speed = 150;
+            artifacts = [];
+            modifiers = [];
+            isGameOver = false;
+
+            // Reset UI
+            gameArea.style.backgroundColor = '#87CEEB';
+            bird.style.top = '185px';
+            bird.style.left = '50px';
+            scoreElement.textContent = 'Score: 0';
+            timerElement.textContent = 'Time: 0s';
+            speedElement.textContent = 'Speed: 150 px/s';
+            gameOverElement.style.display = 'none';
+            bonusMessageElement.style.display = 'none';
+
+            changeBackground();
+
+            // Clear existing artifacts and modifiers
+            document.querySelectorAll('.artifact, .modifier').forEach(el => el.remove());
+
+            // Start game loop
+            gameLoop = setInterval(updateGame, 1000 / 60); // 60 FPS
+
+            // Start timer
+            timerInterval = setInterval(() => {
+                time++;
+                timerElement.textContent = `Time: ${time}s`;
+                if (time % 3 === 0) createModifier();
+                if (time % 10 === 0) {
+                    speed *= 1.2;
+                    speedElement.textContent = `Speed: ${Math.round(speed)} px/s`;
+                    changeBackground();
+                };
+                if (time % 30 === 0) createPinkModifier();
+            }, 1000);
+
+            // Start score counter
+            scoreInterval = setInterval(() => {
+                score += bonusModeActive ? 2.5 : 0.5;
+                scoreElement.textContent = `Score: ${Math.round(score)}`;
+            }, 500);
+        }
+
+        function updateGame() {
+            if (isGameOver) return;
+
+            // Apply gravity
+            let birdTop = parseInt(bird.style.top) || 185;
+            let gravity = 0.5 * (speed / 50); // Adjust gravity based on speed
+            birdTop += gravity;
+            bird.style.top = `${birdTop}px`;
+
+            // Move artifacts and check collisions
+            artifacts.forEach((artifact, index) => {
+                artifact.style.left = `${parseInt(artifact.style.left) - speed / 60}px`;
+                if (checkCollision(bird, artifact)) endGame();
+                if (parseInt(artifact.style.left) < -50) {
+                    artifact.remove();
+                    artifacts.splice(index, 1);
+                }
+            });
+
+            // Move modifiers and check collisions
+            modifiers.forEach((modifier, index) => {
+                modifier.style.left = `${parseInt(modifier.style.left) - speed / 60}px`;
+                if (checkCollision(bird, modifier)) {
+                    if (modifier.classList.contains('pink')) {
+                        activateBonusMode();
+                    } else {
+                        score += modifier.classList.contains('blue') ? 100 : -100;
+                    }
+                    scoreElement.textContent = `Score: ${Math.round(score)}`;
+                    modifier.remove();
+                    modifiers.splice(index, 1);
+                }
+                if (parseInt(modifier.style.left) < -20) {
+                    modifier.remove();
+                    modifiers.splice(index, 1);
+                }
+            });
+
+            // Create new artifacts with increasing frequency
+            let artifactProbability = 0.02 + time * 0.0002;
+            if (Math.random() < artifactProbability) createArtifact();
+
+            // Check boundaries
+            if (birdTop < 0 || birdTop > 370) endGame();
+        }
+
+        function createArtifact() {
+            const artifact = document.createElement('div');
+            artifact.className = 'artifact';
+            const isTop = Math.random() < 0.5;
+            
+            // Randomly select tree size
+            const size = ['small', 'medium', 'large', 'xlarge', 'xxlarge'][Math.floor(Math.random() * 5)];
+            const treeNumber = Math.floor(Math.random() * 4) + 1; // Random tree image (1-4)
+            
+            const treeWidth = size === 'small' ? 60 : size === 'medium' ? 80 : size === 'large' ? 100 : size === 'xlarge' ? 120 : size ==='xxlarge' ? 140 : 100;
+            const treeHeight = size === 'small' ? 80 : size === 'medium' ? 100 : size === 'large' ? 120 : size === 'xlarge' ? 140 : size ==='xxlarge' ? 160 : 120;
+            
+            artifact.style.width = `${treeWidth}px`;
+            artifact.style.height = `${treeHeight}px`;
+            artifact.style.left = '800px';
+            artifact.style.backgroundImage = `url('res/tree-${size}-${treeNumber}.png')`;
+            artifact.style.backgroundSize = 'contain';
+            artifact.style.backgroundRepeat = 'no-repeat';
+            
+            if (isTop) {
+                artifact.style.top = '0';
+                artifact.style.transform = 'rotate(180deg)';
+                artifact.style.backgroundPosition = 'bottom';
+            } else {
+                artifact.style.bottom = '0';
+                artifact.style.backgroundPosition = 'bottom';
+            }
+            
+            console.log(`Created tree: ${size}-${treeNumber}, isTop: ${isTop}, width: ${treeWidth}, height: ${treeHeight}`);
+            
+            gameArea.appendChild(artifact);
+            artifacts.push(artifact);
+        }
+
+        function createModifier() {
+            const modifier = document.createElement('div');
+            const isBlue = Math.random() < 0.66;
+            modifier.className = `modifier ${isBlue ? 'blue' : 'red'}`;
+            modifier.style.backgroundImage = `url('res/${isBlue ? 'blue' : 'red'}.png')`;
+            modifier.style.left = '800px';
+            
+            let validPosition = false;
+            let attempts = 0;
+            while (!validPosition && attempts < 20) {
+                let proposedTop = Math.random() * 360;
+                if (!artifacts.some(artifact => {
+                    let artifactRect = artifact.getBoundingClientRect();
+                    return (proposedTop >= artifactRect.top - 40 && proposedTop <= artifactRect.bottom);
+                }) && !modifiers.some(mod => {
+                    let modRect = mod.getBoundingClientRect();
+                    return (proposedTop >= modRect.top - 40 && proposedTop <= modRect.bottom);
+                })) {
+                    validPosition = true;
+                    modifier.style.top = `${proposedTop}px`;
+                }
+                attempts++;
+            }
+            
+            if (validPosition) {
+                gameArea.appendChild(modifier);
+                modifiers.push(modifier);
+            }
+        }
+
+        function createPinkModifier() {
+            const modifier = document.createElement('div');
+            modifier.className = 'modifier pink';
+            modifier.style.left = '800px';
+            
+            let validPosition = false;
+            let attempts = 0;
+            while (!validPosition && attempts < 20) {
+                let proposedTop = Math.random() * 320; // Adjusted for larger size
+                if (!artifacts.some(artifact => {
+                    let artifactRect = artifact.getBoundingClientRect();
+                    return (proposedTop >= artifactRect.top - 80 && proposedTop <= artifactRect.bottom);
+                }) && !modifiers.some(mod => {
+                    let modRect = mod.getBoundingClientRect();
+                    return (proposedTop >= modRect.top - 80 && proposedTop <= modRect.bottom);
+                })) {
+                    validPosition = true;
+                    modifier.style.top = `${proposedTop}px`;
+                }
+                attempts++;
+            }
+            
+            if (validPosition) {
+                gameArea.appendChild(modifier);
+                modifiers.push(modifier);
+            }
+        }
+
+        function checkCollision(a, b) {
+            const aRect = a.getBoundingClientRect();
+            const bRect = b.getBoundingClientRect();
+            
+            // Adjust collision box for bird (reduce width by 30% and height by 20%)
+            const aAdjustedWidth = aRect.width * 0.7;
+            const aAdjustedHeight = aRect.height * 0.8;
+            const aAdjustedLeft = aRect.left + (aRect.width - aAdjustedWidth) / 2;
+            const aAdjustedTop = aRect.top + (aRect.height - aAdjustedHeight) / 2;
+
+            // Adjust collision box for trees (reduce width by 50% and height by 20%)
+            const bAdjustedWidth = bRect.width * 0.5;
+            const bAdjustedHeight = bRect.height * 0.8;
+            const bAdjustedLeft = bRect.left + (bRect.width - bAdjustedWidth) / 2;
+            const bAdjustedTop = bRect.top + (bRect.height - bAdjustedHeight) / 2;
+
+            return !(
+                aAdjustedTop + aAdjustedHeight < bAdjustedTop ||
+                aAdjustedTop > bAdjustedTop + bAdjustedHeight ||
+                aAdjustedLeft + aAdjustedWidth < bAdjustedLeft ||
+                aAdjustedLeft > bAdjustedLeft + bAdjustedWidth
+            );
+        }
+
+        function endGame() {
+            isGameOver = true;
+            clearInterval(gameLoop);
+            clearInterval(scoreInterval);
+            clearInterval(timerInterval);
+            finalScoreElement.textContent = Math.round(score);
+            gameOverElement.style.display = 'block';
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' && !isGameOver) {
+                event.preventDefault();
+                let birdTop = parseInt(bird.style.top) || 185;
+                bird.style.top = `${birdTop - 50}px`;
+            } else if (event.code === 'Enter') {
+                startGame();
+            }
+        });
+
+        // Start the game when the page loads
+        window.onload = startGame;
+    </script>
+</body>
+</html>
