@@ -1,0 +1,53 @@
+# Tamagotchi Clone POC
+
+## Requisitos
+
+### Funcionalidades Principales
+1. **Mascota Virtual**:
+   - Nacimiento de la mascota.
+   - Estadísticas de la mascota (hambre, felicidad, energía).
+   - Interacciones básicas (alimentar, jugar, dormir).
+
+2. **Interfaz de Usuario**:
+   - Pantalla principal con la mascota.
+   - Botones para interactuar con la mascota.
+   - Indicadores de estadísticas.
+
+3. **Ciclo de Vida**:
+   - La mascota envejece con el tiempo.
+   - Las estadísticas cambian con el tiempo y las interacciones.
+
+### Tecnologías Utilizadas
+- **HTML5**: Estructura del juego.
+- **JavaScript**: Lógica del juego.
+- **Phaser 3**: Motor de juego para gráficos y animaciones.
+
+## Estructura del Proyecto
+mermaid
+graph TD;
+index.html --> jsFolder
+jsFolder[assets] --> images
+jsFolder[assets] --> sounds
+jsFolder --> main.js
+jsFolder --> pet.js
+jsFolder --> ui.js
+jsFolder --> game.js
+jsFolder --> config.js
+
+
+### Descripción de Archivos
+
+- **index.html**: Archivo principal HTML que carga el juego.
+- **assets**: Carpeta que contiene los recursos del juego.
+  - **images**: Carpeta para las imágenes del juego.
+  - **sounds**: Carpeta para los sonidos del juego.
+- **main.js**: Archivo principal de JavaScript que inicializa el juego.
+- **pet.js**: Archivo que contiene la lógica de la mascota.
+- **ui.js**: Archivo que maneja la interfaz de usuario.
+- **game.js**: Archivo que contiene la lógica del juego.
+- **config.js**: Archivo de configuración del juego.
+
+## Referencias
+
+- [Tamagotchi Clone by ChrisChrisLoLo](https://github.com/ChrisChrisLoLo/tamagotchiClone)
+- [Tamagotchi by antonioamgm](https://github.com/antonioamgm/Tamagotchi_000/blob/master/tamagotchi.html)
