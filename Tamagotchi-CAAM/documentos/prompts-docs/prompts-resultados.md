@@ -458,7 +458,219 @@ jsFolder --> config.js
 - [Tamagotchi Clone by ChrisChrisLoLo](https://github.com/ChrisChrisLoLo/tamagotchiClone)
 - [Tamagotchi by antonioamgm](https://github.com/antonioamgm/Tamagotchi_000/blob/master/tamagotchi.html)
 ```
-## 5. Resultado 
+## 5. Resultado Configuracion inicial
 ```
+Para comenzar con el proyecto del clon de Tamagotchi, vamos a seguir los documentos POC y PRD, y estructuraremos el proyecto según las mejores prácticas de programación. Aquí tienes el contenido inicial de cada archivo en su formato correspondiente.
 
+index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamagotchi Clone</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container"></div>
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
+
+config.js
+
+// Configuración del juego
+const config = {
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+    parent: 'game-container',
+    scene: [PreloadScene, MainScene],
+    physics: {
+        default: 'arcade',
+        arcade: {
+            debug: false
+        }
+    }
+};
+
+main.js
+
+// Inicialización del juego
+window.onload = function() {
+    const game = new Phaser.Game(config);
+};
+
+preload.js
+
+// Clase para la escena de precarga
+class PreloadScene extends Phaser.Scene {
+    constructor() {
+        super({ key: 'PreloadScene' });
+    }
+
+    preload() {
+        // Cargar los assets del juego
+        this.load.image('pet', 'assets/images/pet.png');
+        this.load.image('background', 'assets/images/background.png');
+        // ... otros assets
+    }
+
+    create() {
+        // Iniciar la escena principal
+        this.scene.start('MainScene');
+    }
+}
+
+mainScene.js
+
+// Clase para la escena principal
+class MainScene extends Phaser.Scene {
+    constructor() {
+        super({ key: 'MainScene' });
+    }
+
+    create() {
+        // Añadir fondo
+        this.add.image(400, 300, 'background');
+
+        // Crear la mascota
+        this.pet = new Pet(this, 400, 300, 'pet');
+
+        // Crear la interfaz de usuario
+        this.ui = new UI(this);
+    }
+
+    update() {
+        // Actualizar la mascota y la interfaz de usuario
+        this.pet.update();
+        this.ui.update();
+    }
+}
+
+pet.js
+
+// Clase para la mascota
+class Pet extends Phaser.GameObjects.Sprite {
+    constructor(scene, x, y, texture) {
+        super(scene, x, y, texture);
+        scene.add.existing(this);
+
+        // Inicializar estadísticas de la mascota
+        this.hunger = 100;
+        this.happiness = 100;
+        this.energy = 100;
+
+        // Temporizador para disminuir estadísticas
+        this.timer = scene.time.addEvent({
+            delay: 1000,
+            callback: this.decreaseStats,
+            callbackScope: this,
+            loop: true
+        });
+    }
+
+    decreaseStats() {
+        // Disminuir estadísticas con el tiempo
+        this.hunger -= 1;
+        this.happiness -= 1;
+        this.energy -= 1;
+    }
+
+    update() {
+        // Actualizar lógica de la mascota
+        if (this.hunger <= 0 || this.happiness <= 0 || this.energy <= 0) {
+            this.setTint(0xff0000); // Cambiar color si alguna estadística es 0
+        }
+    }
+}
+
+ui.js
+
+// Clase para la interfaz de usuario
+class UI {
+    constructor(scene) {
+        this.scene = scene;
+
+        // Crear botones de interacción
+        this.feedButton = this.createButton(100, 500, 'Feed', this.feedPet);
+        this.playButton = this.createButton(300, 500, 'Play', this.playWithPet);
+        this.sleepButton = this.createButton(500, 500, 'Sleep', this.putPetToSleep);
+
+        // Crear indicadores de estadísticas
+        this.hungerText = this.createText(50, 50, 'Hunger: 100');
+        this.happinessText = this.createText(50, 100, 'Happiness: 100');
+        this.energyText = this.createText(50, 150, 'Energy: 100');
+    }
+
+    createButton(x, y, label, callback) {
+        // Crear un botón interactivo
+        let button = this.scene.add.text(x, y, label, { fontSize: '32px', fill: '#fff' })
+            .setInteractive()
+            .on('pointerdown', callback.bind(this));
+        return button;
+    }
+
+    createText(x, y, text) {
+        // Crear un texto para mostrar estadísticas
+        return this.scene.add.text(x, y, text, { fontSize: '24px', fill: '#fff' });
+    }
+
+    feedPet() {
+        // Alimentar a la mascota
+        this.scene.pet.hunger = Math.min(this.scene.pet.hunger + 10, 100);
+    }
+
+    playWithPet() {
+        // Jugar con la mascota
+        this.scene.pet.happiness = Math.min(this.scene.pet.happiness + 10, 100);
+    }
+
+    putPetToSleep() {
+        // Poner a dormir a la mascota
+        this.scene.pet.energy = Math.min(this.scene.pet.energy + 10, 100);
+    }
+
+    update() {
+        // Actualizar los textos de estadísticas
+        this.hungerText.setText('Hunger: ' + this.scene.pet.hunger);
+        this.happinessText.setText('Happiness: ' + this.scene.pet.happiness);
+        this.energyText.setText('Energy: ' + this.scene.pet.energy);
+    }
+}
+
+styles.css
+
+styles.css
+/* Estilos básicos para el juego */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #000;
+}
+
+#game-container {
+    width: 800px;
+    height: 600px;
+}
+
+Estructura del Proyecto
+
+graph TD;
+    index.html --> jsFolder
+    jsFolder[assets] --> images
+    jsFolder[assets] --> sounds
+    jsFolder --> main.js
+    jsFolder --> pet.js
+    jsFolder --> ui.js
+    jsFolder --> game.js
+    jsFolder --> config.js
+
+Este es el setup inicial del proyecto. Cada archivo está comentado para explicar su propósito y cómo se integra en el juego. Puedes expandir y mejorar este código según las necesidades del proyecto.
 ``` 

@@ -23,16 +23,48 @@
 - **Phaser 3**: Motor de juego para gráficos y animaciones.
 
 ## Estructura del Proyecto
+
 mermaid
 graph TD;
-index.html --> jsFolder
-jsFolder[assets] --> images
-jsFolder[assets] --> sounds
-jsFolder --> main.js
-jsFolder --> pet.js
-jsFolder --> ui.js
-jsFolder --> game.js
-jsFolder --> config.js
+    A[Root Directory] -->|contains| B[index.html]
+    A -->|contains| C[assets]
+    C -->|contains| D[images]
+    D -->|contains| E[pet.png]
+    D -->|contains| F[background.png]
+    C -->|contains| G[sounds]
+    G -->|contains| H[feed.mp3]
+    G -->|contains| I[play.mp3]
+    A -->|contains| J[js]
+    J -->|contains| K[main.js]
+    J -->|contains| L[config.js]
+    J -->|contains| M[scenes]
+    M -->|contains| N[BootScene.js]
+    M -->|contains| O[PreloadScene.js]
+    M -->|contains| P[MainScene.js]
+    M -->|contains| Q[GameOverScene.js]
+
+
+
+/tamagotchi-clone 
+├── index.html 
+├── assets 
+│ ├── images 
+│ │ ├── pet.png 
+│ │ └── background.png 
+│ ├── sounds 
+│ │ ├── feed.mp3 
+│ │ └── play.mp3 
+└── jsFolder 
+| ├── main.js
+| ├── pet.js 
+| ├── ui.js 
+| ├── game.js  
+| ├── config.js  
+├── scenes 
+│ ├── BootScene.js 
+│ ├── PreloadScene.js 
+│ ├── MainScene.js 
+│ └── GameOverScene.js
 
 
 ### Descripción de Archivos

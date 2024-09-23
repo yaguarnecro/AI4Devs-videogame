@@ -137,20 +137,43 @@ Tamagotchi_000/blob/master/tamagotchi.html
 ### Cambios Realizados:
 [PRD File](/Tamagotchi-CAAM/PRD.MD)
 
-## 5. Quinto Prompt: 
+## 5. Quinto Prompt: configuracion inicial del proyecto
 
 **Fecha:** 2024-09-22  
 **Descripción:** 
 
 ### Prompt:
 ```
+Como experdo en desarrollo de videojuegos, ayudame paso a paso con el seting inicial del proyecto. para ello ten en cuenta los documentos @POC y @PRD, en especial la estructura en el @POC
+
+
+- Presentame El contenido de cada archivo en su formato correspondiente, .HTML, .JS 
+
+- no escribas codigo como texto, haslo con 
+el formato correspondiente, en bloques de 
+codigo.
+- usa las mejores practias de programacion.
+- codigo separado por clases
+- la mayoria de las lineas comentadas
+
+ejemplos/referencias:
+- @https://github.com/ChrisChrisLoLo/
+tamagotchiClone 
+- @https://github.com/antonioamgm/
+Tamagotchi_000/blob/master/tamagotchi.html 
+
 
 ``` 
 
 ### Resultado Generado:
-[resultdo 5](prompts-resultados.md#5.-Resultado-POC5)
+[resultdo 5](prompts-resultados.md#5.-Resultado-Configuracion-inicial)
 
 ### Cambios Realizados:
-[PRD File](/Tamagotchi-CAAM/)
-
-
+[PRD File](/Tamagotchi-CAAM/index.html)
+[PRD File](/Tamagotchi-CAAM/styles.css)
+[PRD File](/Tamagotchi-CAAM/jsFolder/config.js)
+[PRD File](/Tamagotchi-CAAM/jsFolder/main.js)
+[PRD File](/Tamagotchi-CAAM/jsFolder/preload.js)
+[PRD File](/Tamagotchi-CAAM/jsFolder/mainScene.js)
+[PRD File](/Tamagotchi-CAAM/jsFolder/pet.js)
+[PRD File](/Tamagotchi-CAAM/jsFolder/ui.js)
